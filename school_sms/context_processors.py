@@ -9,6 +9,7 @@ def school_context(request):
         "PORTAL_DOMAIN": settings.PORTAL_DOMAIN,
         "SCHOOL_ECOMMERCE": settings.SCHOOL_ECOMMERCE,
         "SCHOOL_PHONE": settings.SCHOOL_PHONE,
+        "SCHOOL_APP_NAME": settings.SCHOOL_APP_NAME,
         "SCHOOL_EMAIL": settings.SCHOOL_EMAIL,
         "SCHOOL_ADDRESS": settings.SCHOOL_ADDRESS,
     }

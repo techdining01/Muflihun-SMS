@@ -3,7 +3,6 @@
 const CACHE_NAME = 'school-sms-v1';
 const urlsToCache = [
     '/',
-    '/static/css/tailwind.css', // The compiled Tailwind file
     '/static/js/main.js',
     '/static/manifest.json',
     '/static/images/school_logo.png',
