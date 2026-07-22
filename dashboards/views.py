@@ -1328,9 +1328,7 @@ def student_available_exams(request):
     
     available_exams = []
     
-    # Get all attempts for this user to check status
-    user_attempts = ExamAttempt.objects.filter(student=user)
-    
+      
     # Get latest attempt per exam
     attempts = ExamAttempt.objects.filter(student=user).order_by('exam_id', '-started_at')
     attempts_map = {} # exam_id -> latest attempt

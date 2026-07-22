@@ -118,7 +118,7 @@
       <div class="col-md-3" data-aos="flip-left" data-aos-delay="60">
         <div class="card text-center p-3">
           <img src="{% static 'images/teacher-1.jpg' %}" class="rounded-circle mx-auto d-block" alt="Teacher" style="width:88px;height:88px;object-fit:cover;">
-          <h6 class="mt-3 mb-0">Mrs. A. Johnson</h6>
+          <h6 class="mt-3 mb-0">Mrs. A. Maryam</h6>
           <small class="text-muted">Head of Academics</small>
         </div>
       </div>
@@ -134,7 +134,7 @@
       <div class="col-md-3" data-aos="flip-left" data-aos-delay="180">
         <div class="card text-center p-3">
           <img src="{% static 'images/teacher-3.jpg' %}" class="rounded-circle mx-auto d-block" alt="Teacher" style="width:88px;height:88px;object-fit:cover;">
-          <h6 class="mt-3 mb-0">Mrs. L. Obi</h6>
+          <h6 class="mt-3 mb-0">Mrs. L. Azeezah</h6>
           <small class="text-muted">Senior Teacher</small>
         </div>
       </div>
@@ -153,10 +153,12 @@
 <!-- CTA -->
 <section class="py-5 bg-primary text-white text-center">
   <div class="container" data-aos="zoom-in">
-    <h3 class="fw-bold">Become Part of The Brills Family</h3>
+    <h3 class="fw-bold">Become Part of The {{ SCHOOL_NAME|capfirst|slice:":8" }} Family</h3>
+
     <p class="mb-3">Admissions open — limited spaces. Enroll your child today.</p>
     <a href="/auth/register/" class="btn btn-light btn-lg rounded-pill">Apply Now</a>
   </div>
 </section>
 
 {% endblock %}
+

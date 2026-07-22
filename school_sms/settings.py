@@ -34,7 +34,7 @@ if config('DEBUG', default=False, cast=bool):
 else:
     ALLOWED_HOSTS = config(
         'ALLOWED_HOSTS',
-        default='127.0.0.1,localhost,10.103.148.197,the-brills-sms-web1.onrender.com,brills-sms.onrender.com'
+        default='127.0.0.1,localhost,10.103.148.197'
     ).split(',')
 
 if '.ngrok-free.dev' not in ALLOWED_HOSTS:
@@ -152,7 +152,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='thebrills_db'),
+        'NAME': config('DB_NAME', default='muflihun'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='idrees'),
         'HOST': config('DB_HOST', default='db'),
@@ -305,13 +305,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ## School config (dynamic)
-SCHOOL_NAME = config("SCHOOL_NAME", "The Brills School")
-SCHOOL_ADDRESS = config("SCHOOL_ADDRESS", "No 1, Adaba Awotan-Akufo Road. Ibadan. Oyo State")
+SCHOOL_NAME = config("SCHOOL_NAME", "Muflihun High School")
+SCHOOL_ADDRESS = config("SCHOOL_ADDRESS", "")
 SCHOOL_LOGO_PATH = "{% static 'images/school_logo.png' %}"
-SCHOOL_SLOGAN = config("SCHOOL_SLOGAN", "Knowledge is Light")
+SCHOOL_SLOGAN = config("SCHOOL_SLOGAN", "")
 SCHOOL_ECOMMERCE = config("SCHOOL_ECOMMERCE", "")
-PORTAL_DOMAIN = config("PORTAL_DOMAIN", "https://www.thebrillsschool.edu.ng")
-SITE_NAME = config("PORTAL_DOMAIN", "https://www.thebrillsschool.edu.ng")
+SCHOOL_PHONE = config("SCHOOL_PHONE", "")
+SCHOOL_EMAIL = config("SCHOOL_EMAIL", "muflihunhighschool@gmail.com")
+PORTAL_DOMAIN = config("PORTAL_DOMAIN", "")
+SITE_NAME = config("PORTAL_DOMAIN", "")
 CURRENCY = 'NGN'
 CURRENCY_SYMBOL = '₦'
 RECEIPT_WATERMARK = "PAID"

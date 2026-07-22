@@ -138,5 +138,5 @@ def approve_users(modeladmin, request, queryset):
     # Set is_approved and also set is_active to True, as they can now log in
     queryset.update(is_approved=True, is_active=True)
 
-admin.site.site_header = "Brills School Management System"
-admin.site.site_title = "Brills SMS Admin Portal"   
+admin.site.site_header = "Muflihun High School Management System"
+admin.site.site_title = "Muflihun High School SMS Admin Portal"   

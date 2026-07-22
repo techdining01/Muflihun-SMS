@@ -89,7 +89,7 @@ class TransactionAdmin(admin.ModelAdmin):
 # Log Admin
 # =========================
 @admin.register(BrillsPayLog)
-class BrillsPayLogAdmin(admin.ModelAdmin):
+class MPayLogAdmin(admin.ModelAdmin):
     list_display = ('action', 'user', 'order', 'created_at')
     readonly_fields = ('created_at',)
     search_fields = ('user__username', 'order__reference', 'action')

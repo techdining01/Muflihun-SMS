@@ -4,9 +4,13 @@ from exams.models import Notification, ChatMessage
 
 def school_context(request):
     context = {
-        'SCHOOL_NAME': settings.SCHOOL_NAME,
-        'SCHOOL_SLOGAN': settings.SCHOOL_SLOGAN,
-        'PORTAL_DOMAIN': settings.PORTAL_DOMAIN,
+        "SCHOOL_NAME": settings.SCHOOL_NAME,
+        "SCHOOL_SLOGAN": settings.SCHOOL_SLOGAN,
+        "PORTAL_DOMAIN": settings.PORTAL_DOMAIN,
+        "SCHOOL_ECOMMERCE": settings.SCHOOL_ECOMMERCE,
+        "SCHOOL_PHONE": settings.SCHOOL_PHONE,
+        "SCHOOL_EMAIL": settings.SCHOOL_EMAIL,
+        "SCHOOL_ADDRESS": settings.SCHOOL_ADDRESS,
     }
 
     user = getattr(request, "user", None)

@@ -7,7 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from decimal import Decimal
 import csv
 
-from .models import LoanApplication, LoanRepayment
+from .models import LoanApplication
 from .forms import LoanApplicationForm
 from payroll.models import Payee
 
@@ -17,7 +17,7 @@ from payroll.models import Payee
 def apply_for_loan(request):
     # Check if user has a Payee profile using the correct related_name
     try:
-        payee = request.user.payee_profile
+        payee = Payee.objects.get(user=request.user)
     except Payee.DoesNotExist:
         messages.error(request, "You need a staff profile (Payee) to apply for a loan.")
         return redirect("loans:staff_loan_dashboard")
@@ -137,8 +137,17 @@ def reject_loan(request, loan_id):
 
 @login_required
 def staff_loan_dashboard(request):
-    payee = Payee.objects.get(user=request.user)
-    loans_qs = payee.loans.order_by("-applied_at")
+    if request.user.role not in ['BURSAR', 'ADMIN', 'TEACHER', 'NON_TEACHER']:
+        messages.error(request, "Permission denied.")
+        return redirect("loans:staff_loan_dashboard")
+    try:
+        payee = Payee.objects.get(user=request.user)
+        
+    except Payee.DoesNotExist:
+        messages.error(request, "No loans found.")
+        
+
+    loans_qs = LoanApplication.objects.filter(payee__user=request.user).order_by("-applied_at")
 
     paginator = Paginator(loans_qs, 5) 
     page_number = request.GET.get("page")
@@ -155,6 +164,9 @@ def staff_loan_dashboard(request):
 
 @login_required
 def loan_list(request):
+    if request.user.role not in ['STAFF', 'BURSAR', 'ADMIN', 'TEACHER']:
+        messages.error(request, "Permission denied.")
+        return redirect("loans:staff_loan_dashboard")
     loans = LoanApplication.objects.filter(payee__user=request.user).order_by("-applied_at")
     return render(request, "loans/staff/loan_dashboard.html", {"loans": loans})
 

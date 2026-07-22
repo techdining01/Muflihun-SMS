@@ -81,11 +81,11 @@ class User(AbstractUser):
         year = timezone.now().year
         random_part = get_random_string(length=5).upper()
 
-        if self.role == User.Role.ADMIN or self.role == User.Role.TEACHER:
-            return f"TBS/STF/{year}/{random_part}"
+        if self.role == User.Role.ADMIN or self.role == User.Role.TEACHER or self.role == User.Role.NON_TEACHER or self.role == User.Role.BURSAR:
+            return f"MHS/STF/{year}/{random_part}"
 
         if self.role == User.Role.STUDENT:
-            return f"TBS/{year}/{random_part}"
+            return f"MHS/{year}/{random_part}"
 
         return None  # parent gets nothing
 

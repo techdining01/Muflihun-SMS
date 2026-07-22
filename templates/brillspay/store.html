@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Brillspay Store — The Brills School{% endblock %}
+{% block title %}{{SCHOOL_ECOMMERCE}} Store — {{SCHOOL_NAME}}{% endblock %}
 
 {% block content %}
 <style>
@@ -41,7 +41,7 @@
 
 <section class="hero d-flex flex-column flex-md-row align-items-center justify-content-between">
   <div style="max-width:680px">
-    <h1 class="display-6 fw-bold">Welcome to Brillspay</h1>
+    <h1 class="display-6 fw-bold">Welcome to {{SCHOOL_ECOMMERCE}}</h1>
     <p class="lead text-white-50">A curated school store where students can buy verified exam access and essential school items safely. Fast checkout, teacher-approved products and easy parental control.</p>
 
     <div class="d-flex gap-2 mt-4">
