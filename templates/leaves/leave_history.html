@@ -83,7 +83,7 @@
         <tbody>
           {% for leave in page %}
           <tr>
-            <td class="px-4">
+            <td class="px-4" data-label="Staff Member">
               <div class="d-flex align-items-center">
                 <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3 text-primary">
                   <i class="bi bi-person"></i>
@@ -94,9 +94,9 @@
                 </div>
               </div>
             </td>
-            <td>{{ leave.start_date|date:"D, d M Y" }}</td>
-            <td>{{ leave.end_date|date:"D, d M Y" }}</td>
-            <td>
+            <td data-label="Start Date">{{ leave.start_date|date:"D, d M Y" }}</td>
+            <td data-label="End Date">{{ leave.end_date|date:"D, d M Y" }}</td>
+            <td data-label="Status">
               <span class="badge-status status-{{ leave.status }}">{{ leave.get_status_display }}</span>
             </td>
           </tr>

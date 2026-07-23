@@ -54,9 +54,17 @@ def staff_dashboard(request):
         messages.error(request, "You do not have permission to access this page.")
         return redirect("leaves:admin_dashboard")
 
-    payee = get_object_or_404(Payee, user=request.user)
-
-    leaves = LeaveRequest.objects.filter(payee=payee).order_by("-start_date")
+    try:
+        payee = getattr(request.user, "payee", None)
+    except AttributeError:
+        messages.error(request, "Payee profile not found. Please complete your profile.")
+        return redirect("leaves:staff_dashboard")
+    try:
+        leaves = LeaveRequest.objects.filter(payee=payee).order_by("-start_date")
+    except LeaveRequest.DoesNotExist:
+        messages.error(request, "No leave requests found.")
+        return redirect("leaves:staff_dashboard")   
+    
     approved_count = LeaveRequest.objects.filter(payee=payee, status="approved").count()
     balance = calculate_leave_balance(payee)
 

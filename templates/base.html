@@ -318,6 +318,13 @@
             }
         }
 
+        /* Hide school logo on small screens (<768px, exclude tablets) */
+        @media (max-width: 767.98px) {
+            .school-logo-img {
+                display: none !important;
+            }
+        }
+
         .nav-link {
             font-weight: 500;
             color: var(--dark) !important;
@@ -1271,7 +1278,7 @@
         <div class="container">
             <!-- Brand -->
             <a class="navbar-brand d-flex align-items-center" href="{% url 'landing_page' %}">
-                <img src="{% static 'images/school_logo.png' %}" alt="{{ SCHOOL_NAME }}" class="me-3">
+                <img src="{% static 'images/school_logo.png' %}" alt="{{ SCHOOL_NAME }}" class="me-3 school-logo-img">
                 <span>{{ SCHOOL_NAME }}</span>
             </a>
 
@@ -1300,7 +1307,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'admin_grand_dashboard' %}"
                                     data-bs-dismiss="navbarContent">
-                                    Grand Dashboard
+                                    Motherboard
                                 </a></li>
 
                             <li><a class="dropdown-item" href="{% url 'brillspay:admin_dashboard' %}"
@@ -1335,17 +1342,11 @@
                             <li><a class="dropdown-item" href="{% url 'brillspay:admin_analytics' %}">
                                     Analytics
                                 </a></li>
+                            <li><a href="{% url 'accounts:users' %}" class="dropdown-item">
+                                    Users
+                                </a></li>
                         </ul>
                     </li>
-
-                    <li><a href="{% url 'accounts:users' %}" class="dropdown-item">
-                            Users
-                        </a></li>
-
-                    <li><a class="dropdown-item" href="{% url 'pickup:admin_dashboard' %}"
-                            data-bs-dismiss="navbarContent">
-                            Pickups
-                        </a></li>
 
                     <li class="nav-item dropdown">
                         <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -1402,15 +1403,25 @@
                         </ul>
                     </li>
 
-                    <li><a class="dropdown-item" href="{% url 'loans:admin_loan_dashboard' %}"
-                            data-bs-dismiss="navbarContent">
-                            Loan
-                        </a></li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" data-bs-auto-close="outside">
+                            Benefits
+                        </a>
 
-                    <li><a class="dropdown-item" href="{% url 'leaves:admin_dashboard' %}"
-                            data-bs-dismiss="navbarContent">
-                            Leave
-                        </a></li>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'loans:admin_loan_dashboard' %}"
+                                    data-bs-dismiss="navbarContent">
+                                    Loan
+                            </a></li>
+
+                            <li><a class="dropdown-item" href="{% url 'leaves:admin_dashboard' %}"
+                                    data-bs-dismiss="navbarContent">
+                                    Leave
+                                </a></li>
+                        </ul>
+
+                    </li>
 
 
                     <li class="nav-item dropdown">
@@ -1447,9 +1458,13 @@
                             <li><a class="dropdown-item" href="{% url 'payroll:payroll_list' %}">
                                     History
                                 </a></li>
-
                         </ul>
                     </li>
+
+                    <li><a class="dropdown-item" href="{% url 'pickup:admin_dashboard' %}"
+                            data-bs-dismiss="navbarContent">
+                            Pickups
+                        </a></li>
 
 
 
@@ -1480,6 +1495,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'payroll:payee_dashboard' %}" data-bs-dismiss="navbarContent">
                             Payslip
+                        </a>
+                    </li>
+
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pickup:parent_dashboard' %}" data-bs-dismiss="navbarContent">
+                            Pickup
                         </a>
                     </li>
 
@@ -1515,7 +1537,6 @@
                         <a class="nav-link position-relative" href="{% url 'about' %}" data-bs-dismiss="navbarContent">
                             About</a>
                     </li>
-
 
                     {% else %}
 
@@ -1596,7 +1617,8 @@
                             </li>
                             {% endif %}
 
-                            {# --- Messages Section --- #}
+                            {<!-- --- Messages Section --- -->}
+
                             {% if recent_chats %}
                                 <li><h6 class="dropdown-header text-primary"><i class="bi bi-chat-dots me-1"></i> Messages</h6></li>
                                 {% for chat in recent_chats %}
@@ -1620,7 +1642,7 @@
                                 {% endif %}
                             {% endif %}
 
-                            {# --- Notifications Section --- #}
+                            {<!-- --- Notifications Section --- -->}
                             {% if recent_notifications %}
                                 {% if recent_chats %}
                                     <li><h6 class="dropdown-header text-primary"><i class="bi bi-bell me-1"></i> Notifications</h6></li>
@@ -1643,7 +1665,7 @@
                                 {% endfor %}
                             {% endif %}
 
-                            {# --- Empty State --- #}
+                            {<!-- --- Empty State --- -->}
                             {% if not recent_notifications and not recent_chats %}
                                 <li class="text-center p-4 text-muted">
                                     <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
@@ -1785,7 +1807,7 @@
                 <div class="col-lg-3 col-md-6">
                     <h5>Follow Us</h5>
                     <div class="social-links d-flex gap-3 mb-4">
-                        <a href="{{SCHOOL_FACEBOOK_URL}}" target="_blank" title="Facebook">
+                        <a href="https://www.facebook.com/muflihun.high/" target="_blank" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
                         <a href="{{SCHOOL_INSTAGRAM_URL}}" target="_blank" title="Instagram">

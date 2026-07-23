@@ -157,7 +157,7 @@
                 <tbody>
                     {% for item in payment_data %}
                     <tr>
-                        <td class="ps-4">
+                        <td class="ps-4" data-label="Recipient">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary">
                                     <i class="bi bi-person-fill"></i>
@@ -168,8 +168,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td><span class="fw-bold text-dark">₦{{ item.record.net_pay|floatformat:2 }}</span></td>
-                        <td>
+                        <td data-label="Amount"><span class="fw-bold text-dark">₦{{ item.record.net_pay|floatformat:2 }}</span></td>
+                        <td data-label="Bank Account">
                             {% if item.bank %}
                             <div class="small">
                                 <div class="text-dark fw-medium">
@@ -184,7 +184,7 @@
                             </span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td data-label="Status">
                             {% if item.status == 'success' %}
                                 <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">
                                     <i class="bi bi-check-circle-fill me-1"></i>SUCCESS
@@ -209,7 +209,7 @@
                             </div>
                             {% endif %}
                         </td>
-                        <td class="text-end pe-4">
+                        <td class="text-end pe-4" data-label="Actions">
                             {% if item.can_retry %}
                             <form method="post" action="{% url 'payroll:retry_payment' item.transaction.id %}"
                                 class="d-inline">
