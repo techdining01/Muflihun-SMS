@@ -130,9 +130,16 @@ ASGI_APPLICATION = 'school_sms.asgi.application'
 WSGI_APPLICATION = 'school_sms.wsgi.application'
 
 # Channels Configuration
+REDIS_URL = config("REDIS_URL", default="redis://localhost:6379/0")
+
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_URL],
+            "capacity": 1500,
+            "expiry": 10,
+        },
     }
 }
 
@@ -307,7 +314,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ## School config (dynamic)
 SCHOOL_NAME = config("SCHOOL_NAME", "Muflihun High School")
 SCHOOL_ADDRESS = config("SCHOOL_ADDRESS", "")
-SCHOOL_LOGO_PATH = "{% static 'images/school_logo.png' %}"
+SCHOOL_LOGO_PATH = os.path.join(BASE_DIR, "static", "images", "school_logo.png")
 SCHOOL_SLOGAN = config("SCHOOL_SLOGAN", "")
 SCHOOL_ECOMMERCE = config("SCHOOL_ECOMMERCE", "")
 SCHOOL_PHONE = config("SCHOOL_PHONE", "")
@@ -320,8 +327,8 @@ SCHOOL_YOUTUBE_URL = config("SCHOOL_YOUTUBE_URL", "#")
 
 PORTAL_DOMAIN = config("PORTAL_DOMAIN", "")
 SITE_NAME = config("SITE_NAME", "")
-CURRENCY = 'NGN'
-CURRENCY_SYMBOL = '₦'
+CURRENCY = config('CURRENCY', default='NGN')
+CURRENCY_SYMBOL = config('CURRENCY_SYMBOL', default='₦')
 RECEIPT_WATERMARK = "PAID"
 
 
@@ -395,17 +402,13 @@ TELEGRAM_CHAT_ID = config('TELEGRAM_CHAT_ID', default='')
 EMAIL_HOST_PASSWORD='your-app-password'
 DEFAULT_FROM_EMAIL='noreply@schoolcommerce.com'
 
-# Redis (for Celery)
-REDIS_URL=config("REDIS_URL", default='redis://localhost:6379/0')
+# Celery Configuration
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 
 # Backup
-BACKUP_ENCRYPTION_KEY=config("BACKUP_ENCRYPTION_KEY", default='placeholder-encryption-key')
-BACKUP_RETENTION_DAYS=30
-
-
-# Celery Configuration
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
+BACKUP_ENCRYPTION_KEY = config("BACKUP_ENCRYPTION_KEY", default='placeholder-encryption-key')
+BACKUP_RETENTION_DAYS = 30
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

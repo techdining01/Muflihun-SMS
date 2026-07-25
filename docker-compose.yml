@@ -9,11 +9,13 @@ services:
       - .env.docker
     environment:
       - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
       - ALLOWED_HOSTS=127.0.0.1,localhost,web,10.103.148.197,.ngrok-free.dev, brills-sms.onrender.com
     expose:
       - "8000"
     depends_on:
       - db
+      - redis
     restart: always
 
   db:
@@ -26,6 +28,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   nginx:
     image: nginx:alpine
@@ -42,3 +52,4 @@ services:
 volumes:
   static_volume:
   postgres_data:
+  redis_data:

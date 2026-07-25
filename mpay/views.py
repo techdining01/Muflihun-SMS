@@ -22,12 +22,30 @@ from .models import (
 )
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
+import reportlab
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.enums import TA_CENTER
 from django.views.decorators.http import require_POST
+
+# Arial bundled in static/fonts — supports full Unicode including ₦ Naira
+_FONTS_DIR = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
+_PROJECT_FONTS_DIR = os.path.join(settings.BASE_DIR, "static", "fonts")
+try:
+    pdfmetrics.registerFont(TTFont("Arial", os.path.join(_PROJECT_FONTS_DIR, "arial.ttf")))
+    pdfmetrics.registerFont(TTFont("Arial-Bold", os.path.join(_PROJECT_FONTS_DIR, "arialbd.ttf")))
+    _PDF_FONT = "Arial"
+    _PDF_FONT_BOLD = "Arial-Bold"
+except Exception:
+    _PDF_FONT = "Helvetica"
+    _PDF_FONT_BOLD = "Helvetica-Bold"
+
+NAIRA = "₦"
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, F
 from django.db import transaction as db_transaction
@@ -863,13 +881,20 @@ def parent_orders(request):
 
 
 class WatermarkCanvas(canvas.Canvas):
+    def __init__(self, *args, watermark_text="PAID", **kwargs):
+        self._watermark_text = watermark_text
+        super().__init__(*args, **kwargs)
+
     def draw_watermark(self):
         self.saveState()
-        self.setFont("Helvetica-Bold", 60)
-        self.setFillColorRGB(0.85, 0.85, 0.85)
+        self.setFont(_PDF_FONT_BOLD, 60)
+        if self._watermark_text == "PENDING":
+            self.setFillColorRGB(0.9, 0.6, 0.0)
+        else:
+            self.setFillColorRGB(0.85, 0.85, 0.85)
         self.translate(300, 400)
         self.rotate(45)
-        self.drawCentredString(0, 0, settings.RECEIPT_WATERMARK)
+        self.drawCentredString(0, 0, self._watermark_text)
         self.restoreState()
 
     def showPage(self):
@@ -891,71 +916,81 @@ def payment_receipt_pdf(request, tx_id):
         from django.http import HttpResponseForbidden
         return HttpResponseForbidden("You are not allowed to view this receipt.")
 
+    watermark_text = "PAID" if tx.verified else "PENDING"
+    payment_status = "VERIFIED" if tx.verified else "PENDING VERIFICATION"
+    status_color = "green" if tx.verified else "orange"
+
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="receipt_{reference}.pdf"'
 
-    doc = SimpleDocTemplate(response, pagesize=A4)
-    styles = getSampleStyleSheet()
+    doc = SimpleDocTemplate(response, pagesize=A4, topMargin=30)
+    base_styles = getSampleStyleSheet()
+
+    centered = ParagraphStyle("centered", parent=base_styles["Normal"], alignment=TA_CENTER, fontName=_PDF_FONT)
+    centered_bold = ParagraphStyle("centered_bold", parent=base_styles["Normal"], alignment=TA_CENTER, fontName=_PDF_FONT_BOLD, fontSize=14)
+    centered_small = ParagraphStyle("centered_small", parent=base_styles["Normal"], alignment=TA_CENTER, fontName=_PDF_FONT, fontSize=9)
+    normal = ParagraphStyle("normal_u", parent=base_styles["Normal"], fontName=_PDF_FONT)
+    italic = ParagraphStyle("italic_u", parent=base_styles["Italic"], fontName=_PDF_FONT)
+
     elements = []
 
-    # Logo
-    if os.path.exists(settings.SCHOOL_LOGO_PATH):
-        elements.append(Image(settings.SCHOOL_LOGO_PATH, width=80, height=80))
+    # Logo — centered
+    logo_path = settings.SCHOOL_LOGO_PATH
+    if os.path.exists(logo_path):
+        logo = Image(logo_path, width=70, height=70)
+        logo.hAlign = "CENTER"
+        elements.append(logo)
+        elements.append(Spacer(1, 6))
 
-    elements.append(Paragraph(f"<b>{settings.SCHOOL_NAME}</b>", styles["Title"]))
+    # School name + address — centered
+    elements.append(Paragraph(settings.SCHOOL_NAME, centered_bold))
+    if getattr(settings, "SCHOOL_ADDRESS", ""):
+        elements.append(Paragraph(settings.SCHOOL_ADDRESS, centered_small))
+    elements.append(Spacer(1, 4))
+    elements.append(Paragraph("<b>PAYMENT RECEIPT</b>", centered))
+    elements.append(Spacer(1, 12))
 
-    elements.append(
-        Paragraph("<br/><b>PAYMENT RECEIPT</b><br/><br/>", styles["Normal"])
-    )
+    # Transaction details
+    elements.append(Paragraph(
+        f"<b>Transaction Ref:</b> {reference}<br/>"
+        f"<b>Order Ref:</b> {order.reference}<br/>"
+        f"<b>Paid By:</b> {tx.user.get_full_name()}<br/>"
+        f"<b>Ward:</b> {order.ward.get_full_name()}<br/>"
+        f"<b>Date:</b> {tx.created_at.strftime('%d %b %Y %H:%M')}<br/>"
+        f"<b>Payment Status:</b> <font color='{status_color}'>{payment_status}</font><br/>",
+        normal,
+    ))
+    elements.append(Spacer(1, 12))
 
-    elements.append(
-        Paragraph(
-            f"<b>Transaction Ref:</b> {reference}<br/>"
-            f"<b>Order Ref:</b> {order.reference}<br/>"
-            f"<b>Paid By:</b> {tx.user.get_full_name()}<br/>"
-            f"<b>Ward:</b> {order.ward.get_full_name()}<br/>"
-            f"<b>Date:</b> {tx.created_at.strftime('%d %b %Y %H:%M')}<br/><br/>",
-            styles["Normal"],
-        )
-    )
-
-    # Items Table
+    # Items table
     table_data = [["Item", "Qty", "Unit Price", "Total"]]
-
     for item in order.items.all():
-        table_data.append(
-            [
-                item.product.name,
-                item.quantity,
-                f"₦{item.price}",
-                f"₦{item.price * item.quantity}",
-            ]
-        )
-
-    table_data.append(["", "", "Grand Total", f"₦{order.total_amount}"])
+        table_data.append([
+            item.product_name,
+            str(item.quantity),
+            f"{settings.CURRENCY_SYMBOL}{item.price}",
+            f"{settings.CURRENCY_SYMBOL}{item.price * item.quantity}",
+        ])
+    table_data.append(["", "", "Grand Total", f"{settings.CURRENCY_SYMBOL}{order.total_amount}"])
 
     table = Table(table_data, colWidths=[200, 60, 100, 100])
-    table.setStyle(
-        TableStyle(
-            [
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-                ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ]
-        )
-    )
-
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+        ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+        ("FONTNAME", (0, 0), (-1, 0), _PDF_FONT_BOLD),
+        ("FONTNAME", (0, 1), (-1, -1), _PDF_FONT),
+        ("FONTNAME", (0, -1), (-1, -1), _PDF_FONT_BOLD),
+    ]))
     elements.append(table)
+    elements.append(Spacer(1, 16))
 
-    elements.append(
-        Paragraph(
-            "<br/>Thank you for your payment.<br/>This receipt is system-generated.",
-            styles["Italic"],
-        )
-    )
+    elements.append(Paragraph(
+        "Thank you for your payment. This receipt is system-generated.",
+        italic,
+    ))
 
-    doc.build(elements, canvasmaker=WatermarkCanvas)
+    doc.build(elements, canvasmaker=lambda *a, **kw: WatermarkCanvas(*a, watermark_text=watermark_text, **kw))
     return response
 
 
