@@ -16,6 +16,7 @@ def school_context(request):
         "SCHOOL_APP_NAME": settings.SCHOOL_APP_NAME,
         "SCHOOL_EMAIL": settings.SCHOOL_EMAIL,
         "SCHOOL_ADDRESS": settings.SCHOOL_ADDRESS,
+        "VAPID_PUBLIC_KEY": getattr(settings, 'VAPID_PUBLIC_KEY', ''),
     }
 
     user = getattr(request, "user", None)

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+
+<h4>Purchase History</h4>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-responsive-stack">
+        <thead>
+            <tr>
+                <th>Ref</th>
+                <th>Ward</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td data-label="Ref">{{ o.transaction.reference|slice:":8" }}</td>
+                <td data-label="Ward">{{ o.ward.get_full_name }}</td>
+                <td data-label="Amount">₦{{ o.amount }}</td>
+                <td data-label="Status">{{ o.status }}</td>
+                <td data-label="Action">
+                    <a href="{% url 'mpay:receipt_pdf' o.transaction.id %}" class="btn btn-sm btn-outline-primary">
+                        Receipt
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+{% endblock %}

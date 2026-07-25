@@ -12,29 +12,29 @@
     </div>
 
     <!-- Statistics Row -->
-    <div class="row mb-4">
-        <div class="col-md-3">
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
             <div class="stat-card">
                 <i class="bi bi-file-earmark-text" style="font-size: 2em; color: #3498db;"></i>
                 <h3>{{ total_exams }}</h3>
                 <p>Exams Created</p>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="stat-card">
                 <i class="bi bi-people" style="font-size: 2em; color: #27ae60;"></i>
                 <h3>{{ total_students }}</h3>
                 <p>Students in Classes</p>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="stat-card">
                 <i class="bi bi-hourglass-split" style="font-size: 2em; color: #f39c12;"></i>
                 <h3>{{ pending_grading }}</h3>
                 <p>Pending Grading</p>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="stat-card">
                 <i class="bi bi-check-circle" style="font-size: 2em; color: #9b59b6;"></i>
                 <h3>{{ total_graded }}</h3>
@@ -124,8 +124,8 @@
     </div>
 
     <!-- Performance Statistics -->
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row g-3">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Class Performance</h5>
@@ -163,10 +163,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Grading Status</h5>
+        <div class="col-12 col-md-6">
                 </div>
                 <div class="card-body">
                     <div class="progress mb-3">
@@ -196,21 +193,16 @@
         background: white;
         border: 1px solid #e0e0e0;
         border-radius: 8px;
-        padding: 20px;
+        padding: clamp(0.75rem, 3vw, 1.25rem);
         text-align: center;
         transition: all 0.3s ease;
+        height: 100%;
     }
     .stat-card:hover {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         transform: translateY(-2px);
     }
-    .stat-card h3 {
-        color: #333;
-        margin: 10px 0;
-    }
-    .stat-card p {
-        font-size: 0.9em;
-        margin: 0;
-    }
+    .stat-card h3 { color: #333; margin: 8px 0; font-size: clamp(1.2rem, 4vw, 1.75rem); }
+    .stat-card p { font-size: 0.85em; margin: 0; }
 </style>
 {% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Revenue Analytics{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+    <h4 class="mb-0">Revenue Analytics</h4>
+
+    <div class="d-flex flex-wrap gap-2">
+      <a href="?range=7" class="btn btn-sm {% if range_days == 7 %}btn-primary{% else %}btn-outline-primary{% endif %}">
+        7 Days
+      </a>
+      <a href="?range=30" class="btn btn-sm {% if range_days == 30 %}btn-primary{% else %}btn-outline-primary{% endif %}">
+        30 Days
+      </a>
+      <a href="{% url 'mpay:export_revenue_csv' %}" class="btn btn-sm btn-success">
+        Export CSV
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+      <h6>Total Revenue</h6>
+      <h2 class="fw-bold">₦{{ total_revenue|floatformat:2 }}</h2>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-2 p-sm-3">
+      <div style="overflow-x:auto;">
+        <canvas id="revenueChart" height="120" style="min-width:320px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const ctx = document.getElementById("revenueChart");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: "Revenue (₦)",
+        data: {{ data|safe }},
+        borderColor: "#0d6efd",
+        backgroundColor: "rgba(13,110,253,0.15)",
+        tension: 0.35,
+        fill: true,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return "₦" + ctx.parsed.y.toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: function(value) {
+              return "₦" + value.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

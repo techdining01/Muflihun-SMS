@@ -55,7 +55,7 @@ SESSION_COOKIE_SAMESITE = "Lax"
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_FAILURE_VIEW = "brillspay.views.csrf_failure"
+CSRF_FAILURE_VIEW = "mpay.views.csrf_failure"
 
 
 # Application definition
@@ -81,7 +81,7 @@ INSTALLED_APPS = [
     # Local Apps (The four pillars of this project)
     'exams.apps.ExamsConfig',                         
     'accounts.apps.AccountsConfig',
-    'brillspay.apps.BrillspayConfig',
+    'mpay.apps.MpayConfig',
     'pickup.apps.PickupConfig',
     'payroll.apps.PayrollConfig',
     'loans.apps.LoansConfig',
@@ -223,7 +223,7 @@ LOGGING = {
             'propagate': False,
         },
         # Specific apps (optional)
-        'brillspay': {
+        'mpay': {
             'handlers': ['file', 'console'],
             'level': 'INFO',
             'propagate': False,
@@ -252,7 +252,7 @@ TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True   
 
 
 # Static files (CSS, JavaScript, Images)
@@ -340,10 +340,10 @@ PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='pk_test_placeholder
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='sk_test_placeholder')
 PAYSTACK_BASE_URL = config('PAYSTACK_BASE_URL', default='https://api.paystack.co')
 PAYSTACK_WEBHOOK = config(
-    'PAYSTACK_WEBHOOK_SECRET', default='https://newsiest-interlineally-guy.ngrok-free.dev/brillspay/paystack/webhook/')
+    'PAYSTACK_WEBHOOK_SECRET', default='https://newsiest-interlineally-guy.ngrok-free.dev/mpay/paystack/webhook/')
 PAYSTACK_CALLBACK_URL = config(
     "PAYSTACK_CALLBACK_URL",
-    default="https://newsiest-interlineally-guy.ngrok-free.dev/brillspay/paystack/callback/"
+    default="https://newsiest-interlineally-guy.ngrok-free.dev/mpay/paystack/callback/"
 )
 
 
@@ -410,6 +410,11 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+# Web Push (VAPID)
+VAPID_PUBLIC_KEY = config('VAPID_PUBLIC_KEY', default='')
+VAPID_PRIVATE_KEY = config('VAPID_PRIVATE_KEY', default='').replace('\\n', '\n')
+VAPID_ADMIN_EMAIL = config('VAPID_ADMIN_EMAIL', default=SCHOOL_EMAIL)
 
 # Celery Configuration Options
 

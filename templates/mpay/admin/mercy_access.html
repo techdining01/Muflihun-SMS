@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Mercy Exam Access{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <h3 class="fw-bold mb-0">Mercy Exam Access</h3>
+        <a href="{% url 'mpay:admin_dashboard' %}" class="btn btn-outline-secondary">
+            Back to Brillspay
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="classSelect" class="form-label">Select Class</label>
+                    <select id="classSelect" name="class" class="form-select" onchange="this.form.submit()">
+                        <option value="">Choose...</option>
+                        {% for c in classes %}
+                        <option value="{{ c.id }}" {% if selected_class and selected_class.id == c.id %}selected{% endif %}>
+                            {{ c.name }} ({{ c.academic_year }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_class %}
+        {% if students and exams %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="mb-3">Toggle exam access for {{ selected_class.name }} ({{ selected_class.academic_year }})</h5>
+                <div class="table-responsive table-responsive-stack">
+                    <table class="table table-bordered align-middle mb-0 table-responsive-stack">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Student</th>
+                                {% for exam in exams %}
+                                <th class="text-center">
+                                    {{ exam.title }}
+                                    <div class="small text-muted">
+                                        {{ exam.start_time|date:"M d" }}
+                                    </div>
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td data-label="Student">
+                                    {{ student.get_full_name|default:student.username }}
+                                </td>
+                                {% for exam in exams %}
+                                {% with key=student.id|stringformat:"s"|add:"|"|add:exam.id|stringformat:"s" %}
+                                <td class="text-center" data-label="{{ exam.title }}">
+                                    <form method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="student_id" value="{{ student.id }}">
+                                        <input type="hidden" name="exam_id" value="{{ exam.id }}">
+                                        <input type="hidden" name="action"
+                                               value="{% if key in access_pairs %}revoke{% else %}grant{% endif %}">
+                                        <button type="submit"
+                                                class="btn btn-sm {% if key in access_pairs %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                            {% if key in access_pairs %}
+                                                Revoke
+                                            {% else %}
+                                                Grant
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </td>
+                                {% endwith %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+            <div class="alert alert-info">
+                No students or exams found for this class.
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-secondary">
+            Select a class to manage mercy exam access.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

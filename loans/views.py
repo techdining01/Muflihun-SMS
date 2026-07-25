@@ -45,7 +45,7 @@ def apply_for_loan(request):
 def admin_loan_dashboard(request):
     if request.user.role not in ["ADMIN", "BURSAR"]:
         messages.error(request, "Permission denied.")
-        return redirect("payroll:staff_payroll_dashboard")
+        return redirect("payroll:payee_dashboard")
 
     loans_qs = LoanApplication.objects.order_by("-applied_at")
     

@@ -88,9 +88,10 @@
                                 <div class="d-flex align-items-center gap-2 mb-1">
                                     <img src="{{ ps.student.profile_picture.url }}"
                                          width="32" height="32"
-                                         style="border-radius:50%">
-                                    <div>
-                                        {{ ps.student.get_full_name }}<br>
+                                         class="rounded-circle flex-shrink-0"
+                                         style="object-fit:cover;min-width:32px;">
+                                    <div class="overflow-hidden">
+                                        <div class="text-truncate" style="max-width:120px;">{{ ps.student.get_full_name }}</div>
                                         <small class="text-muted">
                                             {{ ps.student.student_class }}
                                         </small>
@@ -128,32 +129,15 @@
                             {% endif %}
                         </td>
                         <td data-label="Actions">
-                            <div class="btn-group btn-group-sm">
-
-                                <a href="{% url 'pickup:pickup_scan' %}"
-                                class="btn btn-outline-success">
-                                Verify
-                                </a>
-
-                                <a href="{% url 'pickup:pickup_audit_log_pdf' %}"
-                                class="btn btn-outline-primary">
-                                Logs
-                                </a>
-
-                                <a href="{% url 'pickup:daily_pickup_report_pdf' %}?date={{ pickup.created_at|date:'d-m-Y' }}"
-                                class="btn btn-outline-secondary">
-                                Daily
-                                </a>
-
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{% url 'pickup:pickup_scan' %}" class="btn btn-outline-success btn-sm">Verify</a>
+                                <a href="{% url 'pickup:pickup_audit_log_pdf' %}" class="btn btn-outline-primary btn-sm">Logs</a>
+                                <a href="{% url 'pickup:daily_pickup_report_pdf' %}?date={{ pickup.created_at|date:'d-m-Y' }}" class="btn btn-outline-secondary btn-sm">Daily</a>
                                 {% if not pickup.is_used %}
-                                <a href="{% url 'pickup:force_expire_pickup' pickup.id %}"
-                                class="btn btn-outline-danger">
-                                Expire
-                                </a>
+                                <a href="{% url 'pickup:force_expire_pickup' pickup.id %}" class="btn btn-outline-danger btn-sm">Expire</a>
                                 {% endif %}
-
                             </div>
-                            </td>
+                        </td>
 
                     </tr>
                 {% empty %}

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.conf import settings
 from exams.models import Notification, ChatMessage, Exam
 from itertools import chain
 from operator import attrgetter
@@ -178,6 +179,49 @@ def mark_all_as_read(request):
              ChatMessage.objects.filter(recipient=request.user, is_read=False).count()
         )
     })
+
+# ── Web Push endpoints ──────────────────────────────────────────────────────
+
+@login_required
+@require_http_methods(['POST'])
+def push_subscribe(request):
+    """Save a browser push subscription for the logged-in user."""
+    from dashboards.models import PushSubscription
+    try:
+        data = json.loads(request.body)
+        PushSubscription.objects.update_or_create(
+            endpoint=data['endpoint'],
+            defaults={
+                'user': request.user,
+                'p256dh': data['keys']['p256dh'],
+                'auth': data['keys']['auth'],
+            }
+        )
+        return JsonResponse({'status': 'subscribed'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'detail': str(e)}, status=400)
+
+
+@login_required
+@require_http_methods(['POST'])
+def push_unsubscribe(request):
+    """Remove a push subscription."""
+    from dashboards.models import PushSubscription
+    try:
+        data = json.loads(request.body)
+        PushSubscription.objects.filter(endpoint=data['endpoint']).delete()
+        return JsonResponse({'status': 'unsubscribed'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'detail': str(e)}, status=400)
+
+
+@login_required
+def push_vapid_public_key(request):
+    """Return the VAPID public key so the frontend can subscribe."""
+    return JsonResponse({'publicKey': settings.VAPID_PUBLIC_KEY})
+
+
+# ── Existing views ───────────────────────────────────────────────────────────
 
 @login_required()
 @require_http_methods(["DELETE"])

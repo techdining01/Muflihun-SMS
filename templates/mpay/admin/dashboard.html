@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}MPay Admin Dashboard{% endblock %}
+
+<style>
+.back-btn {
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  transition: transform .15s ease;
+}
+
+.back-btn:active {
+  transform: translateX(-4px);
+}
+</style>
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <h3 class="fw-bold mb-0">{{SCHOOL_ECOMMERCE}} Overview</h3>
+      <button class="back-btn btn btn-outline-primary text-center" onclick="safeBack()">
+          ← Back
+      </button>
+    </div>
+
+  <!-- KPI CARDS -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-6 col-md-3">
+      <div class="card shadow-sm h-100 animate fade-in">
+        <div class="card-body text-center p-3">
+          <h6 class="text-muted small mb-2">Total Revenue</h6>
+          <h4 class="fw-bold mb-0">₦{{ total_sales|floatformat:0|intcomma }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card shadow-sm h-100 animate fade-in delay-1">
+        <div class="card-body text-center p-3">
+          <h6 class="text-muted small mb-2">Total Orders</h6>
+          <h4 class="fw-bold mb-0">{{ total_orders }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card shadow-sm h-100 animate fade-in delay-2">
+        <div class="card-body text-center p-3">
+          <h6 class="text-muted small mb-2">Transactions</h6>
+          <h4 class="fw-bold mb-0">{{ total_transactions }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card shadow-sm h-100 animate fade-in delay-3">
+        <div class="card-body text-center p-3">
+          <h6 class="text-muted small mb-2">Products</h6>
+          <h4 class="fw-bold mb-0">{{ total_products }}</h4>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- RECENT ORDERS -->
+  <div class="card shadow-sm">
+  <div class="card-header fw-bold">Recent Orders</div>
+  <div class="card-body table-responsive p-0">
+    <table class="table table-striped table-hover align-middle mb-0 table-responsive-stack">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Time</th>
+          <th>Parent</th>
+          <th>Ward</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in recent_orders %}
+        <tr>
+          <td data-label="#">{{ o.reference }}</td>
+          <td data-label="Time">{{ o.created_at|date:"M d, H:i" }}</td>
+          <td data-label="Parent">{{ o.buyer.get_full_name }}</td>
+          <td data-label="Ward">{{ o.ward.get_full_name }}</td>
+          <td data-label="Total">₦{{ o.total_amount }}</td>
+          <td data-label="Status">{{ o.status }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center py-4">No orders yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="classChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  
+function safeBack() {
+  if (history.length > 1) history.back();
+  else window.location.href = "/";
+}
+
+
+const monthlyCtx = document.getElementById("monthlyChart");
+
+new Chart(monthlyCtx, {
+  type: "bar",
+  data: {
+    labels: {{ monthly_labels|safe }},
+    datasets: [{
+      label: "Monthly Revenue (₦)",
+      data: {{ monthly_data|safe }},
+      backgroundColor: "#0d6efd"
+    }]
+  }
+});
+
+const classCtx = document.getElementById("classChart");
+
+new Chart(classCtx, {
+  type: "pie",
+  data: {
+    labels: {{ class_labels|safe }},
+    datasets: [{
+      data: {{ class_data|safe }},
+      backgroundColor: [
+        "#0d6efd", "#198754", "#ffc107",
+        "#dc3545", "#6f42c1"
+      ]
+    }]
+  }
+});
+</script>
+
+{% endblock %}

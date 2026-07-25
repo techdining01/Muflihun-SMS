@@ -73,6 +73,11 @@ urlpatterns = [
     path('api/notifications/mark-all-read/', notification_views.mark_all_as_read, name='mark_all_as_read'),
     path('api/notifications/<int:notification_id>/delete/', notification_views.delete_notification, name='delete_notification'),
     path('notification/<int:notification_id>/detail/', notification_views.notification_detail, name='notification_detail'),
+
+    # Web Push
+    path('api/push/subscribe/', notification_views.push_subscribe, name='push_subscribe'),
+    path('api/push/unsubscribe/', notification_views.push_unsubscribe, name='push_unsubscribe'),
+    path('api/push/vapid-public-key/', notification_views.push_vapid_public_key, name='push_vapid_public_key'),
     
     # ========================= PHASE 2: EXAM TAKING =========================
     # Exam taking interface

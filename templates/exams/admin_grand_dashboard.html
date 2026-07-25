@@ -35,6 +35,29 @@
     .stat-card .card-body {
         position: relative;
         z-index: 2;
+        padding: 1.25rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+        font-weight: 700;
+        line-height: 1.1;
+        word-break: break-all;
+        margin-bottom: 0;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        opacity: 0.6;
+        margin-bottom: 0.6rem;
+    }
+
+    .stat-card .stat-badge {
+        font-size: 0.72rem;
+        padding: 0.25rem 0.6rem;
     }
 
     .stat-card .bg-icon {
@@ -63,14 +86,15 @@
     .quick-action-btn {
         display: flex;
         align-items: center;
-        padding: 12px 20px;
+        padding: 0.45rem 0.9rem;
         border-radius: 10px;
         background-color: #f8f9fa;
         color: #495057;
         text-decoration: none;
         transition: all 0.2s;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         font-weight: 500;
+        font-size: 0.875rem;
     }
 
     .quick-action-btn:hover {
@@ -117,16 +141,12 @@
         <div class="col-xl-3 col-md-6">
             <div class="card dashboard-card stat-card h-100" style="background: var(--primary-gradient);">
                 <div class="card-body">
-                    <h6 class="text-black-50 text-uppercase fw-bold mb-3">Total Users</h6>
-                    <h2 class="display-4 fw-bold mb-0">{{ stats.total_users }}</h2>
-                    <div class="mt-3">
-                        <span class="badge bg-white text-primary rounded-pill px-3 py-2">
-                            {{ stats.students }} Students
-                        </span>
+                    <p class="stat-label text-white">Total Users</p>
+                    <p class="stat-value text-white">{{ stats.total_users }}</p>
+                    <div class="mt-2 d-flex flex-wrap gap-1">
+                        <span class="badge bg-white text-primary stat-badge">{{ stats.students }} Students</span>
                         {% if stats.pending_users > 0 %}
-                        <span class="badge bg-danger rounded-pill px-3 py-2 ms-1">
-                            {{ stats.pending_users }} Pending
-                        </span>
+                        <span class="badge bg-danger stat-badge">{{ stats.pending_users }} Pending</span>
                         {% endif %}
                     </div>
                     <i class="bi bi-people-fill bg-icon"></i>
@@ -138,12 +158,10 @@
         <div class="col-xl-3 col-md-6">
             <div class="card dashboard-card stat-card h-100" style="background: var(--success-gradient);">
                 <div class="card-body">
-                    <h6 class="text-black-50 text-uppercase fw-bold mb-3">Total Revenue</h6>
-                    <h2 class="display-5 fw-bold mb-0">₦{{ stats.total_revenue|floatformat:0|intcomma }}</h2>
-                    <div class="mt-3">
-                         <span class="badge bg-white text-success rounded-pill px-3 py-2">
-                            {{ stats.pending_orders }} Pending Orders
-                        </span>
+                    <p class="stat-label text-white">Total Revenue</p>
+                    <p class="stat-value text-white">₦{{ stats.total_revenue|floatformat:0|intcomma }}</p>
+                    <div class="mt-2">
+                        <span class="badge bg-white text-success stat-badge">{{ stats.pending_orders }} Pending Orders</span>
                     </div>
                     <i class="bi bi-wallet2 bg-icon"></i>
                 </div>
@@ -154,12 +172,10 @@
         <div class="col-xl-3 col-md-6">
             <div class="card dashboard-card stat-card h-100" style="background: var(--warning-gradient);">
                 <div class="card-body">
-                    <h6 class="text-black-50 text-uppercase fw-bold mb-3">Active Exams</h6>
-                    <h2 class="display-4 fw-bold mb-0">{{ stats.active_exams }}</h2>
-                    <div class="mt-3">
-                        <span class="badge bg-white text-warning rounded-pill px-3 py-2">
-                            {{ stats.attempts_today }} Attempts Today
-                        </span>
+                    <p class="stat-label text-white">Active Exams</p>
+                    <p class="stat-value text-white">{{ stats.active_exams }}</p>
+                    <div class="mt-2">
+                        <span class="badge bg-white text-warning stat-badge">{{ stats.attempts_today }} Attempts Today</span>
                     </div>
                     <i class="bi bi-journal-text bg-icon"></i>
                 </div>
@@ -170,12 +186,10 @@
         <div class="col-xl-3 col-md-6">
             <div class="card dashboard-card stat-card h-100" style="background: var(--danger-gradient);">
                 <div class="card-body">
-                    <h6 class="text-black-50 text-uppercase fw-bold mb-3">Attention Needed</h6>
-                    <h2 class="display-4 fw-bold mb-0">
-                        {{ stats.pending_users|add:stats.pending_leaves|add:stats.pending_loans|add:stats.pending_payroll }}
-                    </h2>
-                    <div class="mt-3">
-                        <small class="text-black-50 fw-bold">Approvals & Requests</small>
+                    <p class="stat-label text-white">Attention Needed</p>
+                    <p class="stat-value text-white">{{ stats.pending_users|add:stats.pending_leaves|add:stats.pending_loans|add:stats.pending_payroll }}</p>
+                    <div class="mt-2">
+                        <span class="stat-badge text-black-50 fw-bold">Approvals &amp; Requests</span>
                     </div>
                     <i class="bi bi-exclamation-triangle-fill bg-icon"></i>
                 </div>
@@ -256,8 +270,8 @@
                                 <h5 class="card-title fw-bold mb-0">Finance</h5>
                             </div>
                             <div class="d-grid gap-2">
-                                <a href="{% url 'brillspay:admin_payment_list' %}" class="quick-action-btn">
-                                    <i class="bi bi-credit-card text-success"></i> Transactions
+                                <a href="{% url 'mpay:admin_payment_list' %}" class="quick-action-btn">
+                                    <i class="bi bi-credit-card text-success"></i> MPay Transactions
                                 </a>
                                 <a href="{% url 'payroll:admin_dashboard' %}" class="quick-action-btn">
                                     <i class="bi bi-wallet text-success"></i> Payroll Dashboard
@@ -265,7 +279,7 @@
                                     <span class="badge bg-danger ms-auto">{{ stats.pending_payroll }}</span>
                                     {% endif %}
                                 </a>
-                                <a href="#" class="quick-action-btn">
+                                <a href="{% url 'mpay:admin_order_list' %}" class="quick-action-btn">
                                     <i class="bi bi-cart text-success"></i> Store Orders
                                     {% if stats.pending_orders %}
                                     <span class="badge bg-danger ms-auto">{{ stats.pending_orders }}</span>
@@ -297,7 +311,7 @@
                                     {% endif %}
                                 </a>
                                 <a href="/admin/" class="quick-action-btn">
-                                    <i class="bi bi-shield-lock text-danger"></i> Django Admin
+                                    <i class="bi bi-shield-lock text-danger"></i> Admin Core Engine
                                 </a>
                             </div>
                         </div>

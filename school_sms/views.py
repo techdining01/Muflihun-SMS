@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
 from exams.models import Exam, ExamAttempt
 from django.utils import timezone
-from brillspay.models import Transaction, Order
+from mpay.models import Transaction, Order
 from pickup.models import PickupAuthorization
 from django.db.models import Sum, Q
 from exams.models import ChatMessage

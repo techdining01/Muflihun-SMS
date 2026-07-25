@@ -84,6 +84,18 @@
             }
         }
 
+        /* Global overflow fix */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        img, video, iframe, table {
+            max-width: 100%;
+        }
+
         /* Enhanced Sticky Navigation */
         .navbar-main {
             background: rgba(255, 255, 255, 0.95);
@@ -115,8 +127,10 @@
         }
 
         .navbar-brand img {
-            height: 45px;
-            width: auto;
+            height: 38px;
+            width: 38px;
+            object-fit: cover;
+            flex-shrink: 0;
             transition: transform 0.3s ease;
         }
 
@@ -201,24 +215,33 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                flex-wrap: nowrap;
                 gap: 0.5rem;
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             #mainNavbar .navbar-brand {
                 flex: 1 1 auto;
                 min-width: 0;
-                margin-right: 0.5rem;
+                margin-right: 0;
+                overflow: hidden;
             }
 
             #mainNavbar .navbar-brand span {
+                display: block;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: 100%;
+                font-size: clamp(0.8rem, 3.5vw, 1.4rem);
             }
 
             #mainNavbar .navbar-toggler {
-                flex: 0 0 auto;
+                flex: 0 0 40px;
+                margin-left: 0.25rem;
             }
 
             .navbar-collapse {
@@ -226,13 +249,13 @@
                 backdrop-filter: blur(20px);
                 border-radius: 12px;
                 box-shadow: var(--shadow-lg);
-                margin-top: 1rem;
-                padding: 1rem;
+                margin-top: 0.75rem;
+                padding: 0.75rem;
                 position: absolute;
                 top: 100%;
-                left: 1rem;
-                right: 1rem;
-                max-height: 85vh;
+                left: 0.75rem;
+                right: 0.75rem;
+                max-height: 80vh;
                 overflow-y: auto;
                 overflow-x: hidden;
                 z-index: 1050;
@@ -240,11 +263,11 @@
 
             .navbar-nav {
                 text-align: left;
-                padding: 0.5rem 0;
+                padding: 0.25rem 0;
             }
 
             .nav-item {
-                margin: 0.25rem 0;
+                margin: 0;
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
 
@@ -253,10 +276,11 @@
             }
 
             .nav-link {
-                padding: 0.75rem 1rem !important;
+                padding: 0.65rem 0.75rem !important;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                font-size: 0.95rem;
             }
 
             .dropdown-menu {
@@ -265,65 +289,55 @@
                 border: none;
                 box-shadow: none;
                 text-align: left;
-                padding-left: 1rem;
+                padding-left: 0.75rem;
                 margin: 0;
+                /* prevent dropdown from overflowing viewport */
+                max-width: 100%;
             }
 
             .dropdown-item {
-                padding: 0.6rem 1rem;
-                font-size: 0.95rem;
-            }
-        }
-
-        @media (max-width: 380px) and (max-height: 700px) {
-            body {
-                font-size: 0.95rem;
-            }
-
-            #mainNavbar .navbar-brand {
-                font-size: 1.25rem;
-            }
-
-            #mainNavbar .navbar-brand img {
-                height: 36px;
-                margin-right: 0.5rem;
-            }
-
-            .container,
-            .container-fluid {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-
-            .btn {
-                padding: 0.4rem 0.75rem;
+                padding: 0.55rem 0.75rem;
                 font-size: 0.9rem;
+                white-space: normal;
+            }
+
+            /* User section sits inline on mobile */
+            .navbar-nav.ms-auto,
+            .navbar-collapse .navbar-nav:last-child {
+                border-top: 1px solid rgba(0,0,0,0.07);
+                padding-top: 0.5rem;
+                margin-top: 0.25rem;
             }
         }
 
-        @media (max-width: 360px) {
-            #mainNavbar .navbar-brand {
-                font-size: 1rem;
+        /* Phones only (< 576px) */
+        @media (max-width: 575.98px) {
+            .navbar-collapse {
+                left: 0.5rem;
+                right: 0.5rem;
             }
-
             #mainNavbar .navbar-brand img {
                 height: 32px;
-                margin-right: 0.4rem;
+                width: 32px;
             }
+        }
 
+        /* Very small phones (< 380px) */
+        @media (max-width: 380px) {
+            #mainNavbar .navbar-brand img {
+                height: 26px;
+                width: 26px;
+            }
             #mainNavbar .navbar-toggler {
-                padding: 0.15rem;
-                width: 36px;
-                height: 36px;
+                width: 34px;
+                height: 34px;
+            }
+            .container, .container-fluid {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
         }
 
-        /* Hide school logo on small screens (<768px, exclude tablets) */
-        @media (max-width: 767.98px) {
-            .school-logo-img {
-                display: none !important;
-            }
-        }
 
         .nav-link {
             font-weight: 500;
@@ -427,12 +441,26 @@
         .btn {
             font-weight: 600;
             border-radius: 10px;
-            padding: 0.75rem 1.55rem;
+            padding: 0.38rem 0.9rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             position: relative;
             overflow: hidden;
         }
+        .btn-sm {
+            padding: 0.22rem 0.55rem !important;
+            font-size: 0.8rem !important;
+            border-radius: 8px;
+        }
+        .btn-lg {
+            padding: 0.5rem 1.25rem !important;
+            font-size: 0.95rem !important;
+        }
+        /* Neutralise oversized py-* overrides on buttons */
+        .btn.py-3 { padding-top: 0.38rem !important; padding-bottom: 0.38rem !important; }
+        .btn.py-2 { padding-top: 0.3rem !important; padding-bottom: 0.3rem !important; }
 
         .btn::before {
             content: '';
@@ -547,6 +575,12 @@
             box-shadow: var(--shadow-lg);
         }
 
+        @media (max-width: 991.98px) {
+            .card {
+                margin-bottom: 0.5rem;
+            }
+        }
+
 
         .product-card {
             min-height: 300px;
@@ -579,8 +613,8 @@
             }
 
             .admin-table .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.775rem;
+                padding: 0.2rem 0.45rem;
+                font-size: 0.75rem;
             }
 
             /* Ensure tables are scrollable on mobile */
@@ -642,41 +676,47 @@
 
         /* Enhanced Mobile Responsiveness */
         @media (max-width: 576px) {
-            .container {
-                padding-left: 15px;
-                padding-right: 15px;
+            .container, .container-fluid {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
             }
-
             .btn-lg {
-                padding: 0.75rem 1.5rem;
-                font-size: 1rem;
+                padding: 0.5rem 1.1rem;
+                font-size: 0.95rem;
             }
-
             .card-body {
-                padding: 1rem;
+                padding: 0.875rem;
             }
-
-            /* Improve form elements on mobile */
-            .form-control,
-            .form-select {
-                font-size: 16px;
-                /* Prevents zoom on iOS */
+            .form-control, .form-select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            /* Prevent any element from overflowing on mobile */
+            .row {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .row > * {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
         }
 
         /* Touch-friendly buttons for mobile */
         @media (hover: none) and (pointer: coarse) {
-
-            .btn,
+            .btn {
+                min-height: 38px;
+            }
+            .btn-sm {
+                min-height: 32px;
+            }
             .nav-link,
             .dropdown-item {
                 min-height: 44px;
                 display: flex;
                 align-items: center;
             }
-
             .btn-group .btn {
-                min-height: 38px;
+                min-height: 34px;
             }
         }
 
@@ -869,8 +909,8 @@
     </style>
 
     <style>
-        /* BrillsPay Specific Styles */
-        .brillspay-badge {
+        /* Mpay Specific Styles */
+        .mpay-badge {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 2px 8px;
@@ -942,6 +982,18 @@
                 flex: 2;
                 display: flex;
                 justify-content: flex-end;
+            }
+            .table-responsive-stack td.product-cell,
+            .table-responsive-stack td.product-cell > :not(.modal) {
+                justify-content: flex-start;
+                text-align: left;
+            }
+            .table-responsive-stack td.product-cell::before {
+                margin-right: 0.75rem;
+                flex: 0 0 auto;
+            }
+            .table-responsive-stack td.product-cell > :not(.modal) {
+                flex: 1 1 auto;
             }
             /* Reset specific padding/alignment for mobile cards */
             .table-responsive-stack .ps-4, 
@@ -1179,7 +1231,7 @@
     } */
 
         @media (max-width: 576px) {
-            .brillspay-shop .row {
+            .mpay-shop .row {
                 --bs-gutter-y: .5rem;
                 /* reduce vertical spacing */
             }
@@ -1235,7 +1287,7 @@
 
         /* Mobile tightening */
         @media (max-width: 576px) {
-            .brillspay-shop .row {
+            .mpay-shop .row {
                 --bs-gutter-y: .75rem;
             }
 
@@ -1310,28 +1362,28 @@
                                     Motherboard
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_dashboard' %}"
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_dashboard' %}"
                                     data-bs-dismiss="navbarContent">
                                     Dashboard
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_product_list' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_product_list' %}">
                                     Products
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_order_list' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_order_list' %}">
                                     Orders
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:webhook_monitor' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:webhook_monitor' %}">
                                     Monitor
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_access_list' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_access_list' %}">
                                     Exam Access
                                 </a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_mercy_access' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_mercy_access' %}">
                                     Mercy
                                 </a></li>
 
@@ -1339,7 +1391,7 @@
                                 <hr class="dropdown-divider">
                             </li>
 
-                            <li><a class="dropdown-item" href="{% url 'brillspay:admin_analytics' %}">
+                            <li><a class="dropdown-item" href="{% url 'mpay:admin_analytics' %}">
                                     Analytics
                                 </a></li>
                             <li><a href="{% url 'accounts:users' %}" class="dropdown-item">
@@ -1478,7 +1530,7 @@
                     </li>
 
                      <li class="nav-item">
-                        <a class="nav-link" href="/brillspay/" data-bs-dismiss="navbarContent">
+                        <a class="nav-link" href="/mpay/" data-bs-dismiss="navbarContent">
                             {{SCHOOL_ECOMMERCE}}
                         </a>
                     </li>
@@ -1486,28 +1538,34 @@
                     {% if user.role == 'TEACHER' %}
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'loans:staff_loan_dashboard' %}"
-                            data-bs-dismiss="navbarContent">
-                            Loan
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'payroll:payee_dashboard' %}" data-bs-dismiss="navbarContent">
                             Payslip
                         </a>
                     </li>
 
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pickup:parent_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Pickup
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" data-bs-auto-close="outside">
+                            Benefits
                         </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'loans:staff_loan_dashboard' %}"
+                                    data-bs-dismiss="navbarContent">
+                                    Loan
+                            </a></li>
+
+                            <li><a class="dropdown-item" href="{% url 'leaves:staff_dashboard' %}"
+                                    data-bs-dismiss="navbarContent">
+                                    Leave
+                                </a></li>
+                        </ul>
+
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'leaves:staff_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Leave
+                        <a class="nav-link" href="{% url 'pickup:parent_dashboard' %}" data-bs-dismiss="navbarContent">
+                            Pickup
                         </a>
                     </li>
                     
@@ -1566,7 +1624,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'brillspay:brillspay_select_ward' %}"
+                        <a class="nav-link" href="{% url 'mpay:select_ward' %}"
                             data-bs-dismiss="navbarContent">
                             {{SCHOOL_ECOMMERCE}}
                         </a>
@@ -1593,7 +1651,7 @@
                             </span>
                             {% endif %}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end p-0 shadow border-0" style="width: 280px; max-height: 400px; overflow-y: auto; z-index: 1050;">
+                        <ul class="dropdown-menu dropdown-menu-end p-0 shadow border-0" style="width: min(320px, 92vw); max-height: 400px; overflow-y: auto; z-index: 1050;">
                             <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white sticky-top">
                                 <h6 class="mb-0 fw-bold">Notifications</h6>
                                 {% if unread_notifications_count > 0 %}
@@ -1617,9 +1675,7 @@
                             </li>
                             {% endif %}
 
-                            {<!-- --- Messages Section --- -->}
-
-                            {% if recent_chats %}
+            {% if recent_chats %}
                                 <li><h6 class="dropdown-header text-primary"><i class="bi bi-chat-dots me-1"></i> Messages</h6></li>
                                 {% for chat in recent_chats %}
                                 <li>
@@ -1642,8 +1698,7 @@
                                 {% endif %}
                             {% endif %}
 
-                            {<!-- --- Notifications Section --- -->}
-                            {% if recent_notifications %}
+            {% if recent_notifications %}
                                 {% if recent_chats %}
                                     <li><h6 class="dropdown-header text-primary"><i class="bi bi-bell me-1"></i> Notifications</h6></li>
                                 {% endif %}
@@ -1665,8 +1720,7 @@
                                 {% endfor %}
                             {% endif %}
 
-                            {<!-- --- Empty State --- -->}
-                            {% if not recent_notifications and not recent_chats %}
+            {% if not recent_notifications and not recent_chats %}
                                 <li class="text-center p-4 text-muted">
                                     <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
                                     <small>No recent notifications</small>
@@ -1774,7 +1828,7 @@
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="/brillspay/">
+                            <a href="{% url 'mpay:store' %}">
                                 <i class="fas fa-chevron-right me-2 fa-xs"></i>Products
                             </a>
                         </li>
@@ -2273,7 +2327,7 @@
                 refreshCartCount();
 
                 // Auto-refresh product list on dismissal to show updated "In Cart" states
-                if (window.location.pathname.includes("/brillspay/products/")) {
+                if (window.location.pathname.includes("/mpay/products/")) {
                     location.reload();
                 }
             }
@@ -2292,7 +2346,7 @@
             /* ---------- LOAD CART ---------- */
             function loadCart() {
                 if (!wardId) return;
-                fetch(`/brillspay/cart/sidebar/?ward=${wardId}`)
+                fetch(`/mpay/cart/sidebar/?ward=${wardId}`)
                     .then(res => res.text())
                     .then(html => {
                         document.getElementById("cartBody").innerHTML = html;
@@ -2302,7 +2356,7 @@
             /* ---------- COUNT ---------- */
             function refreshCartCount() {
                 if (!wardId) return;
-                fetch(`/brillspay/cart/count/?ward=${wardId}`)
+                fetch(`/mpay/cart/count/?ward=${wardId}`)
                     .then(res => res.json())
                     .then(data => {
                         const badge = document.getElementById("cartCount");
@@ -2315,7 +2369,7 @@
 
             /* ---------- UPDATE QTY ---------- */
             window.updateQty = function (itemId, action) {
-                fetch("/brillspay/cart/update/", {
+                fetch("/mpay/cart/update/", {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": CSRF_TOKEN,
@@ -2330,7 +2384,7 @@
 
             /* ---------- REMOVE ---------- */
             window.removeItem = function (itemId) {
-                fetch("/brillspay/cart/remove-item/", {
+                fetch("/mpay/cart/remove-item/", {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": CSRF_TOKEN,
@@ -2346,7 +2400,7 @@
 
             /* ---------- CLEAR ---------- */
             window.clearCart = function () {
-                fetch("/brillspay/cart/clear/", {
+                fetch("/mpay/cart/clear/", {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": CSRF_TOKEN,
@@ -2369,7 +2423,7 @@
                 btn.disabled = true;
                 btn.innerText = "Adding…";
 
-                fetch(btn.dataset.url || "/brillspay/cart/add/", {
+                fetch(btn.dataset.url || "/mpay/cart/add/", {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": CSRF_TOKEN,
@@ -2424,5 +2478,117 @@
 </script>
 
 {% block extra_scripts %}{% endblock %}
+
+<script>
+(function () {
+    {% if user.is_authenticated %}
+    const VAPID_PUBLIC_KEY = '{{ VAPID_PUBLIC_KEY }}';
+    if (!VAPID_PUBLIC_KEY) return;
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const raw = atob(base64);
+        return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+    }
+
+    async function subscribeToPush(reg) {
+        try {
+            const sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+            const key = sub.getKey('p256dh');
+            const auth = sub.getKey('auth');
+            await fetch('{% url "dashboards:push_subscribe" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    endpoint: sub.endpoint,
+                    keys: {
+                        p256dh: btoa(String.fromCharCode(...new Uint8Array(key))),
+                        auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+                    },
+                }),
+            });
+        } catch (e) {
+            console.warn('Push subscription failed:', e);
+        }
+    }
+
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.pushManager.getSubscription().then(existing => {
+                if (!existing) {
+                    Notification.requestPermission().then(perm => {
+                        if (perm === 'granted') subscribeToPush(reg);
+                    });
+                }
+            });
+        });
+    }
+    {% endif %}
+})();
+</script>
+
+<script>
+(function () {
+    // Only run for authenticated users
+    {% if user.is_authenticated %}
+    const VAPID_PUBLIC_KEY = '{{ VAPID_PUBLIC_KEY }}';
+    if (!VAPID_PUBLIC_KEY) return;
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const raw = atob(base64);
+        return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+    }
+
+    async function subscribeToPush(reg) {
+        try {
+            const sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+            const key = sub.getKey('p256dh');
+            const auth = sub.getKey('auth');
+            await fetch('{% url "dashboards:push_subscribe" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    endpoint: sub.endpoint,
+                    keys: {
+                        p256dh: btoa(String.fromCharCode(...new Uint8Array(key))),
+                        auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+                    },
+                }),
+            });
+        } catch (e) {
+            console.warn('Push subscription failed:', e);
+        }
+    }
+
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.pushManager.getSubscription().then(existing => {
+                if (!existing) {
+                    // Ask permission once
+                    Notification.requestPermission().then(perm => {
+                        if (perm === 'granted') subscribeToPush(reg);
+                    });
+                }
+            });
+        });
+    }
+    {% endif %}
+})();
+</script>
 
 </html>

@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+
+<h2>MPay Transactions</h2>
+
+<div class="mb-3">
+  <strong>Total Revenue:</strong>
+  ₦{{ total_revenue }}
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-responsive-stack">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Buyer</th>
+          <th>Ward</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Verified</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tx in transactions %}
+        <tr>
+          <td data-label="Reference">{{ tx.reference }}</td>
+          <td data-label="Buyer">{{ tx.user }}</td>
+          <td data-label="Ward">{{ tx.ward }}</td>
+          <td data-label="Amount">₦{{ tx.amount }}</td>
+          <td data-label="Status">{{ tx.status }}</td>
+          <td data-label="Verified">{{ tx.verified }}</td>
+          <td data-label="Date">{{ tx.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center py-4">No transactions</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

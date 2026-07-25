@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h4 class="mb-4">Add New Product</h4>
+
+    <div class="card shadow-sm p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'mpay:admin_product_list' %}"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-success">
+                    Save Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

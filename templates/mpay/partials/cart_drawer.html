@@ -1,0 +1,39 @@
+<div class="cart-drawer">
+  <div class="cart-header">
+    <h6>Your Cart</h6>
+    <button onclick="closeCart()">✕</button>
+  </div>
+
+  {% if has_items %}
+    <div class="cart-items">
+      {% for item in items %}
+        <div class="cart-item">
+          <div>
+            <strong>{{ item.product.name }}</strong>
+            <div class="price">₦{{ item.product.price }}</div>
+          </div>
+
+          <div class="qty">
+            <button class="qty-btn" data-id="{{ item.id }}" data-action="decrease">−</button>
+            <span>{{ item.quantity }}</span>
+            <button class="qty-btn" data-id="{{ item.id }}" data-action="increase">+</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-footer">
+      <div class="total">
+        Subtotal: ₦{{ cart.subtotal }}
+      </div>
+
+      <form method="post" action="{% url 'mpay:checkout' %}">
+        {% csrf_token %}
+        <input type="hidden" name="ward_id" value="{{ ward.id }}">
+        <button class="checkout-btn">Checkout</button>
+      </form>
+    </div>
+  {% else %}
+    <p class="empty">Your cart is empty</p>
+  {% endif %}
+</div>
