@@ -21,6 +21,7 @@ class Command(BaseCommand):
             role=User.Role.ADMIN,
         )
         user.is_approved = True
+        user.is_superuser = True
         user.save()
         self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' created."))
 
