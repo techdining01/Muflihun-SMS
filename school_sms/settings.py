@@ -34,13 +34,16 @@ if config('DEBUG', default=False, cast=bool):
 else:
     ALLOWED_HOSTS = config(
         'ALLOWED_HOSTS',
-        default='127.0.0.1,localhost,10.103.148.197'
+        default='127.0.0.1,localhost'
     ).split(',')
+    
 
-CSRF_TRUSTED_ORIGINS = config(
-    'CSRF_TRUSTED_ORIGINS',
-    default='http://10.88.146.65'
-).split(',')
+# Auto-build CSRF_TRUSTED_ORIGINS from ALLOWED_HOSTS — no separate env var needed
+_skip = {'127.0.0.1', 'localhost', 'web', '*'}
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{h.strip()}" for h in ALLOWED_HOSTS
+    if h.strip() and not h.strip().startswith('.') and h.strip() not in _skip
+] 
 
 
 
