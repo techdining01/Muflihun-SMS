@@ -7,10 +7,10 @@ from exams.models import SchoolClass
 
 
 class Command(BaseCommand):
-    help = "Seed BrillsPay with categories and class-based products"
+    help = "Seed MPay with categories and class-based products"
 
     def handle(self, *args, **kwargs):
-        self.stdout.write(self.style.WARNING("Seeding BrillsPay data..."))
+        self.stdout.write(self.style.WARNING("Seeding MPay data..."))
 
         categories = ["JSS1", "JSS2", "JSS3", "SSS1", "SSS2", "SSS3"]
 

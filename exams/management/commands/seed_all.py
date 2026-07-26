@@ -12,10 +12,7 @@ class Command(BaseCommand):
         call_command("seed_accounts")
 
         self.stdout.write(self.style.WARNING("Seeding MPay..."))
-        call_command("seed_brillspay")
-
-        self.stdout.write(self.style.WARNING("Seeding Pickups..."))
-        call_command("seed_pickups")
+        call_command("seed_mpay")
 
         self.stdout.write(self.style.WARNING("Seeding Exams..."))
         call_command("seed_exams")
