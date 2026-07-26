@@ -22,21 +22,5 @@ class Command(BaseCommand):
         )
         user.is_approved = True
         user.save()
-        
-        User = get_user_model()
-        classes = SchoolClass.objects.first()
-        if User.objects.filter(role='student').exists():
-            return
-        username = os.environ.get("DJANGO_STUDENT_USERNAME", "student")
-        email = os.environ.get("DJANGO_STUDENT_EMAIL", "student@example.com")
-        password = os.environ.get("DJANGO_STUDENT_PASSWORD", "studentpassword")
-        user = User.objects.create(
-            username=username,
-            email=email,
-            password=password,
-            student_class=classes,
-            role=User.Role.STUDENT,
-        )
-        user.is_approved = True
-        user.save()
+        self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' created."))
 

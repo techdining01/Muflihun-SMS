@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from exams.models import Exam, ExamAttempt
 from django.utils import timezone
 from mpay.models import Transaction, Order
@@ -64,7 +65,7 @@ def admin_grand_dashboard(request):
         verified=True,
     ).aggregate(total=Sum("amount"))["total"] or 0
 
-    pending_orders = Order.objects.filter(status="pending").count()
+    pending_orders = Order.objects.filter(status="PENDING").count()
 
     # ==========================
     # CHAT
