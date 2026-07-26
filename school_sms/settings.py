@@ -30,7 +30,10 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Allowed hosts
 if config('DEBUG', default=False, cast=bool):
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = config(
+        'ALLOWED_HOSTS',
+        default='*'
+    ).split(',')
 else:
     ALLOWED_HOSTS = config(
         'ALLOWED_HOSTS',
