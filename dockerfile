@@ -13,7 +13,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
@@ -32,8 +31,7 @@ RUN SECRET_KEY=build-dummy-key \
 
 # Wait for postgres to be ready, then migrate + start
 CMD ["sh", "-c", \
-    "until pg_isready -h $DB_HOST -p ${DB_PORT:-5432} -U $DB_USER; do echo 'Waiting for postgres...'; sleep 2; done && \
-    python manage.py migrate --noinput && \
+    "python manage.py migrate --noinput && \
     python manage.py ensure_superuser && \
     if [ \"$SEED_ON_START\" = \"true\" ]; then python manage.py seed_all; fi && \
     daphne -b 0.0.0.0 -p ${PORT:-8000} school_sms.asgi:application"]
