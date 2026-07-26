@@ -28,7 +28,8 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-buil
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS=['localhost', '127.0.0.1']
+ALLOWED_HOSTS=config('ALLOWED_HOSTS', default='').split(',')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')
 
     
 
@@ -180,8 +181,12 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-LOG_DIR = os.path.join(BASE_DIR, "logs")
-os.makedirs(LOG_DIR, exist_ok=True)
+# On Render the filesystem is ephemeral — only log to console in production
+_LOG_HANDLERS = ['console']
+if DEBUG:
+    LOG_DIR = os.path.join(BASE_DIR, "logs")
+    os.makedirs(LOG_DIR, exist_ok=True)
+    _LOG_HANDLERS = ['file', 'console']
 
 LOGGING = {
     'version': 1,
@@ -200,8 +205,8 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(LOG_DIR, 'system.log'),
-            'maxBytes': 5*1024*1024,  # 5 MB
+            'filename': os.path.join(BASE_DIR, 'logs', 'system.log'),
+            'maxBytes': 5*1024*1024,
             'backupCount': 5,
             'formatter': 'verbose',
         },
@@ -211,25 +216,23 @@ LOGGING = {
         },
     },
     'loggers': {
-        # Central logger for all apps
         'project': {
-            'handlers': ['file', 'console'],
+            'handlers': _LOG_HANDLERS,
             'level': 'INFO',
             'propagate': False,
         },
-        # Specific apps (optional)
         'mpay': {
-            'handlers': ['file', 'console'],
+            'handlers': _LOG_HANDLERS,
             'level': 'INFO',
             'propagate': False,
         },
         'exams': {
-            'handlers': ['file', 'console'],
+            'handlers': _LOG_HANDLERS,
             'level': 'INFO',
             'propagate': False,
         },
         'pickups': {
-            'handlers': ['file', 'console'],
+            'handlers': _LOG_HANDLERS,
             'level': 'INFO',
             'propagate': False,
         },
@@ -289,10 +292,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Use WhiteNoise only if not behind Nginx or for extra safety
-if not config('USE_NGINX', default=False, cast=bool):
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -334,8 +333,8 @@ INTERNAL_IPS = [
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='pk_test_placeholder')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='sk_test_placeholder')
 PAYSTACK_BASE_URL = config('PAYSTACK_BASE_URL', default='https://api.paystack.co')
-PAYSTACK_WEBHOOK = config(
-    'PAYSTACK_WEBHOOK_SECRET', default='https://newsiest-interlineally-guy.ngrok-free.dev/mpay/paystack/webhook/')
+PAYSTACK_WEBHOOK_URL = config(
+    'PAYSTACK_WEBHOOK_URL', default='https://newsiest-interlineally-guy.ngrok-free.dev/mpay/paystack/webhook/')
 PAYSTACK_CALLBACK_URL = config(
     "PAYSTACK_CALLBACK_URL",
     default="https://newsiest-interlineally-guy.ngrok-free.dev/mpay/paystack/callback/"

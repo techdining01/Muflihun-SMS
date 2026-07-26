@@ -241,14 +241,6 @@ def cart_sidebar(request):
     return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
 
 
-# @login_required
-# def cart_count(request):
-#     ward_id = request.GET.get("ward")
-#     cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
-#     count = cart.items.count() if cart else 0
-#     return JsonResponse({"count": count})
-
-
 @login_required
 def cart_count(request):
     ward_id = request.GET.get("ward")
