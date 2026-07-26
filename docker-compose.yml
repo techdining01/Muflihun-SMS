@@ -10,7 +10,7 @@ services:
     environment:
       - DB_HOST=db
       - REDIS_URL=redis://redis:6379/0
-      - ALLOWED_HOSTS=127.0.0.1,localhost,web,10.103.148.197,.ngrok-free.dev, brills-sms.onrender.com
+      - ALLOWED_HOSTS=127.0.0.1,localhost,web,10.103.148.197,muflihunhighschool-sms.onrender.com
     expose:
       - "8000"
     depends_on:
@@ -21,7 +21,7 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: thebrills_db
+      POSTGRES_DB: muflihun
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: idrees
     ports:

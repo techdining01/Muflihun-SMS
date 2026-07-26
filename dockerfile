@@ -2,8 +2,9 @@
 FROM python:3.12-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
 
 # Set work directory
 WORKDIR /app
@@ -12,20 +13,27 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir --default-timeout=100 -r requirements.txt
-RUN pip install gunicorn whitenoise
 
 # Copy project
 COPY . /app/
 
-# Run collectstatic
-# We set a dummy SECRET_KEY if not present to allow collectstatic to run during build
-RUN DJANGO_SETTINGS_MODULE=school_sms.settings python manage.py collectstatic --noinput
+# Run collectstatic with dummy vars so it doesn't need DB or Redis at build time
+RUN SECRET_KEY=build-dummy-key \
+    DB_HOST=localhost \
+    REDIS_URL=redis://localhost:6379/0 \
+    DJANGO_SETTINGS_MODULE=school_sms.settings \
+    python manage.py collectstatic --noinput
 
-# Start application with automatic migrations and superuser creation using Daphne (ASGI)
-# Uses PORT env var if present (e.g. Render), otherwise defaults to 8000 for local Docker
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py ensure_superuser && python manage.py seed_all && daphne -b 0.0.0.0 -p ${PORT:-8000} school_sms.asgi:application"]
+# Wait for postgres to be ready, then migrate + start
+CMD ["sh", "-c", \
+    "until pg_isready -h $DB_HOST -p ${DB_PORT:-5432} -U $DB_USER; do echo 'Waiting for postgres...'; sleep 2; done && \
+    python manage.py migrate --noinput && \
+    python manage.py ensure_superuser && \
+    if [ \"$SEED_ON_START\" = \"true\" ]; then python manage.py seed_all; fi && \
+    daphne -b 0.0.0.0 -p ${PORT:-8000} school_sms.asgi:application"]
