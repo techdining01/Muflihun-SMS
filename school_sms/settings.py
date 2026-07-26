@@ -181,12 +181,28 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-# On Render the filesystem is ephemeral — only log to console in production
-_LOG_HANDLERS = ['console']
+# Build LOGGING dynamically — file handler only when DEBUG=True (local dev)
+# On Render (DEBUG=False) the filesystem is read-only so we console-log only
+_handlers_config = {
+    'console': {
+        'class': 'logging.StreamHandler',
+        'formatter': 'simple',
+    },
+}
+_log_handlers = ['console']
+
 if DEBUG:
-    LOG_DIR = os.path.join(BASE_DIR, "logs")
-    os.makedirs(LOG_DIR, exist_ok=True)
-    _LOG_HANDLERS = ['file', 'console']
+    _LOG_DIR = os.path.join(BASE_DIR, 'logs')
+    os.makedirs(_LOG_DIR, exist_ok=True)
+    _handlers_config['file'] = {
+        'level': 'INFO',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': os.path.join(_LOG_DIR, 'system.log'),
+        'maxBytes': 5 * 1024 * 1024,
+        'backupCount': 5,
+        'formatter': 'verbose',
+    }
+    _log_handlers = ['file', 'console']
 
 LOGGING = {
     'version': 1,
@@ -201,41 +217,12 @@ LOGGING = {
             'style': '{',
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'system.log'),
-            'maxBytes': 5*1024*1024,
-            'backupCount': 5,
-            'formatter': 'verbose',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
+    'handlers': _handlers_config,
     'loggers': {
-        'project': {
-            'handlers': _LOG_HANDLERS,
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'mpay': {
-            'handlers': _LOG_HANDLERS,
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'exams': {
-            'handlers': _LOG_HANDLERS,
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'pickups': {
-            'handlers': _LOG_HANDLERS,
-            'level': 'INFO',
-            'propagate': False,
-        },
+        'project': {'handlers': _log_handlers, 'level': 'INFO', 'propagate': False},
+        'mpay':    {'handlers': _log_handlers, 'level': 'INFO', 'propagate': False},
+        'exams':   {'handlers': _log_handlers, 'level': 'INFO', 'propagate': False},
+        'pickups': {'handlers': _log_handlers, 'level': 'INFO', 'propagate': False},
     },
 }
 
