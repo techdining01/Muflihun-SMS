@@ -37,17 +37,15 @@ else:
         default='127.0.0.1,localhost,10.103.148.197'
     ).split(',')
 
-if '.ngrok-free.dev' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('.ngrok-free.dev')
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.dev",
-    "https://brills-sms.onrender.com",
-]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://10.88.146.65'
+).split(',')
 
 
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
 
 CSRF_COOKIE_SAMESITE = "Lax"
