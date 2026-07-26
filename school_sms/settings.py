@@ -26,27 +26,11 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-buil
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-# Allowed hosts
-if config('DEBUG', default=False, cast=bool):
-    ALLOWED_HOSTS = config(
-        'ALLOWED_HOSTS',
-        default='*'
-    ).split(',')
-else:
-    ALLOWED_HOSTS = config(
-        'ALLOWED_HOSTS',
-        default='127.0.0.1,localhost'
-    ).split(',')
+ALLOWED_HOSTS=['localhost', '127.0.0.1']
+
     
-
-# Auto-build CSRF_TRUSTED_ORIGINS from ALLOWED_HOSTS — no separate env var needed
-_skip = {'127.0.0.1', 'localhost', 'web', '*'}
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{h.strip()}" for h in ALLOWED_HOSTS
-    if h.strip() and not h.strip().startswith('.') and h.strip() not in _skip
-] 
 
 
 
