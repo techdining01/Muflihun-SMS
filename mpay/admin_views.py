@@ -166,6 +166,8 @@ def admin_product_delete(request, pk):
 
 @staff_member_required
 def admin_order_list(request):
+    from school_sms.views import mark_seen
+    mark_seen(request, 'pending_orders')
     orders_qs = Order.objects.select_related("buyer", "ward").order_by("-created_at")
     paginator = Paginator(orders_qs, 8)
     page_number = request.GET.get("page")

@@ -20,6 +20,9 @@ from .services import has_overlapping_leave, calculate_leave_balance
 @user_passes_test(lambda u: u.role in ["ADMIN", "BURSAR"] or u.is_superuser, login_url="leaves:staff_dashboard")
 @login_required
 def admin_dashboard(request):
+    from school_sms.views import mark_seen
+    mark_seen(request, 'pending_leaves')
+    mark_seen(request, 'pending_loans')
     pending_periods = PayrollPeriod.objects.filter(
         is_generated=True, is_approved_by_admin=False
     ).order_by("-year", "-month")

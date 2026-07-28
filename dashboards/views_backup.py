@@ -9,6 +9,7 @@ from accounts.models import User
 from pathlib import Path
 import os
 import boto3
+from datetime import datetime
 
 # ========================= BACKUP & RESTORE =========================
 
@@ -29,7 +30,7 @@ def admin_backup_restore(request):
                 local_backups_list.append({
                     'name': f.name,
                     'size': f"{f.stat().st_size / (1024*1024):.2f} MB",
-                    'date': timezone.datetime.fromtimestamp(f.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                    'date': datetime.fromtimestamp(f.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')
                 })
     local_backups_list.sort(key=lambda x: x['name'], reverse=True)
     

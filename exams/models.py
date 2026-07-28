@@ -62,7 +62,15 @@ class Subject(models.Model):
 
 
 class Exam(models.Model):
+    TERM_CHOICES = [
+        ('first', 'First Term'),
+        ('second', 'Second Term'),
+        ('third', 'Third Term'),
+    ]
+
     title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, help_text="e.g. First Term Mathematics Exam for JSS1")
+    term = models.CharField(max_length=10, choices=TERM_CHOICES, default='first')
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='class_exam')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     duration = models.PositiveIntegerField(help_text='Minutes')

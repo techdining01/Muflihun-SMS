@@ -12,12 +12,31 @@ from exams.models import ChatMessage
 from loans.models import LoanApplication
 from payroll.models import PayrollPeriod
 from leaves.models import LeaveRequest
+from accounts.models import User as AccountUser
+from datetime import datetime, timezone as dt_timezone
 
 
 User = get_user_model()
 
 def is_admin(user):
     return user.is_authenticated and user.role == User.Role.ADMIN
+
+
+def _seen_since(request, key):
+    """Return datetime of last time admin saw this badge, or epoch if never."""
+    raw = request.session.get(f'seen_{key}')
+    if raw:
+        from django.utils.dateparse import parse_datetime
+        dt = parse_datetime(raw)
+        if dt:
+            return dt
+    return datetime(2000, 1, 1, tzinfo=dt_timezone.utc)
+
+
+def mark_seen(request, key):
+    """Call this in any admin list view to clear the badge on the grand dashboard."""
+    request.session[f'seen_{key}'] = timezone.now().isoformat()
+    request.session.modified = True
 
 
 def landing_page(request):
@@ -40,7 +59,8 @@ def admin_grand_dashboard(request):
     # USERS
     # ==========================
     total_users = User.objects.count()
-    pending_users = User.objects.filter(is_approved=False).count()
+    seen_users = _seen_since(request, 'pending_users')
+    pending_users = User.objects.filter(is_approved=False, date_joined__gt=seen_users).count()
     students = User.objects.filter(role=User.Role.STUDENT).count()
     parents = User.objects.filter(role=User.Role.PARENT).count()
     staff = User.objects.filter(role=User.Role.TEACHER).count()
@@ -65,7 +85,8 @@ def admin_grand_dashboard(request):
         verified=True,
     ).aggregate(total=Sum("amount"))["total"] or 0
 
-    pending_orders = Order.objects.filter(status="PENDING").count()
+    seen_orders = _seen_since(request, 'pending_orders')
+    pending_orders = Order.objects.filter(status="PENDING", created_at__gt=seen_orders).count()
 
     # ==========================
     # CHAT
@@ -121,16 +142,21 @@ def admin_grand_dashboard(request):
     # ==========================
     # PICKUPS
     # ==========================
+    seen_pickups = _seen_since(request, 'active_pickups')
     active_pickups = PickupAuthorization.objects.filter(
         is_used=False,
-        expires_at__gt=timezone.now()
+        expires_at__gt=timezone.now(),
+        created_at__gt=seen_pickups
     ).count()
 
     # ==========================
     # LEAVES & PAYROLL & LOANS
     # ==========================
-    pending_leaves = LeaveRequest.objects.filter(status="pending").count()
-    pending_loans = LoanApplication.objects.filter(status="pending").count()
+    seen_leaves = _seen_since(request, 'pending_leaves')
+    pending_leaves = LeaveRequest.objects.filter(status="pending", created_at__gt=seen_leaves).count()
+    seen_loans = _seen_since(request, 'pending_loans')
+    pending_loans = LoanApplication.objects.filter(status="pending", applied_at__gt=seen_loans).count()
+    seen_payroll = _seen_since(request, 'pending_payroll')
     pending_payroll = PayrollPeriod.objects.filter(is_generated=True, is_approved_by_admin=False, is_locked=False).count()
 
     context = {

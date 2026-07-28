@@ -35,10 +35,23 @@
 
                         <div class="mb-3">
                             <label for="student_csv" class="form-label">CSV File</label>
-                            <input type="file" class="form-control" id="student_csv" name="csv_file" accept=".csv"
-                                required>
+                            <input type="file" class="form-control" id="student_csv" name="csv_file" accept=".csv,.xlsx,.docx" required>
                             <div class="form-text">
-                                Expected columns: First Name, Last Name, Email, Phone, Address
+                                Required columns: first_name, last_name, username, email, password
+                            </div>
+                            <div class="mt-3">
+                                <label class="form-label d-block">Download Template:</label>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'dashboards:download_import_template' 'csv' %}?type=students" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-filetype-csv"></i> CSV
+                                    </a>
+                                    <a href="{% url 'dashboards:download_import_template' 'excel' %}?type=students" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+                                    </a>
+                                    <a href="{% url 'dashboards:download_import_template' 'word' %}?type=students" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-word"></i> Word
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
@@ -61,35 +74,49 @@
                         <input type="hidden" name="import_type" value="questions">
 
                         <div class="mb-3">
-                            <label for="category_id" class="form-label">Category (Optional)</label>
-                            <select class="form-select" id="category_id" name="category_id">
-                                <option value="">All Categories</option>
-                                {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            <label for="exam_id" class="form-label">Select Exam <span class="text-danger">*</span></label>
+                            <select class="form-select" id="exam_id" name="exam_id" required>
+                                <option value="">Choose exam...</option>
+                                {% for exam in exams %}
+                                <option value="{{ exam.id }}">{{ exam.title }} — {{ exam.school_class.name }}</option>
                                 {% endfor %}
                             </select>
+                            <div class="form-text">Questions will be added directly to this exam.</div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="start_time" class="form-label">Exam Start Time</label>
+                                <input type="datetime-local" class="form-control" id="start_time" name="start_time">
+                                <div class="form-text">Leave blank to keep existing.</div>
+                            </div>
+                            <div class="col-6">
+                                <label for="end_time" class="form-label">Exam End Time</label>
+                                <input type="datetime-local" class="form-control" id="end_time" name="end_time">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="publish_exam" name="publish_exam">
+                            <label class="form-check-label" for="publish_exam">
+                                Publish exam after import (make visible to students)
+                            </label>
                         </div>
 
                         <div class="mb-3">
-                            <label for="question_csv" class="form-label">CSV File</label>
-                            <input type="file" class="form-control" id="question_csv" name="csv_file" accept=".csv"
-                                required>
-                            <div class="form-text">
-                                Expected columns: Text, Type, Marks, Difficulty, Choice 1, Correct 1, ...
-                            </div>
+                            <label for="question_file" class="form-label">Question File <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="question_file" name="csv_file" accept=".csv,.xlsx,.docx" required>
+                            <div class="form-text">Required columns: text, type, marks, choice_1…choice_4, correct_1…correct_4</div>
                             <div class="mt-3">
                                 <label class="form-label d-block">Download Template:</label>
                                 <div class="btn-group" role="group">
-                                    <a href="{% url 'dashboards:download_import_template' 'csv' %}"
-                                        class="btn btn-outline-secondary btn-sm">
+                                    <a href="{% url 'dashboards:download_import_template' 'csv' %}?type=questions" class="btn btn-outline-secondary btn-sm">
                                         <i class="bi bi-filetype-csv"></i> CSV
                                     </a>
-                                    <a href="{% url 'dashboards:download_import_template' 'excel' %}"
-                                        class="btn btn-outline-success btn-sm">
+                                    <a href="{% url 'dashboards:download_import_template' 'excel' %}?type=questions" class="btn btn-outline-success btn-sm">
                                         <i class="bi bi-file-earmark-spreadsheet"></i> Excel
                                     </a>
-                                    <a href="{% url 'dashboards:download_import_template' 'word' %}"
-                                        class="btn btn-outline-primary btn-sm">
+                                    <a href="{% url 'dashboards:download_import_template' 'word' %}?type=questions" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-word"></i> Word
                                     </a>
                                 </div>

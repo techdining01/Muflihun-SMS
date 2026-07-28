@@ -1,0 +1,8 @@
+# NOTES:
+"# - type: objective, subjective, or short_answer"
+# - correct_1 to correct_4: true or false (lowercase)
+"# - class: must match exact class name e.g. JSS1, SSS2"
+# - subject: must match exact subject name e.g. Mathematics
+"# - For subjective/short_answer questions, leave choice and correct columns empty"
+text,type,marks,class,subject,choice_1,correct_1,choice_2,correct_2,choice_3,correct_3,choice_4,correct_4
+What is 2+2?,objective,1,JSS1,Mathematics,3,false,4,true,5,false,6,false

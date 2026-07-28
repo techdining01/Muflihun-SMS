@@ -71,9 +71,11 @@ class StudentForm(forms.ModelForm):
 class ExamForm(forms.ModelForm):
     class Meta:
         model = Exam
-        fields = ['title', 'school_class', 'duration', 'start_time', 'end_time', 'passing_marks', 'is_active', 'is_published', 'allow_retake']
+        fields = ['title', 'description', 'term', 'school_class', 'duration', 'start_time', 'end_time', 'passing_marks', 'is_active', 'is_published', 'allow_retake']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. First Term Exam Math'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. First Term Mathematics Exam'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'e.g. First Term exam covering chapters 1-5'}),
+            'term': forms.Select(attrs={'class': 'form-select'}),
             'school_class': forms.Select(attrs={'class': 'form-select'}),
             'duration': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Minutes'}),
             'start_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),

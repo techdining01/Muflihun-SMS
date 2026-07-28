@@ -178,6 +178,8 @@ def pending_approval(request):
 @staff_member_required
 @login_required
 def approve_users(request):
+    from school_sms.views import mark_seen
+    mark_seen(request, 'pending_users')
     role = request.GET.get('role')
     q = request.GET.get('q')
 

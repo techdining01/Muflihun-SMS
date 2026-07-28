@@ -1314,6 +1314,209 @@
                 transition: all 0.3s ease;
             }
         }
+
+        /* ============================================================
+           NATIVE MOBILE BOTTOM NAVIGATION (iOS / Android Style)
+           ============================================================ */
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06), 0 -1px 0 rgba(0, 0, 0, 0.04);
+            padding: 0.25rem 0 calc(0.25rem + env(safe-area-inset-bottom));
+            z-index: 999;
+            display: none;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
+        }
+
+        .bottom-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-around;
+            height: 100%;
+        }
+
+        .bottom-nav-item {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+        }
+
+        .bottom-nav-link {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.2rem 0.2rem;
+            color: #86868b;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            min-height: 54px;
+            gap: 2px;
+            border-radius: 10px;
+        }
+
+        .bottom-nav-link:active {
+            transform: scale(0.92);
+            background: rgba(37, 99, 235, 0.06);
+        }
+
+        .bottom-nav-icon {
+            font-size: 1.35rem;
+            line-height: 1;
+            position: relative;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-nav-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 0.01em;
+            transition: all 0.25s ease;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bottom-nav-link.active {
+            color: var(--primary);
+        }
+
+        .bottom-nav-link.active .bottom-nav-icon {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .bottom-nav-link.active::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 0 0 3px 3px;
+        }
+
+        .bottom-nav-badge {
+            position: absolute;
+            top: 0;
+            right: 50%;
+            transform: translateX(12px);
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+            font-size: 0.62rem;
+            font-weight: 700;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            box-shadow: 0 1px 4px rgba(239, 68, 68, 0.4);
+            border: 1.5px solid white;
+        }
+
+        /* Ensure main content doesn't hide behind bottom nav */
+        @media (max-width: 991.98px) {
+            .bottom-nav {
+                display: block;
+            }
+
+            /* Only main-content needs bottom guard (nav is fixed). Padding on
+               body + footer would stack and leave blank space past the footer. */
+            .main-content {
+                padding-bottom: calc(3rem + 72px + env(safe-area-inset-bottom));
+            }
+
+            /* Push floating cart above bottom nav */
+            .floating-cart-btn {
+                bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+                right: 1rem !important;
+            }
+
+            /* Mobile: bump up brand name/logo sizes */
+            #mainNavbar .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+                gap: 0.6rem;
+            }
+            #mainNavbar .navbar-brand {
+                margin-right: 0;
+            }
+            #mainNavbar .navbar-brand span {
+                font-size: clamp(1rem, 4.6vw, 1.65rem);
+                font-weight: 700;
+                letter-spacing: -0.01em;
+            }
+            #mainNavbar .navbar-brand img {
+                height: 40px;
+                width: 40px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .bottom-nav-link {
+                min-height: 58px;
+                padding: 0.3rem 0.15rem 0.15rem;
+            }
+            .bottom-nav-icon {
+                font-size: 1.25rem;
+            }
+            .bottom-nav-label {
+                font-size: 0.58rem;
+            }
+            /* Smaller phones - slightly trim logo/name but keep readable */
+            #mainNavbar .navbar-brand img {
+                height: 36px;
+                width: 36px;
+            }
+            #mainNavbar .navbar-brand span {
+                font-size: clamp(0.95rem, 4.3vw, 1.4rem);
+            }
+        }
+
+        @media (max-width: 380px) {
+            #mainNavbar .navbar-brand img {
+                height: 30px;
+                width: 30px;
+            }
+            #mainNavbar .navbar-brand span {
+                font-size: clamp(0.88rem, 4.1vw, 1.2rem);
+            }
+        }
+
+        /* iOS safe-area fallback for browsers without env() */
+        @supports not (padding-bottom: env(safe-area-inset-bottom)) {
+            @media (max-width: 991.98px) {
+                .main-content { padding-bottom: calc(3rem + 72px); }
+                .floating-cart-btn { bottom: 5.5rem !important; }
+            }
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -1902,6 +2105,233 @@
         {% endif %}
     </footer>
 
+    <!-- ============================================================
+         NATIVE MOBILE BOTTOM NAVIGATION
+         ============================================================ -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
+        <ul class="bottom-nav-list">
+
+            {# =================== GUEST (not logged in) =================== #}
+            {% if not user.is_authenticated %}
+            <li class="bottom-nav-item">
+                <a href="{% url 'landing_page' %}" class="bottom-nav-link" data-nav-key="home">
+                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
+                    <span class="bottom-nav-label">Home</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:cbt' %}" class="bottom-nav-link" data-nav-key="cbt">
+                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
+                    <span class="bottom-nav-label">CBT</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'mpay:select_ward' %}" class="bottom-nav-link" data-nav-key="shop">
+                    <span class="bottom-nav-icon"><i class="bi bi-bag-fill"></i></span>
+                    <span class="bottom-nav-label">{{SCHOOL_ECOMMERCE|default:"Store"}}</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'about' %}" class="bottom-nav-link" data-nav-key="about">
+                    <span class="bottom-nav-icon"><i class="bi bi-info-circle-fill"></i></span>
+                    <span class="bottom-nav-label">About</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:login' %}" class="bottom-nav-link" data-nav-key="login">
+                    <span class="bottom-nav-icon"><i class="bi bi-box-arrow-in-right"></i></span>
+                    <span class="bottom-nav-label">Login</span>
+                </a>
+            </li>
+
+            {# =================== ADMIN / SUPERADMIN =================== #}
+            {% elif user.role == 'ADMIN' or user.role == 'SUPERADMIN' or user.is_superuser %}
+            <li class="bottom-nav-item">
+                <a href="{% url 'admin_grand_dashboard' %}" class="bottom-nav-link" data-nav-key="home">
+                    <span class="bottom-nav-icon"><i class="bi bi-grid-fill"></i></span>
+                    <span class="bottom-nav-label">Overview</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:admin_dashboard' %}" class="bottom-nav-link" data-nav-key="exams">
+                    <span class="bottom-nav-icon"><i class="bi bi-journal-text"></i></span>
+                    <span class="bottom-nav-label">Exams</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'mpay:admin_order_list' %}" class="bottom-nav-link" data-nav-key="shop">
+                    <span class="bottom-nav-icon">
+                        <i class="bi bi-bag-fill"></i>
+                        {% if stats and stats.pending_orders and stats.pending_orders > 0 %}
+                        <span class="bottom-nav-badge">{{ stats.pending_orders }}</span>
+                        {% elif total_pending_orders and total_pending_orders > 0 %}
+                        <span class="bottom-nav-badge">{{ total_pending_orders }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Orders</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:chat_list' %}" class="bottom-nav-link" data-nav-key="chat">
+                    <span class="bottom-nav-icon">
+                        <i class="bi bi-chat-dots-fill"></i>
+                        {% if stats and stats.unread_count and stats.unread_count > 0 %}
+                        <span class="bottom-nav-badge">{{ stats.unread_count }}</span>
+                        {% elif unread_chats_count and unread_chats_count > 0 %}
+                        <span class="bottom-nav-badge">{{ unread_chats_count }}</span>
+                        {% elif total_unread_count and total_unread_count > 0 %}
+                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Chat</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
+                    <span class="bottom-nav-icon">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
+                        {% else %}
+                        <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Me</span>
+                </a>
+            </li>
+
+            {# =================== TEACHER =================== #}
+            {% elif user.role == 'TEACHER' %}
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="bottom-nav-link" data-nav-key="home">
+                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
+                    <span class="bottom-nav-label">Home</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="bottom-nav-link" data-nav-key="exams">
+                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
+                    <span class="bottom-nav-label">Grading</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'payroll:payee_dashboard' %}" class="bottom-nav-link" data-nav-key="payslip">
+                    <span class="bottom-nav-icon"><i class="bi bi-wallet2"></i></span>
+                    <span class="bottom-nav-label">Payslip</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:chat_list' %}" class="bottom-nav-link" data-nav-key="chat">
+                    <span class="bottom-nav-icon">
+                        <i class="bi bi-chat-dots-fill"></i>
+                        {% if unread_chats_count and unread_chats_count > 0 %}
+                        <span class="bottom-nav-badge">{{ unread_chats_count }}</span>
+                        {% elif total_unread_count and total_unread_count > 0 %}
+                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Chat</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
+                    <span class="bottom-nav-icon">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
+                        {% else %}
+                        <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Me</span>
+                </a>
+            </li>
+
+            {# =================== PARENT =================== #}
+            {% elif user.role == 'PARENT' %}
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:dashboard_redirect' %}" class="bottom-nav-link" data-nav-key="home">
+                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
+                    <span class="bottom-nav-label">Home</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:parent_children_list' %}" class="bottom-nav-link" data-nav-key="ward">
+                    <span class="bottom-nav-icon"><i class="bi bi-people-fill"></i></span>
+                    <span class="bottom-nav-label">Wards</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="/mpay/" class="bottom-nav-link" data-nav-key="shop">
+                    <span class="bottom-nav-icon"><i class="bi bi-bag-fill"></i></span>
+                    <span class="bottom-nav-label">{{SCHOOL_ECOMMERCE|default:"Store"}}</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'pickup:parent_dashboard' %}" class="bottom-nav-link" data-nav-key="pickup">
+                    <span class="bottom-nav-icon"><i class="bi bi-car-front-fill"></i></span>
+                    <span class="bottom-nav-label">Pickup</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
+                    <span class="bottom-nav-icon">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
+                        {% else %}
+                        <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Me</span>
+                </a>
+            </li>
+
+            {# =================== STUDENT (default) =================== #}
+            {% else %}
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:student_dashboard' %}" class="bottom-nav-link" data-nav-key="home">
+                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
+                    <span class="bottom-nav-label">Home</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:cbt' %}" class="bottom-nav-link" data-nav-key="cbt">
+                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
+                    <span class="bottom-nav-label">CBT</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:admin_leaderboard' %}" class="bottom-nav-link" data-nav-key="leaderboard">
+                    <span class="bottom-nav-icon"><i class="bi bi-trophy-fill"></i></span>
+                    <span class="bottom-nav-label">Ranks</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'dashboards:notifications_list' %}" class="bottom-nav-link" data-nav-key="notifs">
+                    <span class="bottom-nav-icon">
+                        <i class="bi bi-bell-fill"></i>
+                        {% if total_unread_count and total_unread_count > 0 %}
+                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Alerts</span>
+                </a>
+            </li>
+            <li class="bottom-nav-item">
+                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
+                    <span class="bottom-nav-icon">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
+                        {% else %}
+                        <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                    </span>
+                    <span class="bottom-nav-label">Me</span>
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -2149,6 +2579,83 @@
             });
         }
         initResponsiveTables();
+
+        // ================================================================
+        // NATIVE MOBILE BOTTOM NAV: Active link + scroll hide/show
+        // ================================================================
+        (function initBottomNav() {
+            const bottomNav = document.getElementById('bottomNav');
+            if (!bottomNav) return;
+
+            const currentPath = window.location.pathname.replace(/\/+$/, '') + '/';
+            const links = bottomNav.querySelectorAll('.bottom-nav-link');
+
+            // --- 1. Active link highlighting ---
+            let bestMatch = null;
+            let bestLen = -1;
+            links.forEach(link => {
+                try {
+                    const href = link.getAttribute('href') || '';
+                    if (!href || href === '#') return;
+                    // Resolve href to absolute path (handles relative, '/', named routes)
+                    const absUrl = new URL(href, window.location.origin);
+                    let linkPath = absUrl.pathname.replace(/\/+$/, '') + '/';
+                    if (linkPath.length > bestLen &&
+                        (currentPath === linkPath || currentPath.startsWith(linkPath) || linkPath === '//')) {
+                        bestLen = linkPath.length;
+                        bestMatch = link;
+                    }
+                } catch (e) { /* ignore invalid URLs in nav */ }
+            });
+            // Fallback: use data-nav-key matching against path segments
+            if (!bestMatch) {
+                const segments = currentPath.split('/').filter(Boolean);
+                for (const link of links) {
+                    const key = link.getAttribute('data-nav-key') || '';
+                    if (key && segments.includes(key)) {
+                        bestMatch = link;
+                        break;
+                    }
+                }
+            }
+            if (bestMatch) bestMatch.classList.add('active');
+
+            // --- 2. Scroll hide/show (native feel: hide when scrolling down, show when up) ---
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+            window.addEventListener('scroll', function () {
+                if (ticking) return;
+                window.requestAnimationFrame(function () {
+                    const curY = window.scrollY;
+                    const delta = curY - lastScrollY;
+
+                    if (curY < 60) {
+                        // Always show near the top
+                        bottomNav.classList.remove('hidden');
+                    } else if (Math.abs(delta) > 6) {  // threshold to ignore jitter
+                        if (delta > 0) {
+                            // Scrolling down -> hide
+                            bottomNav.classList.add('hidden');
+                        } else {
+                            // Scrolling up -> show
+                            bottomNav.classList.remove('hidden');
+                        }
+                    }
+                    lastScrollY = curY;
+                    ticking = false;
+                });
+                ticking = true;
+            }, { passive: true });
+
+            // --- 3. Ripple/tap feedback for touch devices ---
+            links.forEach(link => {
+                link.addEventListener('click', function () {
+                    // Visual tap confirmation
+                    links.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        })();
 
     });
 

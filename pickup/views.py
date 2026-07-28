@@ -362,6 +362,8 @@ def is_admin(user):
 @login_required
 @user_passes_test(is_admin)
 def pickup_admin_dashboard(request):
+    from school_sms.views import mark_seen
+    mark_seen(request, 'active_pickups')
     pickup_qs = (
         PickupAuthorization.objects
         .select_related("parent")

@@ -120,12 +120,16 @@ def retry_payroll_record(request, record_id):
 
 @login_required
 def dashboard(request):
+    from school_sms.views import mark_seen
     if request.user.role in ['admin', 'staff'] or request.user.is_superuser:
+        mark_seen(request, 'pending_payroll')
         return admin_dashboard(request)
     else:
         return payee_dashboard(request)
 
 def admin_dashboard(request):
+    from school_sms.views import mark_seen
+    mark_seen(request, 'pending_payroll')
     # Only include periods with successful payments
     from .models import PaymentTransaction
     success_period_ids = list(

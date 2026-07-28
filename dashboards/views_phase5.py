@@ -349,72 +349,102 @@ def batch_issue_certificates(request, exam_id):
 @login_required
 def download_import_template(request, format_type):
     """Download template for bulk import"""
+    template_type = request.GET.get('type', 'questions')  # 'questions' or 'students'
+
     if format_type not in ['csv', 'excel', 'word']:
         return HttpResponseForbidden("Invalid format")
 
-    headers = [
-        'text', 'type', 'marks', 'class', 'subject', 
-        'choice_1', 'correct_1', 
-        'choice_2', 'correct_2', 
-        'choice_3', 'correct_3', 
-        'choice_4', 'correct_4'
-    ]
+    if template_type == 'students':
+        headers = ['first_name', 'last_name', 'username', 'email', 'password']
+        sample_rows = [
+            ['Fatimah', 'Bello', 'fatimahbello', 'fatimah@school.com', 'changeme123'],
+            ['Ahmad', 'Yusuf', 'ahmadyusuf', 'ahmad@school.com', 'changeme123'],
+        ]
+        filename_base = 'student_template'
+        heading = 'Student Import Template'
+        notes = []
+    else:
+        headers = [
+            'text', 'type', 'marks',
+            'choice_1', 'correct_1',
+            'choice_2', 'correct_2',
+            'choice_3', 'correct_3',
+            'choice_4', 'correct_4',
+        ]
+        sample_rows = [
+            ['What is 2+2?', 'objective', '1', '3', 'false', '4', 'true', '5', 'false', '6', 'false'],
+            ['Explain photosynthesis.', 'subjective', '5', '', '', '', '', '', '', '', ''],
+        ]
+        filename_base = 'question_template'
+        heading = 'Question Import Template'
+        notes = [
+            'type values: objective | subjective',
+            'correct_1 to correct_4: true or false (case-insensitive)',
+            'Objective questions must have at least one correct answer marked true',
+            'For subjective: leave all choice and correct columns empty',
+        ]
 
     if format_type == 'csv':
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="question_template.csv"'
+        response['Content-Disposition'] = f'attachment; filename="{filename_base}.csv"'
         writer = csv.writer(response)
         writer.writerow(headers)
+        for row in sample_rows:
+            writer.writerow(row)
+        if notes:
+            writer.writerow([])
+            for note in notes:
+                writer.writerow([f'# {note}'])
         return response
 
     elif format_type == 'excel':
         import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
         wb = openpyxl.Workbook()
         ws = wb.active
-        ws.title = "Question Template"
+        ws.title = heading
+        # Headers row — bold
         ws.append(headers)
-        
-        # Add a sample row
-        ws.append([
-            "Sample Question?", "objective", "1", "Primary 1", "Mathematics",
-            "Option A", "False",
-            "Option B", "True",
-            "", "", "", "" 
-        ])
-
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill('solid', fgColor='D9E1F2')
+        # Sample data rows
+        for row in sample_rows:
+            ws.append(row)
+        # Notes section below data
+        if notes:
+            ws.append([])
+            ws.append(['NOTES (read only — do not include in import):'])
+            ws.cell(row=ws.max_row, column=1).font = Font(bold=True, color='FF0000')
+            for note in notes:
+                ws.append([f'  • {note}'])
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="question_template.xlsx"'
+        response['Content-Disposition'] = f'attachment; filename="{filename_base}.xlsx"'
         wb.save(response)
         return response
 
     elif format_type == 'word':
         import docx
+        from docx.shared import Pt, RGBColor
         doc = docx.Document()
-        doc.add_heading('Question Import Template', 0)
-        
+        doc.add_heading(heading, 0)
+        if notes:
+            doc.add_heading('Notes', level=2)
+            for note in notes:
+                doc.add_paragraph(f'• {note}', style='List Bullet')
+        doc.add_heading('Template Table', level=2)
         table = doc.add_table(rows=1, cols=len(headers))
         table.style = 'Table Grid'
-        
-        # Add headers
-        hdr_cells = table.rows[0].cells
-        for i, header in enumerate(headers):
-            hdr_cells[i].text = header
-            
-        # Add sample row
-        row_cells = table.add_row().cells
-        sample_data = [
-            "Sample Question?", "objective", "1", "Primary 1", "Mathematics",
-            "Option A", "False",
-            "Option B", "True",
-            "", "", "", "" 
-        ]
-        for i, val in enumerate(sample_data):
-            row_cells[i].text = str(val)
-
+        for i, h in enumerate(headers):
+            cell = table.rows[0].cells[i]
+            cell.text = h
+            cell.paragraphs[0].runs[0].bold = True
+        for row_data in sample_rows:
+            row_cells = table.add_row().cells
+            for i, val in enumerate(row_data):
+                row_cells[i].text = str(val)
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-        response['Content-Disposition'] = 'attachment; filename="question_template.docx"'
-        
-        # Save to IO buffer
+        response['Content-Disposition'] = f'attachment; filename="{filename_base}.docx"'
         buffer = io.BytesIO()
         doc.save(buffer)
         buffer.seek(0)
@@ -432,23 +462,50 @@ def bulk_import_view(request):
     if request.method == 'POST':
         import_type = request.POST.get('import_type')
         csv_file = request.FILES.get('csv_file')
-        
+
+        if not csv_file:
+            from django.contrib import messages
+            messages.error(request, 'No file uploaded.')
+            return redirect('dashboards:bulk_import')
+
         if import_type == 'students':
             school_class_id = request.POST.get('school_class_id')
             from exams.models import SchoolClass
             school_class = SchoolClass.objects.get(id=school_class_id)
             job = BulkImporter.import_students(csv_file, school_class, request.user)
-        
+
         elif import_type == 'questions':
-            category_id = request.POST.get('category_id')
-            job = BulkImporter.import_questions(csv_file, request.user, category_id)
-        
+            from exams.models import Exam as ExamModel
+            from django.utils.dateparse import parse_datetime
+            from django.utils.timezone import make_aware
+            import datetime as dt
+            exam_id = request.POST.get('exam_id')
+            exam = ExamModel.objects.get(id=exam_id)
+            start_time = request.POST.get('start_time')
+            end_time = request.POST.get('end_time')
+            publish = request.POST.get('publish_exam') == 'on'
+            if start_time:
+                parsed = parse_datetime(start_time)
+                exam.start_time = make_aware(parsed) if parsed and parsed.tzinfo is None else parsed
+            if end_time:
+                parsed = parse_datetime(end_time)
+                exam.end_time = make_aware(parsed) if parsed and parsed.tzinfo is None else parsed
+            if publish:
+                exam.is_published = True
+            if start_time or end_time or publish:
+                exam.save()
+            job = BulkImporter.import_questions(csv_file, request.user, exam)
+        else:
+            from django.contrib import messages
+            messages.error(request, 'Unknown import type.')
+            return redirect('dashboards:bulk_import')
+
         return redirect('dashboards:bulk_import_job_detail', job_id=job.id)
-    
-    from exams.models import SchoolClass
+
+    from exams.models import Exam as ExamModel, SchoolClass
     context = {
         'classes': SchoolClass.objects.all(),
-        'categories': QuestionCategory.objects.all(),
+        'exams': ExamModel.objects.select_related('school_class').order_by('-created_at'),
     }
     
     return render(request, 'bulk/import.html', context)

@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-buil
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS=config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS=['*']
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')
 
     

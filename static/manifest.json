@@ -1,5 +1,5 @@
 {
-  "name": "{{ SCHOOL_APP_NAME }}",
+  "name": "Muflihun High School",
   "short_name": "SMS",
   "start_url": "/",
   "display": "standalone",

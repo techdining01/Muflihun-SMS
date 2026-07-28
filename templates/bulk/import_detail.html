@@ -76,11 +76,46 @@
                     <dl class="row">
                         <dt class="col-sm-6">Job ID:</dt>
                         <dd class="col-sm-6"><code>{{ job.id }}</code></dd>
+                        <dt class="col-sm-6">Imported by:</dt>
+                        <dd class="col-sm-6"><small>{{ job.created_by.get_full_name|default:job.created_by.username }}</small></dd>
                         <dt class="col-sm-6">Started:</dt>
                         <dd class="col-sm-6"><small>{{ job.started_at|date:"M d, Y H:i" }}</small></dd>
                         <dt class="col-sm-6">Completed:</dt>
                         <dd class="col-sm-6"><small>{{ job.completed_at|date:"M d, Y H:i"|default:"-" }}</small></dd>
+                        {% if job.exam %}
+                        <dt class="col-sm-6">Exam:</dt>
+                        <dd class="col-sm-6"><small>{{ job.exam.title }}</small></dd>
+                        <dt class="col-sm-6">Class:</dt>
+                        <dd class="col-sm-6"><small>{{ job.exam.school_class.name }}</small></dd>
+                        <dt class="col-sm-6">Published:</dt>
+                        <dd class="col-sm-6">
+                            {% if job.exam.is_published %}
+                            <span class="badge bg-success">Yes</span>
+                            {% else %}
+                            <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </dd>
+                        <dt class="col-sm-6">Start Time:</dt>
+                        <dd class="col-sm-6"><small>{{ job.exam.start_time|date:"M d, Y H:i" }}</small></dd>
+                        <dt class="col-sm-6">End Time:</dt>
+                        <dd class="col-sm-6"><small>{{ job.exam.end_time|date:"M d, Y H:i" }}</small></dd>
+                        {% endif %}
                     </dl>
+                    {% if job.exam and job.status == 'completed' %}
+                    <div class="d-grid gap-2 mt-2">
+                        <a href="{% url 'dashboards:exam_detail' job.exam.id %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-journal-text me-1"></i>View Exam Questions
+                        </a>
+                        {% if not job.exam.is_published %}
+                        <form method="post" action="{% url 'dashboards:publish_exam' job.exam.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm w-100">
+                                <i class="bi bi-send me-1"></i>Publish Exam Now
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

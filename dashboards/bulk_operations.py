@@ -1,6 +1,3 @@
-"""
-Bulk import/export operations for students, exams, questions
-"""
 import csv
 import io
 from django.utils import timezone
@@ -8,8 +5,7 @@ from django.db import transaction
 from accounts.models import User
 from exams.models import Exam, Question, Choice, SchoolClass, Subject
 from .models import (
-    BulkImportJob, BulkExportJob, QuestionBank, 
-    QuestionCategory, QuestionTag, StudentPerformance
+    BulkImportJob, BulkExportJob, StudentPerformance
 )
 
 
@@ -18,7 +14,7 @@ class BulkImporter:
     
     @staticmethod
     def import_students(csv_file, school_class, created_by):
-        """Import students from CSV"""
+        """Import students from CSV, Excel, or Word"""
         job = BulkImportJob.objects.create(
             import_type='students',
             csv_file=csv_file,
@@ -26,54 +22,57 @@ class BulkImporter:
             status='processing',
             started_at=timezone.now(),
         )
-        
+
         errors = []
         successes = 0
-        
+
         try:
-            file_content = csv_file.read().decode('utf-8')
-            reader = csv.DictReader(io.StringIO(file_content))
-            
-            required_fields = ['first_name', 'last_name', 'username', 'email']
-            if reader.fieldnames and not all(f in reader.fieldnames for f in required_fields):
-                job.status = 'failed'
-                job.error_log = f"Missing required fields. Expected: {', '.join(required_fields)}"
-                job.completed_at = timezone.now()
-                job.save()
-                return job
-            
-            for row_num, row in enumerate(reader, start=2):
+            if hasattr(csv_file, 'seek'):
+                csv_file.seek(0)
+
+            filename = csv_file.name.lower()
+            if filename.endswith('.xlsx'):
+                rows, parse_errors = BulkImporter._parse_excel_students(csv_file)
+            elif filename.endswith('.docx'):
+                rows, parse_errors = BulkImporter._parse_word_students(csv_file)
+            else:
+                rows, parse_errors = BulkImporter._parse_csv_students(csv_file)
+            errors.extend(parse_errors)
+
+            for row_num, row in enumerate(rows, start=2):
                 try:
                     username = row.get('username', '').strip()
                     email = row.get('email', '').strip()
                     first_name = row.get('first_name', '').strip()
                     last_name = row.get('last_name', '').strip()
-                    
+
                     if not all([username, email, first_name, last_name]):
                         errors.append(f"Row {row_num}: Missing required field")
                         continue
-                    
+
                     if User.objects.filter(username=username).exists():
                         errors.append(f"Row {row_num}: Username '{username}' already exists")
                         continue
-                    
+
                     if User.objects.filter(email=email).exists():
                         errors.append(f"Row {row_num}: Email '{email}' already exists")
                         continue
-                    
-                    user = User.objects.create_user(
+
+                    User.objects.create_user(
                         username=username,
                         email=email,
                         first_name=first_name,
                         last_name=last_name,
+                        password=row.get('password', '').strip() or 'changeme123',
                         role=User.Role.STUDENT,
                         student_class=school_class,
+                        is_approved=True,
                     )
                     successes += 1
-                
+
                 except Exception as e:
                     errors.append(f"Row {row_num}: {str(e)}")
-            
+
             job.status = 'completed'
             job.total_rows = successes + len(errors)
             job.successful_rows = successes
@@ -81,148 +80,211 @@ class BulkImporter:
             job.error_log = '\n'.join(errors) if errors else ''
             job.completed_at = timezone.now()
             job.save()
-            
+
         except Exception as e:
             job.status = 'failed'
             job.error_log = str(e)
             job.completed_at = timezone.now()
             job.save()
-        
+
         return job
+
+    @staticmethod
+    def _parse_csv_students(file_obj):
+        data = []
+        errors = []
+        try:
+            file_content = file_obj.read().decode('utf-8')
+            clean_lines = [
+                line for line in file_content.splitlines()
+                if line.strip() and not line.strip().startswith('#')
+            ]
+            reader = csv.DictReader(clean_lines)
+            required = ['first_name', 'last_name', 'username', 'email']
+            if reader.fieldnames and not all(f in reader.fieldnames for f in required):
+                return [], [f"Missing required columns: {', '.join(required)}"]
+            for row in reader:
+                if any(row.values()):
+                    data.append(row)
+        except Exception as e:
+            errors.append(f"CSV Parse Error: {str(e)}")
+        return data, errors
+
+    @staticmethod
+    def _parse_excel_students(file_obj):
+        import openpyxl
+        data = []
+        errors = []
+        try:
+            wb = openpyxl.load_workbook(file_obj, data_only=True)
+            sheet = wb.active
+            headers = [cell.value for cell in sheet[1]]
+            required = ['first_name', 'last_name', 'username', 'email']
+            if not all(f in headers for f in required):
+                return [], [f"Missing required columns: {', '.join(required)}"]
+            header_map = {h: i for i, h in enumerate(headers) if h}
+            for row in sheet.iter_rows(min_row=2):
+                row_data = {}
+                has_content = False
+                for field, col_idx in header_map.items():
+                    val = row[col_idx].value
+                    row_data[field] = str(val).strip() if val is not None else ''
+                    if val:
+                        has_content = True
+                if not has_content:
+                    continue
+                first = row_data.get('first_name', '')
+                if first.startswith('#') or first.startswith('•') or first.upper().startswith('NOTE'):
+                    continue
+                data.append(row_data)
+        except Exception as e:
+            errors.append(f"Excel Parse Error: {str(e)}")
+        return data, errors
+
+    @staticmethod
+    def _parse_word_students(file_obj):
+        import docx
+        data = []
+        errors = []
+        try:
+            doc = docx.Document(file_obj)
+            if not doc.tables:
+                return [], ["No tables found in Word document"]
+            table = doc.tables[0]
+            headers = [cell.text.strip() for cell in table.rows[0].cells]
+            required = ['first_name', 'last_name', 'username', 'email']
+            if not all(f in headers for f in required):
+                return [], [f"Missing required columns: {', '.join(required)}"]
+            header_map = {h: i for i, h in enumerate(headers) if h}
+            for row in table.rows[1:]:
+                row_data = {}
+                has_content = False
+                for field, col_idx in header_map.items():
+                    val = row.cells[col_idx].text.strip() if col_idx < len(row.cells) else ''
+                    row_data[field] = val
+                    if val:
+                        has_content = True
+                if has_content:
+                    data.append(row_data)
+        except Exception as e:
+            errors.append(f"Word Parse Error: {str(e)}")
+        return data, errors
     
     @staticmethod
-    def import_questions(csv_file, created_by, category_id=None):
-        """Import questions from CSV, Excel, or Word"""
+    def import_questions(csv_file, created_by, exam):
+        """Import questions from CSV/Excel/Word directly into an Exam"""
+        from exams.models import Question, Choice
         job = BulkImportJob.objects.create(
             import_type='questions',
             csv_file=csv_file,
             created_by=created_by,
+            exam=exam,
             status='processing',
             started_at=timezone.now(),
         )
-        
+
         errors = []
         successes = 0
-        
+
         try:
             if hasattr(csv_file, 'seek'):
                 csv_file.seek(0)
 
             filename = csv_file.name.lower()
-            questions_data = []
-            
-            # Determine parser based on file extension
             if filename.endswith('.xlsx'):
-                questions_data, parse_errors = BulkImporter._parse_excel_questions(csv_file)
-                errors.extend(parse_errors)
+                rows, parse_errors = BulkImporter._parse_excel_questions(csv_file)
             elif filename.endswith('.docx'):
-                questions_data, parse_errors = BulkImporter._parse_word_questions(csv_file)
-                errors.extend(parse_errors)
+                rows, parse_errors = BulkImporter._parse_word_questions(csv_file)
             else:
-                # Default to CSV
-                questions_data, parse_errors = BulkImporter._parse_csv_questions(csv_file)
-                errors.extend(parse_errors)
-            
-            if not questions_data and not errors:
-                 errors.append("No data found in file")
+                rows, parse_errors = BulkImporter._parse_csv_questions(csv_file)
+            errors.extend(parse_errors)
 
-            category = None
-            if category_id:
-                category = QuestionCategory.objects.get(id=category_id)
-            
-            for row_num, row in enumerate(questions_data, start=1):
+            if not rows and not errors:
+                errors.append("No data found in file")
+
+            # Determine next order number
+            next_order = exam.questions.count() + 1
+
+            for row_num, row in enumerate(rows, start=1):
                 try:
                     text = row.get('text', '').strip()
-                    q_type = row.get('type', '').lower()
-                    marks = int(row.get('marks', '1'))
-                    class_name = row.get('class', '').strip()
-                    subject_name = row.get('subject', '').strip()
+                    q_type = row.get('type', '').lower().strip()
+                    marks = int(row.get('marks', '1') or 1)
 
-                    if not text or q_type not in ['objective', 'subjective', 'short_answer']:
-                        errors.append(f"Row {row_num}: Invalid question type or missing text")
+                    if not text:
+                        errors.append(f"Row {row_num}: Missing question text")
+                        continue
+                    if q_type not in ['objective', 'subjective']:
+                        errors.append(f"Row {row_num}: type must be 'objective' or 'subjective', got '{q_type}'")
                         continue
 
-                    # Lookup Class and Subject
-                    school_class = None
-                    if class_name:
-                        try:
-                            school_class = SchoolClass.objects.get(name__iexact=class_name)
-                        except SchoolClass.DoesNotExist:
-                            errors.append(f"Row {row_num}: Class '{class_name}' not found")
-                            continue
-
-                    subject = None
-                    if subject_name:
-                        try:
-                            subject = Subject.objects.get(name__iexact=subject_name)
-                        except Subject.DoesNotExist:
-                            errors.append(f"Row {row_num}: Subject '{subject_name}' not found")
-                            continue
-                    
-                    question = QuestionBank.objects.create(
+                    question = Question.objects.create(
+                        exam=exam,
                         text=text,
-                        question_type=q_type,
+                        type=q_type,
                         marks=marks,
-                        difficulty='medium',  # Default since removed from template
-                        category=category,
-                        school_class=school_class,
-                        subject=subject,
-                        created_by=created_by,
-                        is_published=True,
+                        order=next_order,
                     )
-                    
-                    # Handle choices for objective questions
+                    next_order += 1
+
                     if q_type == 'objective':
+                        has_correct = False
                         for i in range(1, 5):
-                            choice_text = row.get(f'choice_{i}', '')
-                            is_correct_val = str(row.get(f'correct_{i}', '')).lower().strip()
-                            is_correct = is_correct_val in ['true', '1', 'yes']
-                            
+                            choice_text = str(row.get(f'choice_{i}', '') or '').strip()
+                            is_correct = str(row.get(f'correct_{i}', '') or '').lower().strip() in ['true', '1', 'yes']
                             if choice_text:
-                                from .models import QuestionChoice
-                                QuestionChoice.objects.create(
+                                Choice.objects.create(
                                     question=question,
                                     text=choice_text,
                                     is_correct=is_correct,
-                                    order=i,
                                 )
-                    
+                                if is_correct:
+                                    has_correct = True
+                        if not has_correct:
+                            errors.append(f"Row {row_num}: Objective question has no correct answer marked")
+
                     successes += 1
-                
+
                 except Exception as e:
                     errors.append(f"Row {row_num}: {str(e)}")
-            
-            job.status = 'completed' if not (successes == 0 and len(errors) > 0) else 'failed'
+
+            job.status = 'completed' if successes > 0 or not errors else 'failed'
             job.total_rows = successes + len(errors)
             job.successful_rows = successes
             job.failed_rows = len(errors)
             job.error_log = '\n'.join(errors) if errors else ''
             job.completed_at = timezone.now()
             job.save()
-            
+
         except Exception as e:
             job.status = 'failed'
             job.error_log = str(e)
             job.completed_at = timezone.now()
             job.save()
-        
+
         return job
 
     @staticmethod
     def _parse_csv_questions(file_obj):
-        """Parse CSV content"""
+        """Parse CSV content, skipping comment rows starting with #"""
         data = []
         errors = []
         try:
             file_content = file_obj.read().decode('utf-8')
-            reader = csv.DictReader(io.StringIO(file_content))
-            
-            required = ['text', 'type', 'marks', 'class', 'subject']
+            # Strip comment rows before passing to DictReader
+            clean_lines = [
+                line for line in file_content.splitlines()
+                if line.strip() and not line.strip().startswith('#')
+            ]
+            reader = csv.DictReader(clean_lines)
+
+            required = ['text', 'type', 'marks']
             if reader.fieldnames and not all(f in reader.fieldnames for f in required):
                 return [], [f"CSV Missing required fields: {', '.join(required)}"]
 
             for row in reader:
-                data.append(row)
+                if any(row.values()):  # skip fully empty rows
+                    data.append(row)
         except Exception as e:
             errors.append(f"CSV Parse Error: {str(e)}")
         return data, errors
@@ -239,7 +301,7 @@ class BulkImporter:
             
             # Read header
             headers = [cell.value for cell in sheet[1]]
-            required = ['text', 'type', 'marks', 'class', 'subject']
+            required = ['text', 'type', 'marks']
             if not all(field in headers for field in required):
                  return [], [f"Excel Missing required headers: {', '.join(required)}"]
 
@@ -252,13 +314,18 @@ class BulkImporter:
                 for field, col_idx in header_map.items():
                     val = row[col_idx].value
                     if val is not None:
-                         row_data[field] = str(val).strip()
-                         has_content = True
+                        row_data[field] = str(val).strip()
+                        has_content = True
                     else:
-                         row_data[field] = ""
-                
-                if has_content:
-                    data.append(row_data)
+                        row_data[field] = ''
+
+                if not has_content:
+                    continue
+                # Skip note/comment rows
+                text_val = row_data.get('text', '')
+                if text_val.startswith('#') or text_val.startswith('•') or text_val.upper().startswith('NOTE'):
+                    continue
+                data.append(row_data)
         except Exception as e:
             errors.append(f"Excel Parse Error: {str(e)}")
         return data, errors
@@ -280,7 +347,7 @@ class BulkImporter:
 
             # Header
             headers = [cell.text.strip() for cell in table.rows[0].cells]
-            required = ['text', 'type', 'marks', 'class', 'subject']
+            required = ['text', 'type', 'marks']
             if not all(field in headers for field in required):
                  return [], [f"Word Table Missing required headers: {', '.join(required)}"]
             
