@@ -65,6 +65,7 @@ urlpatterns = [
     # Notification Actions
     path('notification/<int:notification_id>/read/', views.mark_notification_read, name='mark_notification_read'),
     path('notifications/read-all/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('notifications/badge/', views.notification_badge, name='notification_badge'),
     
     # Phase 4: Notifications (WebSocket + API)
     path('notifications/', notification_views.notifications_list, name='notifications_list'),
@@ -110,6 +111,7 @@ urlpatterns = [
     path('chat/api/conversations/', views.chat_api_conversations, name='chat_api_conversations'),
     path('chat/api/messages/<str:chat_type>/<int:target_id>/', views.chat_api_messages, name='chat_api_messages'),
     path('chat/api/send/', views.chat_api_send, name='chat_api_send'),
+    path('chat/send/', views.chat_api_send, name='chat_send'), # Alias for HTMX
     path('chat/api/room/create/', views.chat_api_create_room, name='chat_api_create_room'),
     path('chat/dashboard/', views.chat_index, name='chat_dashboard'), # Kept for backward compatibility
     

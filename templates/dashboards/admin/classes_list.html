@@ -29,25 +29,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for class in classes %}
-                    <tr>
-                        <td data-label="Class Name"><strong>{{ class.name }}</strong></td>
-                        <td data-label="Students"><span class="badge bg-info">{{ class.students.count }}</span></td>
-                        <td data-label="Exams"><span class="badge bg-secondary">{{ class.class_exam.count }}</span></td>
-                        <td data-label="Status">
-                            <span class="badge bg-success">Active</span>
-                        </td>
-                        <td data-label="Actions">
-                            <a href="{% url 'dashboards:admin_edit_class' class.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="{% url 'dashboards:admin_delete_class' class.id %}" class="btn btn-sm btn-outline-danger" title="Delete" data-confirm="Are you sure you want to delete this class?">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                <tbody id="classes-table-body">
+                    {% include 'partials/dashboards/classes_table_rows.html' %}
                 </tbody>
             </table>
         </div>

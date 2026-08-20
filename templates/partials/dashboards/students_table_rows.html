@@ -1,0 +1,42 @@
+{% load static %}
+<tbody>
+    {% if students %}
+        {% for student in students %}
+        <tr>
+            <td data-label="Student Name"><strong>{{ student.first_name }} {{ student.last_name }}</strong></td>
+            <td data-label="Email">{{ student.email }}</td>
+            <td data-label="Class">
+                {% if student.student_class %}
+                    {{ student.student_class.name }}
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td data-label="Enrollment">
+                <small class="text-muted">
+                    {{ student.date_joined|date:"M d, Y" }}
+                </small>
+            </td>
+            <td data-label="Exams Taken"><span class="badge bg-info">0</span></td>
+            <td data-label="Actions">
+                <a href="{% url 'dashboards:admin_edit_student' student.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <button class="btn btn-sm btn-outline-danger" title="Delete"
+                        hx-post="{% url 'dashboards:admin_delete_student' student.id %}"
+                        hx-confirm="Are you sure you want to delete this student?"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="6" class="text-center text-muted py-4">
+            No students found
+        </td>
+    </tr>
+    {% endif %}
+</tbody>

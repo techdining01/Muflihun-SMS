@@ -7,12 +7,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.urls import reverse
 from .models import User
 
 
@@ -39,14 +40,29 @@ def register_view(request):
 
         if not all([username, email, role, password1, password2]):
             messages.error(request, "All fields are required.")
+            # Return form with errors for HTMX
+            if request.headers.get('HX-Request'):
+                return render(request, "accounts/register.html", {
+                    'error': "All fields are required."
+                })
             return redirect("accounts:register")
 
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
+            # Return form with errors for HTMX
+            if request.headers.get('HX-Request'):
+                return render(request, "accounts/register.html", {
+                    'error': "Passwords do not match."
+                })
             return redirect("accounts:register")
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
+            # Return form with errors for HTMX
+            if request.headers.get('HX-Request'):
+                return render(request, "accounts/register.html", {
+                    'error': "Username already exists."
+                })
             return redirect("accounts:register")
 
         user = User.objects.create_user(
@@ -55,15 +71,20 @@ def register_view(request):
             password=password1,
             role=role,
             is_active=True,
-            is_approved=False,  
+            is_approved=False,
         )
 
         messages.success(
             request,
             "Registration successful. Await admin approval before login."
         )
+        # For HTMX, redirect using HX-Redirect header
+        if request.headers.get('HX-Request'):
+            response = HttpResponse(status=200)
+            response['HX-Redirect'] = reverse('accounts:login')
+            return response
         return redirect("accounts:login")
-    
+
     return render(request, "accounts/register.html")
 
 
@@ -77,6 +98,11 @@ def login_view(request):
 
         if user is None:
             messages.error(request, "Invalid username or password.")
+            # Return form with errors for HTMX
+            if request.headers.get('HX-Request'):
+                return render(request, "accounts/login.html", {
+                    'error': "Invalid username or password."
+                })
             return redirect("accounts:login")
 
         if not user.is_approved:
@@ -84,9 +110,19 @@ def login_view(request):
                 request,
                 "Your account is pending approval. Contact admin."
             )
+            # Return form with errors for HTMX
+            if request.headers.get('HX-Request'):
+                return render(request, "accounts/login.html", {
+                    'error': "Your account is pending approval. Contact admin."
+                })
             return redirect("accounts:login")
 
         login(request, user)
+        # For HTMX, redirect using HX-Redirect header
+        if request.headers.get('HX-Request'):
+            response = HttpResponse(status=200)
+            response['HX-Redirect'] = reverse('accounts:dashboard_redirect')
+            return response
         return redirect("accounts:dashboard_redirect")  # change if needed
 
     return render(request, "accounts/login.html")

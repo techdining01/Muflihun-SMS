@@ -1,0 +1,35 @@
+{% if exams %}
+    {% for exam in exams %}
+    <tr>
+        <td><strong>{{ exam.title }}</strong></td>
+        <td>{{ exam.school_class.name }}</td>
+        <td><span class="badge bg-info">{{ exam.questions.count }}</span></td>
+        <td>{{ exam.duration }} min</td>
+        <td><span class="badge bg-secondary">{{ exam.exam_attempts.count }}</span></td>
+        <td>
+            {% if exam.is_published %}
+                <span class="badge bg-success">Published</span>
+            {% else %}
+                <span class="badge bg-warning">Draft</span>
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="btn btn-sm btn-outline-primary" title="View">
+                <i class="bi bi-eye"></i>
+            </a>
+            <a href="{% url 'dashboards:edit_exam' exam.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'dashboards:delete_exam' exam.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                <i class="bi bi-trash"></i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+{% else %}
+<tr>
+    <td colspan="7" class="text-center text-muted py-4">
+        No exams found. <a href="{% url 'dashboards:create_exam' %}">Create a new exam</a>
+    </td>
+</tr>
+{% endif %}

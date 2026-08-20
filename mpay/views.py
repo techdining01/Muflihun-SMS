@@ -170,6 +170,11 @@ def add_to_cart(request):
             item.quantity += 1
             item.save()
 
+        # Return updated cart sidebar for HTMX requests
+        if request.headers.get('HX-Request'):
+            cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
+            return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
+
         return JsonResponse({"success": True, "count": cart.items.count()})
 
 
@@ -178,6 +183,7 @@ def update_cart_item(request):
     if request.method == "POST":
         item_id = request.POST.get("item_id")
         action = request.POST.get("action")
+        ward_id = request.POST.get("ward_id")
 
         item = get_object_or_404(CartItem, id=item_id)
 
@@ -187,15 +193,20 @@ def update_cart_item(request):
             item.quantity -= 1
             if item.quantity <= 0:
                 item.delete()
-                return JsonResponse({"removed": True})
+                # Return updated cart sidebar for HTMX
+                cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
+                return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
 
         item.save()
-        return JsonResponse({"qty": item.quantity})
+        # Return updated cart sidebar for HTMX
+        cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
+        return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
 
 
 @login_required
 def remove_cart_item(request):
     item_id = request.POST.get("item_id")
+    ward_id = request.POST.get("ward_id")
 
     try:
         item = CartItem.objects.select_related("cart").get(
@@ -213,10 +224,12 @@ def remove_cart_item(request):
             cart.ward_id,
         )
 
-        return JsonResponse({"status": "removed"})
+        # Return updated cart sidebar for HTMX
+        cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
+        return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
 
     except CartItem.DoesNotExist:
-        return JsonResponse({"status": "error"}, status=400)
+        return HttpResponse("Error", status=400)
 
 
 @login_required
@@ -230,7 +243,9 @@ def clear_cart(request):
 
         logger.warning("CART CLEARED | user=%s | ward=%s", request.user.id, ward_id)
 
-    return JsonResponse({"status": "cleared"})
+    # Return updated cart sidebar for HTMX
+    cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
+    return render(request, "mpay/partials/cart_sidebar.html", {"cart": cart})
 
 
 @login_required
@@ -246,14 +261,15 @@ def cart_count(request):
     ward_id = request.GET.get("ward")
 
     if not ward_id or ward_id in ("null", "undefined"):
-        return JsonResponse({"count": 0})
+        return render(request, "mpay/partials/cart_count.html", {"count": 0})
 
     try:
         cart = Cart.objects.filter(user=request.user, ward_id=ward_id).first()
     except (ValueError, TypeError):
-        return JsonResponse({"count": 0})
+        return render(request, "mpay/partials/cart_count.html", {"count": 0})
 
-    return JsonResponse({"count": cart.total_items if cart else 0})
+    count = cart.total_items if cart else 0
+    return render(request, "mpay/partials/cart_count.html", {"count": count})
 
 
 @login_required

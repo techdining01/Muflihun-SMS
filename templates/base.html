@@ -26,6 +26,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/ext/csrf.js"></script>
+
     <style>
         :root {
             --primary: #2563eb;
@@ -905,6 +909,36 @@
                 opacity: 1;
                 transform: scale(1);
             }
+        }
+
+        /* HTMX Spinner Animation */
+        .spin-animation {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .htmx-indicator {
+            display: none;
+            opacity: 0;
+            transition: opacity 200ms ease-in;
+        }
+
+        .htmx-indicator.htmx-request {
+            display: inline-block;
+            opacity: 1;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+            opacity: 1;
         }
     </style>
 
@@ -1848,17 +1882,26 @@
                     <div class="nav-item dropdown me-3 d-flex align-items-center">
                         <a class="nav-link dropdown-toggle position-relative text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-bell fs-5"></i>
-                            {% if total_unread_count > 0 %}
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                {{ total_unread_count }}
+                            <span id="notification-badge"
+                                  hx-get="{% url 'dashboards:notification_badge' %}"
+                                  hx-trigger="load, every 30s, notificationUpdated from:body, cartUpdated from:body"
+                                  hx-swap="innerHTML"
+                                  hx-indicator="#notification-spinner">
+                                {% include 'partials/dashboards/notification_badge.html' %}
                             </span>
-                            {% endif %}
+                            <span id="notification-spinner" class="htmx-indicator">
+                                <i class="bi bi-arrow-repeat spin-animation"></i>
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end p-0 shadow border-0" style="width: min(320px, 92vw); max-height: 400px; overflow-y: auto; z-index: 1050;">
                             <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white sticky-top">
                                 <h6 class="mb-0 fw-bold">Notifications</h6>
                                 {% if unread_notifications_count > 0 %}
-                                <a href="{% url 'dashboards:mark_all_notifications_read' %}" class="small text-primary text-decoration-none">Mark all read</a>
+                                <a href="{% url 'dashboards:mark_all_notifications_read' %}"
+                                   hx-post="{% url 'dashboards:mark_all_notifications_read' %}"
+                                   hx-target="#notification-badge"
+                                   hx-swap="innerHTML"
+                                   class="small text-primary text-decoration-none">Mark all read</a>
                                 {% endif %}
                             </li>
                             
@@ -2747,6 +2790,29 @@
 
         const CSRF_TOKEN = getCookie("csrftoken");
 
+        /* ---------- HTMX CSRF Configuration ---------- */
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            evt.detail.headers['X-CSRFToken'] = CSRF_TOKEN;
+        });
+
+        /* ---------- HTMX Event Handlers ---------- */
+        document.body.addEventListener('htmx:beforeSwap', function(evt) {
+            // Handle error responses
+            if (evt.detail.xhr.status >= 400) {
+                evt.detail.shouldSwap = false;
+                const errorMsg = evt.detail.xhr.responseText || 'An error occurred';
+                toastError(errorMsg);
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            // Show success messages for successful POST requests
+            if (evt.detail.xhr.status >= 200 && evt.detail.xhr.status < 300 &&
+                evt.detail.requestConfig.method.toUpperCase() === 'POST') {
+                // You can add custom success handling here
+            }
+        });
+
         /* ---------- TOASTS ---------- */
         window.toastSuccess = function (msg) {
             if (window.Swal) {
@@ -2827,18 +2893,24 @@
                     .then(res => res.text())
                     .then(html => {
                         document.getElementById("cartBody").innerHTML = html;
+                        // Trigger cart count update after loading cart
+                        refreshCartCount();
+                        // Trigger notification update after cart changes
+                        const notificationBadge = document.getElementById("notification-badge");
+                        if (notificationBadge && htmx) {
+                            htmx.trigger(notificationBadge, "notificationUpdated");
+                        }
                     });
             }
 
             /* ---------- COUNT ---------- */
             function refreshCartCount() {
                 if (!wardId) return;
-                fetch(`/mpay/cart/count/?ward=${wardId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const badge = document.getElementById("cartCount");
-                        if (badge) badge.innerText = data.count;
-                    });
+                // Trigger HTMX to refresh cart count
+                const cartCount = document.getElementById("cartCount");
+                if (cartCount && htmx) {
+                    htmx.trigger(cartCount, "cartUpdated");
+                }
             }
 
             window.refreshCartCount = refreshCartCount;
@@ -2846,50 +2918,23 @@
 
             /* ---------- UPDATE QTY ---------- */
             window.updateQty = function (itemId, action) {
-                fetch("/mpay/cart/update/", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": CSRF_TOKEN,
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `item_id=${itemId}&action=${action}`,
-                }).then(() => {
-                    loadCart();
-                    refreshCartCount();
-                });
+                // This function is now handled by HTMX directly in the template
+                // Kept for backward compatibility
+                console.log("updateQty called - handled by HTMX");
             };
 
             /* ---------- REMOVE ---------- */
             window.removeItem = function (itemId) {
-                fetch("/mpay/cart/remove-item/", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": CSRF_TOKEN,
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `item_id=${itemId}`,
-                }).then(() => {
-                    loadCart();
-                    refreshCartCount();
-                    toastSuccess("Item removed");
-                });
+                // This function is now handled by HTMX directly in the template
+                // Kept for backward compatibility
+                console.log("removeItem called - handled by HTMX");
             };
 
             /* ---------- CLEAR ---------- */
             window.clearCart = function () {
-                fetch("/mpay/cart/clear/", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": CSRF_TOKEN,
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `ward_id=${wardId}`,
-                }).then(() => {
-                    loadCart();
-                    refreshCartCount();
-                    closeCart();
-                    toastSuccess("Cart cleared");
-                });
+                // This function is now handled by HTMX directly in the template
+                // Kept for backward compatibility
+                console.log("clearCart called - handled by HTMX");
             };
 
             /* ---------- ADD TO CART ---------- */

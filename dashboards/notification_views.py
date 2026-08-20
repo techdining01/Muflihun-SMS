@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -63,6 +63,10 @@ def notifications_list(request):
         'unread_count': unread_notifications_count + unread_chats_count, # Total unread
     }
     
+    # Handle HTMX requests for pagination
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/notification_list_items.html', context)
+    
     return render(request, 'notifications/list.html', context)
 
 @login_required()
@@ -123,7 +127,12 @@ def get_unread_notifications(request):
 def mark_as_read(request):
     """Mark a notification as read"""
     try:
-        data = json.loads(request.body)
+        # Handle both JSON and form data for HTMX compatibility
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST.dict()
+            
         notification_id = data.get('notification_id')
         item_type = data.get('type', 'notification') # Default to notification
         
@@ -143,6 +152,14 @@ def mark_as_read(request):
         # Recalculate total count
         count = (Notification.objects.filter(recipient=request.user, is_read=False).count() + 
                  ChatMessage.objects.filter(recipient=request.user, is_read=False).count())
+        
+        # For HTMX requests, return updated badge
+        if request.headers.get('HX-Request'):
+            from django.template.loader import render_to_string
+            badge_html = render_to_string('partials/dashboards/notification_badge.html', {
+                'total_unread_count': count
+            }, request=request)
+            return HttpResponse(badge_html)
         
         return JsonResponse({
             'success': True,
@@ -171,13 +188,24 @@ def mark_all_as_read(request):
         Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
         ChatMessage.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
     
+    # Calculate remaining count
+    count = 0 if not target_type else (
+         Notification.objects.filter(recipient=request.user, is_read=False).count() + 
+         ChatMessage.objects.filter(recipient=request.user, is_read=False).count()
+    )
+    
+    # For HTMX requests, return updated badge
+    if request.headers.get('HX-Request'):
+        from django.template.loader import render_to_string
+        badge_html = render_to_string('partials/dashboards/notification_badge.html', {
+            'total_unread_count': count
+        }, request=request)
+        return HttpResponse(badge_html)
+    
     return JsonResponse({
         'success': True,
         'message': 'Marked as read',
-        'unread_count': 0 if not target_type else (
-             Notification.objects.filter(recipient=request.user, is_read=False).count() + 
-             ChatMessage.objects.filter(recipient=request.user, is_read=False).count()
-        )
+        'unread_count': count
     })
 
 # ── Web Push endpoints ──────────────────────────────────────────────────────

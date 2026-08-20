@@ -1,0 +1,25 @@
+<div class="message-bubble {% if message.sender.id == user.id %}sent{% else %}received{% endif %}">
+    <div class="message-content">
+        {% if message.sender.id != user.id %}
+        <div class="message-sender">{{ message.sender.get_full_name|default:message.sender.username }}</div>
+        {% endif %}
+
+        {% if message.attachment %}
+        <div class="message-attachment">
+            {% if message.attachment.name|lower|slice:":-4" in '.jpg,.png,.gif,.jpeg' %}
+            <img src="{{ message.attachment.url }}" alt="Attachment" class="img-fluid rounded">
+            {% else %}
+            <a href="{{ message.attachment.url }}" download class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-download"></i> {{ message.attachment.name|slice:"20:" }}
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if message.message %}
+        <div class="message-text">{{ message.message }}</div>
+        {% endif %}
+
+        <div class="message-time">{{ message.created_at|date:"H:i" }}</div>
+    </div>
+</div>

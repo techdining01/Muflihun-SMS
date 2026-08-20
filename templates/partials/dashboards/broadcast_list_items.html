@@ -1,0 +1,38 @@
+{% if broadcasts %}
+    {% for broadcast in broadcasts %}
+    <div class="list-group-item p-3">
+        <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+            <h5 class="mb-1 text-primary">{{ broadcast.title }}</h5>
+            <small class="text-muted">{{ broadcast.created_at|timesince }} ago</small>
+        </div>
+        <p class="mb-1">{{ broadcast.message|linebreaksbr }}</p>
+        <div class="mt-2">
+            <span class="badge bg-light text-dark border">
+                <i class="bi bi-people me-1"></i>
+                {% if broadcast.recipients.count %}
+                    Parents ({{ broadcast.recipients.count }})
+                {% elif broadcast.target_class %}
+                    {{ broadcast.target_class.name }}
+                {% else %}
+                    All Students
+                {% endif %}
+            </span>
+            <span class="badge bg-light text-dark border ms-1">
+                <i class="bi bi-person me-1"></i> {{ broadcast.sender.get_full_name }}
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Pagination -->
+    {% if broadcasts.has_other_pages %}
+    <div class="card-footer bg-white py-3" id="pagination-container">
+        {% include 'includes/pagination.html' %}
+    </div>
+    {% endif %}
+{% else %}
+    <div class="list-group-item text-center py-5">
+        <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem;"></i>
+        <p class="mt-3 text-muted">No broadcasts sent yet.</p>
+    </div>
+{% endif %}

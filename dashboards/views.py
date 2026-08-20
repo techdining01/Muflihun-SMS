@@ -320,8 +320,48 @@ def parent_dashboard(request):
 
 @login_required()
 def admin_students_list(request):
+    search_query = request.GET.get('q', '')
+    selected_class = request.GET.get('class', '')
+
     students = User.objects.filter(role=User.Role.STUDENT).order_by('username')
-    return render(request, 'dashboards/admin/students_list.html', {'students': students})
+
+    # Apply search filter
+    if search_query:
+        students = students.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    # Apply class filter
+    if selected_class:
+        students = students.filter(student_class_id=selected_class)
+
+    classes = SchoolClass.objects.all()
+    
+    # Add pagination
+    paginator = Paginator(students, 20)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    # Check if HTMX request
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/students_table_rows.html', {
+            'students': page_obj,
+            'page_obj': page_obj,
+            'search_query': search_query,
+            'selected_class': selected_class,
+            'classes': classes
+        })
+
+    return render(request, 'dashboards/admin/students_list.html', {
+        'students': page_obj,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'selected_class': selected_class,
+        'classes': classes
+    })
 
 @login_required()
 def admin_create_student(request):
@@ -330,6 +370,18 @@ def admin_create_student(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Student created successfully.')
+
+            # For HTMX requests, return updated students list
+            if request.headers.get('HX-Request'):
+                students = User.objects.filter(role=User.Role.STUDENT).order_by('username')
+                classes = SchoolClass.objects.all()
+                return render(request, 'partials/dashboards/students_table_rows.html', {
+                    'students': students,
+                    'classes': classes,
+                    'search_query': '',
+                    'selected_class': ''
+                })
+
             return redirect('dashboards:admin_students_list')
     else:
         form = StudentForm()
@@ -354,6 +406,11 @@ def admin_delete_student(request, student_id):
     if request.method == 'POST':
         student.delete()
         messages.success(request, 'Student deleted successfully.')
+
+        # Return empty row for HTMX requests
+        if request.headers.get('HX-Request'):
+            return HttpResponse('')
+
         return redirect('dashboards:admin_students_list')
     return render(request, 'dashboards/admin/student_confirm_delete.html', {'student': student})
 
@@ -363,6 +420,14 @@ def admin_exams_list(request):
     paginator = Paginator(exams_list, 10)  # Show 10 exams per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    
+    # Handle HTMX requests for pagination
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/exams_table_rows.html', {
+            'page_obj': page_obj,
+            'exams': page_obj
+        })
+    
     return render(request, 'dashboards/admin/exams_list.html', {'page_obj': page_obj})
 
 @login_required()
@@ -383,13 +448,25 @@ def teacher_exams_list(request):
         
     exams = exams.order_by('-created_at')
     
-    # Handle AJAX request
+    # Add pagination
+    paginator = Paginator(exams, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Handle HTMX requests for pagination
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/teacher_exams_table_rows.html', {
+            'exams': page_obj,
+            'page_obj': page_obj
+        })
+    
+    # Handle legacy AJAX request
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         from django.template.loader import render_to_string
         html = render_to_string('dashboards/teacher/partials/exams_table_rows.html', {'exams': exams}, request=request)
         return JsonResponse({'html': html})
 
-    return render(request, 'dashboards/teacher/exams_list.html', {'exams': exams})
+    return render(request, 'dashboards/teacher/exams_list.html', {'exams': page_obj, 'page_obj': page_obj})
 
 # ========================= EXAM MANAGEMENT =========================
 
@@ -607,13 +684,21 @@ def broadcast_center(request):
     paginator = Paginator(broadcast_list, 5)  # Show 5 broadcasts per page
     
     page_number = request.GET.get('page')
-    broadcasts = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
     classes = SchoolClass.objects.all()
     parents = User.objects.filter(role=User.Role.PARENT).order_by('first_name')
     
+    # Handle HTMX requests for pagination
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/broadcast_list_items.html', {
+            'broadcasts': page_obj,
+            'page_obj': page_obj
+        })
+    
     return render(request, 'dashboards/broadcast_center.html', {
-        'broadcasts': broadcasts,
+        'broadcasts': page_obj,
+        'page_obj': page_obj,
         'classes': classes,
         'parents': parents
     })
@@ -770,7 +855,39 @@ def chat_api_messages(request, chat_type, target_id):
 def chat_api_send(request):
     """API to send a message"""
     user = request.user
-    
+
+    # Handle HTMX requests
+    if request.headers.get('HX-Request'):
+        room_id = request.POST.get('room_id')
+        message = request.POST.get('message')
+        attachment = request.FILES.get('attachment')
+
+        if not message and not attachment:
+            return HttpResponse('Empty message', status=400)
+
+        # Create message in room
+        if room_id:
+            room = get_object_or_404(ChatRoom, id=room_id)
+            msg_obj = ChatRoomMessage.objects.create(
+                room=room,
+                sender=user,
+                message=message or '',
+                attachment=attachment
+            )
+
+            # Mark as read for sender
+            ChatRoomReadStatus.objects.update_or_create(
+                room=room,
+                user=user,
+                defaults={'last_read_message': msg_obj}
+            )
+
+            # Return HTML message for HTMX
+            return render(request, 'partials/dashboards/chat_message.html', {
+                'message': msg_obj,
+                'user': user
+            })
+
     # Handle both JSON (legacy/text-only) and Multipart (file upload)
     if request.content_type == 'application/json':
         data = json.loads(request.body)
@@ -783,7 +900,7 @@ def chat_api_send(request):
         target_id = request.POST.get('target_id')
         message = request.POST.get('message')
         attachment = request.FILES.get('attachment')
-    
+
     if not message and not attachment:
         return JsonResponse({'error': 'Empty message and attachment'}, status=400)
 
@@ -793,19 +910,19 @@ def chat_api_send(request):
     if chat_type == 'dm':
         recipient = get_object_or_404(User, id=target_id)
         msg_obj = ChatMessage.objects.create(
-            sender=user, 
-            recipient=recipient, 
+            sender=user,
+            recipient=recipient,
             message=message or '',
             attachment=attachment
         )
-        
+
         # Log system event
         SystemLog.objects.create(
             level='INFO',
             source='Chat',
             message=f"DM sent from {user.username} to {recipient.username}"
         )
-        
+
         response_data = {
             'id': msg_obj.id,
             'sender_id': user.id,
@@ -913,13 +1030,35 @@ def mark_notification_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
     notification.is_read = True
     notification.save()
+
+    # For HTMX requests, return success response
+    if request.headers.get('HX-Request'):
+        return HttpResponse('')
+
     return redirect(request.META.get('HTTP_REFERER', 'accounts_redirect'))
 
 @login_required()
 def mark_all_notifications_read(request):
     Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
     messages.success(request, 'All notifications marked as read.')
+
+    # For HTMX requests, return success response
+    if request.headers.get('HX-Request'):
+        # Update notification badge
+        total_unread_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+        return render(request, 'partials/dashboards/notification_badge.html', {
+            'total_unread_count': total_unread_count
+        })
+
     return redirect(request.META.get('HTTP_REFERER', 'accounts_redirect'))
+
+@login_required()
+def notification_badge(request):
+    """Return updated notification badge for HTMX"""
+    total_unread_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+    return render(request, 'partials/dashboards/notification_badge.html', {
+        'total_unread_count': total_unread_count
+    })
 
 # ========================= QUESTION MANAGEMENT =========================
 
@@ -1037,6 +1176,11 @@ def delete_choice_ajax(request, choice_id):
 @login_required()
 def admin_classes_list(request):
     classes = SchoolClass.objects.all().order_by('name')
+
+    # Check if HTMX request
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/dashboards/classes_table_rows.html', {'classes': classes})
+
     return render(request, 'dashboards/admin/classes_list.html', {'classes': classes})
 
 @login_required()
@@ -1046,6 +1190,12 @@ def admin_create_class(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Class created successfully.')
+
+            # For HTMX requests, return updated classes list
+            if request.headers.get('HX-Request'):
+                classes = SchoolClass.objects.all().order_by('name')
+                return render(request, 'partials/dashboards/classes_table_rows.html', {'classes': classes})
+
             return redirect('dashboards:admin_classes_list')
     else:
         form = SchoolClassForm()
@@ -1073,6 +1223,11 @@ def admin_delete_class(request, class_id):
     school_class = get_object_or_404(SchoolClass, id=class_id)
     school_class.delete()
     messages.success(request, 'Class deleted successfully.')
+
+    # Return empty row for HTMX requests
+    if request.headers.get('HX-Request'):
+        return HttpResponse('')
+
     return redirect('dashboards:admin_classes_list')
 
 # ========================= SUBJECT MANAGEMENT =========================

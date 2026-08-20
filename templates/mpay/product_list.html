@@ -90,7 +90,11 @@ body.cart-open{overflow:hidden}
 
 <!-- FLOATING CART BUTTON -->
 <button class="btn btn-dark floating-cart-btn" onclick="openCart()">
-  🛒 Cart <span id="cartCount" class="badge bg-danger">0</span>
+  🛒 Cart <span id="cartCount" class="badge bg-danger"
+                hx-get="{% url 'mpay:cart_count' %}"
+                hx-vals='{"ward": "{{ ward_id }}"}'
+                hx-trigger="load, every 5s, cartUpdated from:body"
+                hx-swap="innerHTML">0</span>
 </button>
 
 {% endblock %}

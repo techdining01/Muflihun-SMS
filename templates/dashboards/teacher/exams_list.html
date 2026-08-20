@@ -50,10 +50,16 @@
                     </tr>
                 </thead>
                 <tbody id="exams-table-body">
-                    {% include 'dashboards/teacher/partials/exams_table_rows.html' %}
+                    {% include 'partials/dashboards/teacher_exams_table_rows.html' %}
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Controls -->
+        {% if page_obj.has_other_pages %}
+        <div class="card-footer bg-white" id="pagination-container">
+            {% include 'includes/pagination.html' %}
+        </div>
+        {% endif %}
     </div>
 </div>
 
