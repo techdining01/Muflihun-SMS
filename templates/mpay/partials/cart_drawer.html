@@ -1,39 +1,40 @@
 <div class="cart-drawer">
-  <div class="cart-header">
-    <h6>Your Cart</h6>
-    <button onclick="closeCart()">✕</button>
+  <div class="flex justify-between items-center p-4 border-b border-slate-200">
+    <h6 class="font-semibold text-slate-900">Your Cart</h6>
+    <button class="px-2 py-1 text-slate-500 hover:text-slate-700" onclick="closeCart()">✕</button>
   </div>
 
   {% if has_items %}
-    <div class="cart-items">
+    <div class="p-4 space-y-3">
       {% for item in items %}
-        <div class="cart-item">
+        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
           <div>
-            <strong>{{ item.product.name }}</strong>
-            <div class="price">₦{{ item.product.price }}</div>
+            <strong class="text-slate-900">{{ item.product.name }}</strong>
+            <div class="text-slate-600 text-sm">₦{{ item.product.price }}</div>
           </div>
 
-          <div class="qty">
-            <button class="qty-btn" data-id="{{ item.id }}" data-action="decrease">−</button>
-            <span>{{ item.quantity }}</span>
-            <button class="qty-btn" data-id="{{ item.id }}" data-action="increase">+</button>
+          <div class="flex items-center gap-2">
+            <button class="qty-btn w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded hover:bg-slate-100 transition-colors" data-id="{{ item.id }}" data-action="decrease">−</button>
+            <span class="text-slate-900 font-medium">{{ item.quantity }}</span>
+            <button class="qty-btn w-8 h-8 flex items-center justify-center bg-white border border-slate-300 rounded hover:bg-slate-100 transition-colors" data-id="{{ item.id }}" data-action="increase">+</button>
           </div>
         </div>
       {% endfor %}
     </div>
 
-    <div class="cart-footer">
-      <div class="total">
-        Subtotal: ₦{{ cart.subtotal }}
+    <div class="p-4 border-t border-slate-200">
+      <div class="flex justify-between items-center mb-3">
+        <span class="text-slate-600">Subtotal:</span>
+        <span class="font-bold text-slate-900">₦{{ cart.subtotal }}</span>
       </div>
 
       <form method="post" action="{% url 'mpay:checkout' %}">
         {% csrf_token %}
         <input type="hidden" name="ward_id" value="{{ ward.id }}">
-        <button class="checkout-btn">Checkout</button>
+        <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">Checkout</button>
       </form>
     </div>
   {% else %}
-    <p class="empty">Your cart is empty</p>
+    <p class="text-center text-slate-500 py-8">Your cart is empty</p>
   {% endif %}
 </div>

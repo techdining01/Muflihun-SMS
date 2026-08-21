@@ -1,11 +1,13 @@
 {% if page_obj.paginator.num_pages > 1 %}
-<nav aria-label="Page navigation" hx-target="#pagination-container" hx-swap="innerHTML">
+<nav aria-label="Page navigation">
   <ul class="pagination justify-content-center">
 
     {% if page_obj.has_previous %}
       <li class="page-item">
         <a class="page-link"
            hx-get="?page={{ page_obj.previous_page_number }}"
+           hx-target="#table-container"
+           hx-swap="outerHTML"
            hx-push-url="?page={{ page_obj.previous_page_number }}">
           « Prev
         </a>
@@ -25,6 +27,8 @@
         <li class="page-item">
           <a class="page-link" 
              hx-get="?page={{ num }}"
+             hx-target="#table-container"
+             hx-swap="outerHTML"
              hx-push-url="?page={{ num }}">
             {{ num }}
           </a>
@@ -36,6 +40,8 @@
       <li class="page-item">
         <a class="page-link"
            hx-get="?page={{ page_obj.next_page_number }}"
+           hx-target="#table-container"
+           hx-swap="outerHTML"
            hx-push-url="?page={{ page_obj.next_page_number }}">
           Next »
         </a>

@@ -4,14 +4,14 @@
 {% block title %}Retake Requests - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-arrow-repeat"></i> Retake Requests</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-arrow-repeat"></i> Retake Requests</h2>
         </div>
-        <div class="col-md-4">
-            <form method="get" class="d-flex">
-                <select name="status" class="form-select me-2" onchange="this.form.submit()">
+        <div>
+            <form method="get">
+                <select name="status" class="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="this.form.submit()">
                     <option value="">All Statuses</option>
                     {% for value, label in statuses %}
                     <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
@@ -21,65 +21,65 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="table-responsive p-0">
-            <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                <thead class="table-light">
+    <div class="bg-white shadow-sm rounded-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Date</th>
-                        <th>Student</th>
-                        <th>Exam</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Date</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Student</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Exam</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Reason</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Status</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for retake_req in page_obj %}
-                    <tr>
-                        <td data-label="Date">{{ retake_req.created_at|date:"M d, Y H:i" }}</td>
-                        <td data-label="Student">
-                            <div>{{ retake_req.student.get_full_name }}</div>
-                            <small class="text-muted">{{ retake_req.student.username }}</small>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3">{{ retake_req.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="px-4 py-3">
+                            <div class="text-slate-900">{{ retake_req.student.get_full_name }}</div>
+                            <small class="text-slate-500">{{ retake_req.student.username }}</small>
                         </td>
-                        <td data-label="Exam">{{ retake_req.exam.title }}</td>
-                        <td data-label="Reason">{{ retake_req.reason|truncatechars:50 }}</td>
-                        <td data-label="Status">
+                        <td class="px-4 py-3 text-slate-700">{{ retake_req.exam.title }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ retake_req.reason|truncatechars:50 }}</td>
+                        <td class="px-4 py-3">
                             {% if retake_req.status == 'approved' %}
-                            <span class="badge bg-success">Approved</span>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Approved</span>
                             {% elif retake_req.status == 'denied' %}
-                            <span class="badge bg-danger">Denied</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Denied</span>
                             {% else %}
-                            <span class="badge bg-warning text-dark">Pending</span>
+                            <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Pending</span>
                             {% endif %}
                         </td>
-                        <td data-label="Actions">
+                        <td class="px-4 py-3">
                             {% if retake_req.status == 'pending' %}
-                            <div class="btn-group btn-group-sm">
-                                <form action="{% url 'dashboards:update_retake_request_status' retake_req.id %}" method="post" class="d-inline">
+                            <div class="flex gap-1">
+                                <form action="{% url 'dashboards:update_retake_request_status' retake_req.id %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="approve">
-                                    <button type="submit" class="btn btn-success" title="Approve">
+                                    <button type="submit" class="px-2 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors" title="Approve">
                                         <i class="bi bi-check-lg"></i>
                                     </button>
                                 </form>
-                                <form action="{% url 'dashboards:update_retake_request_status' retake_req.id %}" method="post" class="d-inline">
+                                <form action="{% url 'dashboards:update_retake_request_status' retake_req.id %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="deny">
-                                    <button type="submit" class="btn btn-danger" title="Deny">
+                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors" title="Deny">
                                         <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>
                             </div>
                             {% else %}
-                            <small class="text-muted">-</small>
+                            <small class="text-slate-500">-</small>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                        <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                            <i class="bi bi-inbox text-4xl block mb-2"></i>
                             No retake requests found
                         </td>
                     </tr>
@@ -89,7 +89,7 @@
         </div>
         
         {% if page_obj.has_other_pages %}
-        <div class="card-footer">
+        <div class="p-4 border-t border-slate-100">
             {% include 'includes/pagination.html' %}
         </div>
         {% endif %}

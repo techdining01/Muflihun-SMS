@@ -1,74 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <h2>Approve Users</h2>
+<div class="max-w-7xl mx-auto mt-4 px-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900">Approve Users</h2>
         </div>
-        <div class="col-md-6 text-end">
-            <a href="{% url 'dashboards:admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        <div>
+            <a href="{% url 'dashboards:admin_dashboard' %}" class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">Back to Dashboard</a>
         </div>
     </div>
 
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-md-3">
-            <label for="search" class="form-label">Search</label>
-            <input type="text" name="q" id="search" class="form-control" placeholder="Search name, email..." value="{{ request.GET.q }}">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div>
+            <label for="search" class="block text-sm font-medium text-slate-700 mb-2">Search</label>
+            <input type="text" name="q" id="search" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Search name, email..." value="{{ request.GET.q }}">
         </div>
-        <div class="col-md-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-select">
+        <div>
+            <label for="role" class="block text-sm font-medium text-slate-700 mb-2">Role</label>
+            <select name="role" id="role" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <option value="">All Roles</option>
                 {% for key, label in roles %}
                 <option value="{{ key }}" {% if request.GET.role == key %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-2 align-self-end">
-            <button class="btn btn-primary w-100">Filter</button>
+        <div class="flex items-end">
+            <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Filter</button>
         </div>
     </form>
 
-
 <form method="post">{% csrf_token %}
-    <div class="table-responsive">
-        <table class="table table-hover align-middle table-responsive-stack">
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
             <thead>
-                <tr>
-                    <th><input type="checkbox" onclick="toggleAll(this)"></th>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Email</th>
-                    <th>Date Joined</th>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700"><input type="checkbox" onclick="toggleAll(this)"></th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Name</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Role</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Date Joined</th>
                 </tr>
             </thead>
             <tbody>
                 {% for u in users %}
-                <tr>
-                    <td data-label="Select"><input type="checkbox" name="users" value="{{ u.id }}"></td>
-                    <td data-label="Name">{{ u.username }}</td>
-                    <td data-label="Role"><span class="badge bg-secondary">{{ u.get_role_display }}</span></td>
-                    <td data-label="Email">{{ u.email }}</td>
-                    <td data-label="Date Joined">{{ u.date_joined|date:"M d, Y" }}</td>
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="px-4 py-3"><input type="checkbox" name="users" value="{{ u.id }}"></td>
+                    <td class="px-4 py-3 text-slate-700">{{ u.username }}</td>
+                    <td class="px-4 py-3"><span class="px-3 py-1 bg-slate-200 text-slate-700 rounded-full text-sm">{{ u.get_role_display }}</span></td>
+                    <td class="px-4 py-3 text-slate-700">{{ u.email }}</td>
+                    <td class="px-4 py-3 text-slate-700">{{ u.date_joined|date:"M d, Y" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No pending users</td>
+                    <td colspan="5" class="px-4 py-8 text-center text-slate-500">No pending users</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-
-    <button class="btn btn-success mt-2">Approve Selected</button>
+    <button class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Approve Selected</button>
 </form>
-
-
-</div>
-</div>
-</div>
-
 
 <script>
     function toggleAll(source) {

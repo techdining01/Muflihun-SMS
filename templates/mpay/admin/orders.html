@@ -1,41 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Orders</h4>
-    <a href="{% url 'mpay:admin_dashboard' %}" class="btn btn-outline-secondary btn-sm">
+<div class="py-4">
+  <div class="flex justify-between items-center mb-6">
+    <h4 class="font-bold text-slate-900 mb-0">Orders</h4>
+    <a href="{% url 'mpay:admin_dashboard' %}" class="px-3 py-1 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors text-sm">
       <i class="bi bi-arrow-left"></i> Dashboard
     </a>
   </div>
 
-  <div class="card shadow-sm border-0">
-    <div class="card-body p-0">
+  <div class="bg-white rounded-2xl shadow-sm border-0">
+    <div class="p-0">
       <!-- Unified Responsive View -->
-      <div class="table-responsive p-0">
-        <table class="table table-hover align-middle mb-0 table-responsive-stack">
-          <thead class="bg-light">
+      <div class="overflow-x-auto p-0">
+        <table class="w-full border-collapse align-middle table-responsive-stack">
+          <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th class="ps-4">Order ID</th>
-              <th>Buyer</th>
-              <th>Ward</th>
-              <th>Status</th>
-              <th>Amount</th>
-              <th class="text-end pe-4">Action</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Order ID</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Buyer</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Ward</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Amount</th>
+              <th class="px-4 py-3 text-right font-semibold text-slate-700">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for o in orders %}
-            <tr>
-              <td class="ps-4 font-monospace small" data-label="Order ID">{{ o.reference|default:o.id|truncatechars:12 }}</td>
-              <td data-label="Buyer">
-                <div class="fw-semibold">{{ o.buyer.get_full_name|default:o.buyer.username }}</div>
-                <div class="small text-muted">{{ o.buyer.email }}</div>
+            <tr class="border-b border-slate-100 hover:bg-slate-50">
+              <td class="px-4 py-3 font-mono text-sm text-slate-900">{{ o.reference|default:o.id|truncatechars:12 }}</td>
+              <td class="px-4 py-3">
+                <div class="font-semibold text-slate-900">{{ o.buyer.get_full_name|default:o.buyer.username }}</div>
+                <div class="text-xs text-slate-500">{{ o.buyer.email }}</div>
               </td>
-              <td data-label="Ward">{{ o.ward.get_full_name }}</td>
-              <td data-label="Status"><span class="badge rounded-pill bg-info-subtle text-info px-3">{{ o.status }}</span></td>
-              <td class="fw-bold text-primary" data-label="Amount">₦{{ o.total_amount }}</td>
-              <td class="text-end pe-4" data-label="Action">
-                <a href="{% url 'mpay:admin_order_detail' o.id %}" class="btn btn-sm btn-primary">
+              <td class="px-4 py-3 text-slate-700">{{ o.ward.get_full_name }}</td>
+              <td class="px-4 py-3"><span class="px-3 py-1 bg-cyan-100 text-cyan-800 rounded-full text-xs">{{ o.status }}</span></td>
+              <td class="px-4 py-3 font-bold text-blue-600">₦{{ o.total_amount }}</td>
+              <td class="px-4 py-3 text-right">
+                <a href="{% url 'mpay:admin_order_detail' o.id %}" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors">
                   View
                 </a>
               </td>

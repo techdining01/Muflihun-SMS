@@ -27,20 +27,20 @@ body.cart-open{overflow:hidden}
 </style>
 {% endblock %}
 {% block content %}
-<div class="container mpay-shop">
+<div class="mpay-shop">
 
-  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-    <h5 class="fw-bold mb-0">
+  <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+    <h5 class="font-bold text-slate-900 mb-0">
       {{ ward.get_full_name }} · {{ ward.student_class }}
     </h5>
-    <a href="{% url 'mpay:parent_orders' %}" class="btn btn-outline-primary btn-sm">
+    <a href="{% url 'mpay:parent_orders' %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors">
       <i class="bi bi-bag-check"></i> View My Orders
     </a>
   </div>
 
-  <div class="row g-3">
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3">
     {% for product in products %}
-      <div class="col-6 col-md-4 col-lg-3">
+      <div>
         <div class="product-card">
 
           <div class="product-image">
@@ -52,16 +52,16 @@ body.cart-open{overflow:hidden}
           </div>
 
           <div class="p-2">
-            <div class="fw-semibold">{{ product.name }}</div>
-            <div class="fw-bold">₦{{ product.price }}</div>
+            <div class="font-semibold text-slate-900">{{ product.name }}</div>
+            <div class="font-bold text-slate-900">₦{{ product.price }}</div>
 
             {% if product.id in cart_product_ids %}
-              <button class="btn btn-success btn-sm w-100 disabled">
+              <button class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm w-full cursor-not-allowed">
                 In Cart ✓
               </button>
             {% else %}
               <button
-                class="btn btn-primary btn-sm w-100 btn-add-cart"
+                class="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm w-full hover:bg-blue-700 transition-colors btn-add-cart"
                 data-product="{{ product.id }}"
                 data-ward="{{ ward.id }}">
                 Add to Cart
@@ -81,16 +81,16 @@ body.cart-open{overflow:hidden}
 
 <!-- CART SIDEBAR -->
 <div id="cartSidebar" class="cart-sidebar">
-  <div class="p-3 border-bottom d-flex justify-content-between">
-    <strong>Your Cart</strong>
-    <button class="btn-close" onclick="closeCart()"></button>
+  <div class="p-3 border-b border-slate-200 flex justify-between">
+    <strong class="text-slate-900">Your Cart</strong>
+    <button class="px-2 py-1 text-slate-500 hover:text-slate-700" onclick="closeCart()">✕</button>
   </div>
   <div class="p-3 flex-grow-1 overflow-auto" id="cartBody"></div>
 </div>
 
 <!-- FLOATING CART BUTTON -->
-<button class="btn btn-dark floating-cart-btn" onclick="openCart()">
-  🛒 Cart <span id="cartCount" class="badge bg-danger"
+<button class="px-4 py-2 bg-slate-900 text-white rounded-lg floating-cart-btn hover:bg-slate-800 transition-colors" onclick="openCart()">
+  🛒 Cart <span id="cartCount" class="px-2 py-1 bg-red-600 text-white rounded-full text-xs"
                 hx-get="{% url 'mpay:cart_count' %}"
                 hx-vals='{"ward": "{{ ward_id }}"}'
                 hx-trigger="load, every 5s, cartUpdated from:body"

@@ -3,206 +3,172 @@
 {% block title %}Teacher Dashboard - Exam System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-clipboard-check"></i> Teacher Dashboard</h2>
-            <p class="text-muted">Welcome, {{ request.user.get_full_name }}! Manage your exams and grading here.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-clipboard-check"></i> Teacher Dashboard</h2>
+        <p class="text-slate-500">Welcome, {{ request.user.get_full_name }}! Manage your exams and grading here.</p>
     </div>
 
     <!-- Statistics Row -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <i class="bi bi-file-earmark-text" style="font-size: 2em; color: #3498db;"></i>
-                <h3>{{ total_exams }}</h3>
-                <p>Exams Created</p>
-            </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+            <i class="bi bi-file-earmark-text text-3xl text-blue-500"></i>
+            <h3 class="text-lg font-bold text-slate-900 my-2">{{ total_exams }}</h3>
+            <p class="text-sm text-slate-500">Exams Created</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <i class="bi bi-people" style="font-size: 2em; color: #27ae60;"></i>
-                <h3>{{ total_students }}</h3>
-                <p>Students in Classes</p>
-            </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+            <i class="bi bi-people text-3xl text-green-500"></i>
+            <h3 class="text-lg font-bold text-slate-900 my-2">{{ total_students }}</h3>
+            <p class="text-sm text-slate-500">Students in Classes</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <i class="bi bi-hourglass-split" style="font-size: 2em; color: #f39c12;"></i>
-                <h3>{{ pending_grading }}</h3>
-                <p>Pending Grading</p>
-            </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+            <i class="bi bi-hourglass-split text-3xl text-amber-500"></i>
+            <h3 class="text-lg font-bold text-slate-900 my-2">{{ pending_grading }}</h3>
+            <p class="text-sm text-slate-500">Pending Grading</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <i class="bi bi-check-circle" style="font-size: 2em; color: #9b59b6;"></i>
-                <h3>{{ total_graded }}</h3>
-                <p>Graded</p>
-            </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+            <i class="bi bi-check-circle text-3xl text-purple-500"></i>
+            <h3 class="text-lg font-bold text-slate-900 my-2">{{ total_graded }}</h3>
+            <p class="text-sm text-slate-500">Graded</p>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body d-flex flex-wrap gap-2">
-                    <a href="{% url 'dashboards:create_exam' %}" class="btn btn-primary flex-fill flex-md-grow-0">
-                        <i class="bi bi-plus-circle"></i> Create New Exam
-                    </a>
-                    <a href="{% url 'dashboards:teacher_exams' %}" class="btn btn-info flex-fill flex-md-grow-0">
-                        <i class="bi bi-list"></i> My Exams
-                    </a>
-                    <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="btn btn-warning flex-fill flex-md-grow-0">
-                        <i class="bi bi-pen"></i> Grade Submissions
-                    </a>
-                </div>
+    <div class="mb-6">
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="bg-blue-600 text-white px-6 py-4 rounded-t-2xl">
+                <h5 class="font-semibold mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+            </div>
+            <div class="p-6 flex flex-wrap gap-2">
+                <a href="{% url 'dashboards:create_exam' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 md:flex-grow-0">
+                    <i class="bi bi-plus-circle"></i> Create New Exam
+                </a>
+                <a href="{% url 'dashboards:teacher_exams' %}" class="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors flex-1 md:flex-grow-0">
+                    <i class="bi bi-list"></i> My Exams
+                </a>
+                <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors flex-1 md:flex-grow-0">
+                    <i class="bi bi-pen"></i> Grade Submissions
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Recent Exams -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Exams</h5>
-                </div>
-                <div class="card-body">
-                    {% if recent_exams %}
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover table-responsive-stack">
-                                <thead>
-                                    <tr>
-                                        <th>Exam Name</th>
-                                        <th>Class</th>
-                                        <th>Duration</th>
-                                        <th>Total Questions</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+    <div class="mb-6">
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-clock-history"></i> Recent Exams</h5>
+            </div>
+            <div class="p-6">
+                {% if recent_exams %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Exam Name</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Class</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Duration</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Total Questions</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exam in recent_exams %}
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                        <td class="px-4 py-3 font-semibold text-slate-900">{{ exam.title }}</td>
+                                        <td class="px-4 py-3 text-slate-700">{{ exam.school_class.name }}</td>
+                                        <td class="px-4 py-3 text-slate-700">{{ exam.duration }} mins</td>
+                                        <td class="px-4 py-3 text-slate-700">{{ exam.questions.count }}</td>
+                                        <td class="px-4 py-3">
+                                            {% if exam.is_published %}
+                                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Published</span>
+                                            {% else %}
+                                                <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Draft</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex gap-1">
+                                                <a href="{% url 'dashboards:exam_detail' exam.id %}" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{% url 'dashboards:edit_exam' exam.id %}" class="px-2 py-1 border-2 border-slate-300 text-slate-700 rounded-lg text-sm hover:bg-slate-100 transition-colors">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </div>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for exam in recent_exams %}
-                                        <tr>
-                                            <td data-label="Exam Name"><strong>{{ exam.title }}</strong></td>
-                                            <td data-label="Class">{{ exam.school_class.name }}</td>
-                                            <td data-label="Duration">{{ exam.duration }} mins</td>
-                                            <td data-label="Total Questions">{{ exam.questions.count }}</td>
-                                            <td data-label="Status">
-                                                {% if exam.is_published %}
-                                                    <span class="badge bg-success">Published</span>
-                                                {% else %}
-                                                    <span class="badge bg-warning">Draft</span>
-                                                {% endif %}
-                                            </td>
-                                            <td data-label="Actions">
-                                                <div class="d-flex gap-1 justify-content-md-start justify-content-end">
-                                                    <a href="{% url 'dashboards:exam_detail' exam.id %}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="{% url 'dashboards:edit_exam' exam.id %}" class="btn btn-sm btn-outline-secondary">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No exams created yet. <a href="{% url 'dashboards:create_exam' %}">Create your first exam</a></p>
-                    {% endif %}
-                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-slate-500">No exams created yet. <a href="{% url 'dashboards:create_exam' %}" class="text-blue-600 hover:underline">Create your first exam</a></p>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Performance Statistics -->
-    <div class="row g-3">
-        <div class="col-12 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Class Performance</h5>
-                </div>
-                <div class="card-body">
-                    {% if recent_exams %}
-                        <div class="table-responsive">
-                            <table class="table table-sm table-responsive-stack">
-                                <thead>
-                                    <tr>
-                                        <th>Class</th>
-                                        <th>Students</th>
-                                        <th>Avg Score</th>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-bar-chart"></i> Class Performance</h5>
+            </div>
+            <div class="p-6">
+                {% if recent_exams %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Class</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Students</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-slate-700">Avg Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for class in recent_exams %}
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                        <td class="px-4 py-3 text-slate-700">{{ class.school_class }}</td>
+                                        <td class="px-4 py-3 text-slate-700">{{ class.school_class.students.count }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 bg-cyan-100 text-cyan-800 rounded-full text-xs">
+                                                {{ class.avg_score_pct|floatformat:1 }}%
+                                            </span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for class in recent_exams %}
-                                        <tr>
-                                            <td data-label="Class">{{ class.school_class }}</td>
-                                            <td data-label="Students">{{ class.school_class.students.count }}</td>
-                                            <td data-label="Avg Score">
-                                                <span class="badge bg-info">
-                                                    {{ class.avg_score_pct|floatformat:1 }}%
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No classes assigned yet.</p>
-                    {% endif %}
-                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-slate-500">No classes assigned yet.</p>
+                {% endif %}
             </div>
         </div>
 
-        <div class="col-12 col-md-6">
-                </div>
-                <div class="card-body">
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-success" role="progressbar" 
-                             style="width: {{ grading_progress }}%">
-                            {{ grading_progress|floatformat:0 }}% Graded
-                        </div>
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-check-circle"></i> Grading Progress</h5>
+            </div>
+            <div class="p-6">
+                <div class="w-full bg-slate-200 rounded-full h-4 mb-3">
+                    <div class="bg-green-500 h-4 rounded-full" style="width: {{ grading_progress }}%">
+                        {{ grading_progress|floatformat:0 }}% Graded
                     </div>
-                    <p class="small text-muted">
-                        {{ total_graded }} of {{ total_submissions }} submissions graded
-                    </p>
-                    {% if pending_grading > 0 %}
-                        <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="btn btn-sm btn-warning">
-                            <i class="bi bi-exclamation-triangle"></i> {{ pending_grading }} Pending
-                        </a>
-                    {% else %}
-                        <p class="text-success"><i class="bi bi-check-circle"></i> All graded!</p>
-                    {% endif %}
                 </div>
+                <p class="text-sm text-slate-500">
+                    {{ total_graded }} of {{ total_submissions }} submissions graded
+                </p>
+                {% if pending_grading > 0 %}
+                    <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="mt-2 inline-block px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm">
+                        <i class="bi bi-exclamation-triangle"></i> {{ pending_grading }} Pending
+                    </a>
+                {% else %}
+                    <p class="text-green-600"><i class="bi bi-check-circle"></i> All graded!</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .stat-card {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: clamp(0.75rem, 3vw, 1.25rem);
-        text-align: center;
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-    .stat-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    .stat-card h3 { color: #333; margin: 8px 0; font-size: clamp(1.2rem, 4vw, 1.75rem); }
-    .stat-card p { font-size: 0.85em; margin: 0; }
-</style>
 {% endblock %}

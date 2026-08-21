@@ -3,28 +3,26 @@
 {% block title %}Delete Class{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Delete Class</h5>
-                </div>
-                <div class="card-body text-center p-5">
-                    <h4 class="mb-4">Are you sure?</h4>
-                    <p class="lead mb-4">You are about to delete the class <strong>"{{ class.name }}"</strong>.</p>
-                    <p class="text-muted mb-4">This action cannot be undone. Any students assigned to this class will be unassigned.</p>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="{% url 'dashboards:admin_classes_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
-                            <button type="submit" class="btn btn-danger btn-lg">
-                                <i class="bi bi-trash-fill me-2"></i>Yes, Delete Class
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<div class="flex justify-center py-5">
+    <div class="w-full max-w-md px-4">
+        <div class="bg-white shadow-lg rounded-2xl border-2 border-red-200">
+            <div class="bg-red-600 text-white px-6 py-4 rounded-t-2xl">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill mr-2"></i>Delete Class</h5>
+            </div>
+            <div class="p-6 text-center">
+                <h4 class="text-xl font-bold text-slate-900 mb-4">Are you sure?</h4>
+                <p class="text-lg text-slate-700 mb-4">You are about to delete the class <strong>"{{ class.name }}"</strong>.</p>
+                <p class="text-slate-500 mb-4">This action cannot be undone. Any students assigned to this class will be unassigned.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="flex justify-center gap-3">
+                        <a href="{% url 'dashboards:admin_classes_list' %}" class="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">Cancel</a>
+                        <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="bi bi-trash-fill mr-2"></i>Yes, Delete Class
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

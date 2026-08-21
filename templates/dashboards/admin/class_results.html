@@ -3,57 +3,54 @@
 {% block title %}Results for {{ school_class.name }} - Admin{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboards:admin_results_dashboard' %}">Results</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ school_class.name }}</li>
-                </ol>
-            </nav>
-            <h2><i class="bi bi-mortarboard"></i> {{ school_class.name }} Results</h2>
-            <p class="text-muted">Select a student to view their detailed results.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <nav aria-label="breadcrumb" class="text-sm text-slate-500 mb-2">
+            <a href="{% url 'dashboards:admin_results_dashboard' %}" class="hover:text-slate-700">Results</a>
+            <span class="mx-2">/</span>
+            <span class="text-slate-900">{{ school_class.name }}</span>
+        </nav>
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-mortarboard"></i> {{ school_class.name }} Results</h2>
+        <p class="text-slate-500">Select a student to view their detailed results.</p>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive p-0">
-                <table class="table table-hover align-middle table-responsive-stack">
-                    <thead class="table-light">
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-6">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th>Student Name</th>
-                            <th>Admission Number</th>
-                            <th>Email</th>
-                            <th>Actions</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Student Name</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Admission Number</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for student in students %}
-                        <tr>
-                            <td data-label="Student Name">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-circle me-2 bg-primary text-white">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3">
                                         {{ student.first_name|first }}{{ student.last_name|first }}
                                     </div>
                                     <div>
-                                        <div class="fw-bold">{{ student.get_full_name }}</div>
-                                        <div class="small text-muted">@{{ student.username }}</div>
+                                        <div class="font-semibold text-slate-900">{{ student.get_full_name }}</div>
+                                        <div class="text-sm text-slate-500">@{{ student.username }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td data-label="Admission Number">{{ student.admission_number|default:"-" }}</td>
-                            <td data-label="Email">{{ student.email }}</td>
-                            <td data-label="Actions">
-                                <a href="{% url 'dashboards:admin_student_result_detail' student.id %}" class="btn btn-sm btn-primary">
+                            <td class="px-4 py-3 text-slate-700">{{ student.admission_number|default:"-" }}</td>
+                            <td class="px-4 py-3 text-slate-700">{{ student.email }}</td>
+                            <td class="px-4 py-3">
+                                <a href="{% url 'dashboards:admin_student_result_detail' student.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors">
                                     View Detailed Results
                                 </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">
+                            <td colspan="4" class="px-4 py-8 text-center text-slate-500">
                                 No students found in this class.
                             </td>
                         </tr>

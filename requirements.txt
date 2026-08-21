@@ -27,6 +27,7 @@ daphne==4.2.1
 Django==6.0.2
 django-crispy-forms==2.5
 django-storages==1.14.6
+django-tailwind==3.8.0
 gunicorn==25.0.3
 hyperlink==21.0.0
 idna==3.11

@@ -4,25 +4,25 @@
 {% block title %}Attempt History{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12 col-md-8">
-            <h2>My Exam Attempts</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900">My Exam Attempts</h2>
         </div>
-        <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
-            <a href="{% url 'dashboards:student_dashboard' %}" class="btn btn-secondary w-100 w-md-auto">
+        <div class="text-right">
+            <a href="{% url 'dashboards:student_dashboard' %}" class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">
                 Back to Dashboard
             </a>
         </div>
     </div>
 
     <!-- Filter Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="d-flex flex-column flex-md-row align-items-md-end gap-2">
-                <div class="form-group me-md-3 w-100 w-md-auto">
-                    <label for="status" class="form-label mb-1">Filter by Status:</label>
-                    <select name="status" id="status" class="form-control">
+    <div class="bg-white rounded-2xl shadow-sm mb-6">
+        <div class="p-6">
+            <form method="get" class="flex flex-col md:flex-row items-start md:items-end gap-2">
+                <div class="w-full md:w-auto">
+                    <label for="status" class="block text-sm font-medium text-slate-700 mb-1">Filter by Status:</label>
+                    <select name="status" id="status" class="w-full md:w-auto px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">All Statuses</option>
                         {% for status in statuses %}
                             <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>
@@ -31,10 +31,10 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-primary w-100 w-md-auto">Filter</button>
+                <div class="flex flex-wrap gap-2">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Filter</button>
                     {% if status_filter %}
-                        <a href="{% url 'dashboards:student_attempt_history' %}" class="btn btn-outline-secondary w-100 w-md-auto">
+                        <a href="{% url 'dashboards:student_attempt_history' %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
                             Clear
                         </a>
                     {% endif %}
@@ -44,151 +44,134 @@
     </div>
 
     {% if page_obj %}
-        <div class="table-responsive p-0">
-            <table class="table table-striped table-hover table-responsive-stack student-attempts-table">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Exam</th>
-                        <th>Status</th>
-                        <th>Score</th>
-                        <th>Total Marks</th>
-                        <th>Started</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for attempt in page_obj %}
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-800 text-white">
                         <tr>
-                            <td data-label="Exam">{{ attempt.exam.title }}</td>
-                            <td data-label="Status">
-                                <span class="badge bg-{% if attempt.status == 'submitted' %}success{% elif attempt.status == 'in_progress' %}warning{% elif attempt.status == 'interrupted' %}danger{% else %}secondary{% endif %}">
-                                    {{ attempt.status|title }}
-                                </span>
-                            </td>
-                            <td data-label="Score">{{ attempt.total_score }}</td>
-                            <td data-label="Total Marks">{{ attempt.exam.total_marks }}</td>
-                            <td data-label="Started">{{ attempt.started_at|date:"d M Y, H:i" }}</td>
-                            <td data-label="Actions">
-                                {% if attempt.status == 'submitted' %}
-                                    <a href="{% url 'dashboards:student_result_detail' attempt.id %}" class="btn btn-sm btn-info">View Result</a>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#retakeModal{{ attempt.exam.id }}">
-                                        Request Retake
-                                    </button>
-                                    
-                                    <!-- Retake Modal (remains unchanged) -->
-                                    <div class="modal fade" id="retakeModal{{ attempt.exam.id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Request Retake: {{ attempt.exam.title }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <th class="px-4 py-3 text-left font-semibold">Exam</th>
+                            <th class="px-4 py-3 text-left font-semibold">Status</th>
+                            <th class="px-4 py-3 text-left font-semibold">Score</th>
+                            <th class="px-4 py-3 text-left font-semibold">Total Marks</th>
+                            <th class="px-4 py-3 text-left font-semibold">Started</th>
+                            <th class="px-4 py-3 text-left font-semibold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in page_obj %}
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="px-4 py-3 text-slate-900">{{ attempt.exam.title }}</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs {% if attempt.status == 'submitted' %}bg-green-100 text-green-800{% elif attempt.status == 'in_progress' %}bg-amber-100 text-amber-800{% elif attempt.status == 'interrupted' %}bg-red-100 text-red-800{% else %}bg-slate-200 text-slate-700{% endif %}">
+                                        {{ attempt.status|title }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.total_score }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.exam.total_marks }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.started_at|date:"d M Y, H:i" }}</td>
+                                <td class="px-4 py-3">
+                                    {% if attempt.status == 'submitted' %}
+                                        <a href="{% url 'dashboards:student_result_detail' attempt.id %}" class="px-3 py-1 bg-cyan-500 text-white rounded-lg text-sm hover:bg-cyan-600 transition-colors">View Result</a>
+                                        <button type="button" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors ml-1" onclick="openRetakeModal({{ attempt.exam.id }})">
+                                            Request Retake
+                                        </button>
+                                        
+                                        <!-- Retake Modal -->
+                                        <div id="retakeModal{{ attempt.exam.id }}" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+                                            <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4">
+                                                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                                                    <h5 class="font-semibold text-slate-900 mb-0">Request Retake: {{ attempt.exam.title }}</h5>
+                                                    <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors" onclick="closeRetakeModal({{ attempt.exam.id }})">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
                                                 </div>
                                                 <form action="{% url 'dashboards:student_request_retake' attempt.exam.id %}" method="post">
                                                     {% csrf_token %}
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="reason{{ attempt.exam.id }}" class="form-label">Reason for Retake</label>
-                                                            <textarea class="form-control" id="reason{{ attempt.exam.id }}" name="reason" rows="3" required placeholder="Please explain why you need to retake this exam..."></textarea>
+                                                    <div class="p-6">
+                                                        <div class="mb-4">
+                                                            <label for="reason{{ attempt.exam.id }}" class="block text-sm font-medium text-slate-700 mb-2">Reason for Retake</label>
+                                                            <textarea class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="reason{{ attempt.exam.id }}" name="reason" rows="3" required placeholder="Please explain why you need to retake this exam..."></textarea>
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                                                    <div class="px-6 py-4 border-t border-slate-100 flex justify-end gap-2">
+                                                        <button type="button" class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors" onclick="closeRetakeModal({{ attempt.exam.id }})">Close</button>
+                                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Submit Request</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
-                                    </div>
-                                {% elif attempt.status == 'in_progress' %}
-                                    <a href="{% url 'dashboards:resume_exam' attempt.id %}" class="btn btn-sm btn-warning">Resume</a>
-                                {% else %}
-                                    <a href="{% url 'dashboards:student_result_detail' attempt.id %}" class="btn btn-sm btn-info">View</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                    {% elif attempt.status == 'in_progress' %}
+                                        <a href="{% url 'dashboards:resume_exam' attempt.id %}" class="px-3 py-1 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600 transition-colors">Resume</a>
+                                    {% else %}
+                                        <a href="{% url 'dashboards:student_result_detail' attempt.id %}" class="px-3 py-1 bg-cyan-500 text-white rounded-lg text-sm hover:bg-cyan-600 transition-colors">View</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1&status={{ status_filter }}">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}">Previous</a>
-                        </li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if page_obj.number == num %}
-                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ num }}&status={{ status_filter }}">{{ num }}</a>
+            <div class="mt-6">
+                <nav aria-label="Page navigation">
+                    <ul class="flex justify-center gap-1">
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page=1&status={{ status_filter }}">First</a>
+                            </li>
+                            <li>
+                                <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}">Previous</a>
                             </li>
                         {% endif %}
-                    {% endfor %}
 
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&status={{ status_filter }}">Last</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li>
+                                    <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ num }}&status={{ status_filter }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}">Next</a>
+                            </li>
+                            <li>
+                                <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.paginator.num_pages }}&status={{ status_filter }}">Last</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
         {% endif %}
     {% else %}
-        <div class="alert alert-info" role="alert">
+        <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-800">
             No exam attempts found.
         </div>
     {% endif %}
 </div>
 
-<style>
-    @media (max-width: 576px) {
-        .student-attempts-table.table-responsive-stack tr {
-            padding: 0.5rem 0.75rem;
-        }
-        .student-attempts-table.table-responsive-stack td {
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-            padding: 0.6rem 0.4rem;
-            gap: 0.25rem;
-        }
-        .student-attempts-table.table-responsive-stack td::before {
-            margin: 0 0 0.2rem 0;
-            flex: 0 0 auto;
-        }
-        .student-attempts-table.table-responsive-stack td > :not(.modal) {
-            width: 100%;
-            justify-content: flex-start;
-        }
-        .student-attempts-table .btn {
-            width: 100%;
-        }
-        .student-attempts-table .btn + .btn {
-            margin-left: 0;
-            margin-top: 0.25rem;
-        }
-    }
+<script>
+function openRetakeModal(examId) {
+    document.getElementById('retakeModal' + examId).classList.remove('hidden');
+}
 
-    @media (max-width: 380px) and (max-height: 700px) {
-        .student-attempts-table.table-responsive-stack td {
-            padding: 0.5rem 0.35rem;
-            font-size: 0.85rem;
+function closeRetakeModal(examId) {
+    document.getElementById('retakeModal' + examId).classList.add('hidden');
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('[id^="retakeModal"]').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.add('hidden');
         }
-        .student-attempts-table.table-responsive-stack td::before {
-            font-size: 0.65rem;
-        }
-    }
-</style>
+    });
+});
+</script>
 {% endblock %}

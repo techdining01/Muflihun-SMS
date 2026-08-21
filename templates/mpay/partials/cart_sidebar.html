@@ -5,7 +5,7 @@
 {% if cart and cart.items.exists %}
 <div class="p-3 flex-grow-1 overflow-auto" id="cart-sidebar-content">
   {% for item in cart.items.all %}
-    <div class="d-flex gap-2 mb-3">
+    <div class="flex gap-2 mb-3">
       {% if item.product.image %}
         <img src="{{ item.product.image.url }}"  width="60" height="60" class="rounded" style="object-fit: cover;">
       {% else %}
@@ -13,26 +13,26 @@
       {% endif %}
 
     <div class="flex-grow-1">
-        <div class="fw-semibold">{{ item.product.name }}</div>
-        <small>₦{{ item.product.price }} x {{ item.quantity }} = </small>
-        <small>₦{{ item.subtotal }}</small>
-        <div class="d-flex align-items-center gap-2 mt-1">
-            <button class="btn btn-sm btn-light"
+        <div class="font-semibold text-slate-900">{{ item.product.name }}</div>
+        <small class="text-slate-600">₦{{ item.product.price }} x {{ item.quantity }} = </small>
+        <small class="text-slate-600">₦{{ item.subtotal }}</small>
+        <div class="flex items-center gap-2 mt-1">
+            <button class="px-2 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 transition-colors text-sm"
                     hx-post="{% url 'mpay:update_cart_item' %}"
                     hx-vals='{"item_id": "{{ item.id }}", "action": "dec", "ward_id": "{{ cart.ward.id }}"}'
                     hx-target="#cart-sidebar-content"
                     hx-swap="innerHTML">
                 −
             </button>
-            <span>{{ item.quantity }}</span>
-            <button class="btn btn-sm btn-light"
+            <span class="text-slate-900 font-medium">{{ item.quantity }}</span>
+            <button class="px-2 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 transition-colors text-sm"
                     hx-post="{% url 'mpay:update_cart_item' %}"
                     hx-vals='{"item_id": "{{ item.id }}", "action": "inc", "ward_id": "{{ cart.ward.id }}"}'
                     hx-target="#cart-sidebar-content"
                     hx-swap="innerHTML">
                 +
             </button>
-            <button class="btn btn-sm btn-outline-danger"
+            <button class="px-2 py-1 border-2 border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition-colors text-sm"
                     hx-post="{% url 'mpay:remove_cart_item' %}"
                     hx-vals='{"item_id": "{{ item.id }}", "ward_id": "{{ cart.ward.id }}"}'
                     hx-target="#cart-sidebar-content"
@@ -44,20 +44,19 @@
   </div>
   {% endfor %}
 
-  <hr class="my-3">
-    <button class="btn btn-outline-danger w-100 mt-2 mb-3 py-2 border-2 rounded-3 d-flex align-items-center justify-content-center gap-2 fw-semibold shadow-sm"
+  <hr class="my-3 border-slate-200">
+    <button class="w-full px-3 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors font-semibold shadow-sm mt-2 mb-3 flex items-center justify-center gap-2"
             hx-post="{% url 'mpay:clear_cart' %}"
             hx-vals='{"ward_id": "{{ cart.ward.id }}"}'
             hx-target="#cart-sidebar-content"
-            hx-swap="innerHTML"
-            style="--bs-btn-hover-bg: #dc3545;">
+            hx-swap="innerHTML">
         <i class="bi bi-trash3"></i>
         Empty Cart
     </button>
 
-  <hr>
+  <hr class="border-slate-200">
 
-    <div class="fw-bold text-end">
+    <div class="font-bold text-right text-slate-900">
       Total: ₦{{ cart.total_amount }}
     </div>
 
@@ -66,14 +65,14 @@
     {% csrf_token %}
     <input type="hidden" name="ward_id" value="{{ cart.ward.id }}">
 
-    <button type="submit" class="btn btn-primary w-100">
+    <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
       Proceed to Payment
     </button>
 </form>
 
 
   {% else %}
-  <div class="p-4 text-center text-muted" id="cart-sidebar-content">
+  <div class="p-4 text-center text-slate-500" id="cart-sidebar-content">
       Cart is empty
   </div>
   {% endif %}

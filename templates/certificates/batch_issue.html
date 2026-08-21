@@ -4,17 +4,17 @@
 {% block title %}Batch Issue Certificates{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="bi bi-award me-2"></i>Issue Certificates</h4>
+<div class="py-4">
+    <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="p-4 bg-blue-600 text-white rounded-t-2xl">
+                    <h4 class="font-bold mb-0"><i class="bi bi-award me-2"></i>Issue Certificates</h4>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Exam: {{ exam.title }}</h5>
+                <div class="p-4">
+                    <h5 class="font-semibold text-slate-900 mb-4">Exam: {{ exam.title }}</h5>
                     
-                    <p class="text-muted">
+                    <p class="text-slate-500">
                         This will generate and issue certificates to all students who have passed this exam.
                         Certificates will be available for download in the student dashboard.
                     </p>
@@ -23,30 +23,30 @@
                         {% csrf_token %}
                         
                         <div class="mb-4">
-                            <label for="passing_percentage" class="form-label">Passing Percentage (%)</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="passing_percentage" name="passing_percentage" 
+                            <label for="passing_percentage" class="block text-sm font-medium text-slate-700 mb-1">Passing Percentage (%)</label>
+                            <div class="flex">
+                                <input type="number" class="flex-grow px-4 py-2 border border-slate-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="passing_percentage" name="passing_percentage" 
                                        value="60" min="0" max="100" step="1">
-                                <span class="input-group-text">%</span>
+                                <span class="px-4 py-2 bg-slate-100 border border-l-0 border-slate-300 rounded-r-lg text-slate-700">%</span>
                             </div>
-                            <div class="form-text">Students scoring above this percentage will receive a certificate.</div>
+                            <div class="text-xs text-slate-500 mt-1">Students scoring above this percentage will receive a certificate.</div>
                         </div>
 
-                        <div class="alert alert-warning" role="alert">
-                            <i class="bi bi-exclamation-triangle"></i> This action cannot be undone. Certificates will be generated immediately.
+                        <div class="px-4 py-3 bg-amber-100 border border-amber-200 rounded-lg" role="alert">
+                            <i class="bi bi-exclamation-triangle text-amber-600"></i> This action cannot be undone. Certificates will be generated immediately.
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                        <div class="flex flex-col gap-2 mt-4">
+                            <button type="submit" class="px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors" id="submitBtn">
                                 <i class="bi bi-check-circle me-2"></i>Issue Certificates
                             </button>
-                            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="btn btn-outline-secondary">Cancel</a>
+                            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors text-center">Cancel</a>
                         </div>
                     </form>
                     
-                    <div id="resultMessage" class="mt-4 d-none">
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle-fill"></i> Successfully issued <span id="issuedCount">0</span> certificates!
+                    <div id="resultMessage" class="mt-4 hidden">
+                        <div class="px-4 py-3 bg-green-100 border border-green-200 rounded-lg">
+                            <i class="bi bi-check-circle-fill text-green-600"></i> Successfully issued <span id="issuedCount">0</span> certificates!
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@ document.getElementById('issueForm').addEventListener('submit', function(e) {
     const form = this;
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    btn.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span>Processing...';
     
     fetch(window.location.href, {
         method: 'POST',
@@ -74,8 +74,8 @@ document.getElementById('issueForm').addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            document.getElementById('issueForm').classList.add('d-none');
-            document.getElementById('resultMessage').classList.remove('d-none');
+            document.getElementById('issueForm').classList.add('hidden');
+            document.getElementById('resultMessage').classList.remove('hidden');
             document.getElementById('issuedCount').textContent = data.issued;
         } else {
             alert('Error issuing certificates. Please try again.');

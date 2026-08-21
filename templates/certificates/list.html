@@ -4,27 +4,19 @@
 {% block title %}Certificates{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-award"></i> Certificates</h2>
-        </div>
-        <!-- 
-        <div class="col-md-4 text-end">
-             Issue Certificate button removed as it requires exam context. 
-             Use Exam Detail page to issue certificates.
-        </div> 
-        -->
+<div class="py-4">
+    <div class="mb-4">
+        <h2 class="font-bold text-slate-900"><i class="bi bi-award"></i> Certificates</h2>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-md-6">
-                    <input type="text" class="form-control form-control-sm" placeholder="Search by student...">
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-4 border-b border-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <input type="text" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Search by student...">
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select form-select-sm">
+                <div>
+                    <select class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                         <option>All Status</option>
                         <option>Active</option>
                         <option>Revoked</option>
@@ -32,40 +24,40 @@
                 </div>
             </div>
         </div>
-        <div class="table-responsive p-0">
-            <table class="table table-hover table-responsive-stack mb-0">
-                <thead class="table-light">
+        <div class="overflow-x-auto p-0">
+            <table class="w-full border-collapse table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Certificate #</th>
-                        <th>Student</th>
-                        <th>Exam</th>
-                        <th>Grade</th>
-                        <th>Issued</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Certificate #</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Student</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Exam</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Grade</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Issued</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if certificates %}
                         {% for cert in certificates %}
-                        <tr>
-                            <td data-label="Certificate #"><code>{{ cert.certificate_number }}</code></td>
-                            <td data-label="Student">{{ cert.student.first_name }} {{ cert.student.last_name }}</td>
-                            <td data-label="Exam">{{ cert.exam.title }}</td>
-                            <td data-label="Grade"><strong>{{ cert.grade }}</strong></td>
-                            <td data-label="Issued"><small>{{ cert.issued_date|date:"M d, Y" }}</small></td>
-                            <td data-label="Status">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3"><code class="px-2 py-1 bg-slate-100 rounded text-sm">{{ cert.certificate_number }}</code></td>
+                            <td class="px-4 py-3 text-slate-900">{{ cert.student.first_name }} {{ cert.student.last_name }}</td>
+                            <td class="px-4 py-3 text-slate-700">{{ cert.exam.title }}</td>
+                            <td class="px-4 py-3"><strong class="text-slate-900">{{ cert.grade }}</strong></td>
+                            <td class="px-4 py-3"><small class="text-slate-500">{{ cert.issued_date|date:"M d, Y" }}</small></td>
+                            <td class="px-4 py-3">
                                 {% if cert.is_revoked %}
-                                    <span class="badge bg-danger">Revoked</span>
+                                    <span class="px-2 py-1 bg-red-600 text-white rounded-full text-xs">Revoked</span>
                                 {% else %}
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Active</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Actions">
-                                <a href="{% url 'dashboards:certificate_detail' cert.id %}" class="btn btn-sm btn-outline-primary">
+                            <td class="px-4 py-3">
+                                <a href="{% url 'dashboards:certificate_detail' cert.id %}" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded text-sm hover:bg-blue-600 hover:text-white transition-colors">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'dashboards:certificate_download' cert.id %}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{% url 'dashboards:certificate_download' cert.id %}" class="px-2 py-1 border-2 border-slate-300 text-slate-700 rounded text-sm hover:bg-slate-100 transition-colors">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </td>
@@ -73,7 +65,7 @@
                         {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="7" class="text-center text-slate-500 py-4">
                             No certificates issued yet
                         </td>
                     </tr>

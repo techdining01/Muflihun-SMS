@@ -21,23 +21,23 @@ body.cart-open{overflow:hidden}
 {% endblock %}
 
 {% block content %}
-<div class="container brillspay-shop">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 brillspay-shop">
 
-<h5 class="fw-bold mb-3">{{ ward.get_full_name }} · {{ ward.student_class }}</h5>
+<h5 class="font-bold mb-3 text-slate-900">{{ ward.get_full_name }} · {{ ward.student_class }}</h5>
 
-<div class="row g-3">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 {% for product in products %}
-<div class="col-6 col-md-4 col-lg-3">
-<div class="product-card">
+<div>
+<div class="bg-white rounded-2xl shadow-sm product-card overflow-hidden">
   {% if product.image %}
-<img src="{{ product.image.url}}" class="w-100">
+<img src="{{ product.image.url}}" class="w-full">
   {% else %}
-<img src="{%static 'images/default_product.png' %}" class="w-100">
+<img src="{%static 'images/default_product.png' %}" class="w-full">
   {% endif %}
 <div class="p-2">
-<div class="fw-semibold">{{ product.name }}</div>
-<div class="fw-bold">₦{{ product.price }}</div>
-<button class="btn btn-primary btn-sm w-100 btn-add-cart"
+<div class="font-semibold text-slate-900">{{ product.name }}</div>
+<div class="font-bold text-slate-900">₦{{ product.price }}</div>
+<button class="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm w-full hover:bg-blue-700 transition-colors btn-add-cart"
 data-product="{{ product.id }}" data-ward="{{ ward.id }}">
 Add to Cart
 </button>
@@ -50,16 +50,16 @@ Add to Cart
 <div id="cart-overlay"></div>
 
 <div id="cartSidebar" class="cart-sidebar">
-<div class="p-3 border-bottom d-flex justify-content-between">
-<strong>Your Cart</strong>
-<button class="btn-close" onclick="closeCart()"></button>
+<div class="p-3 border-b border-slate-200 flex justify-between">
+<strong class="text-slate-900">Your Cart</strong>
+<button class="px-2 py-1 text-slate-500 hover:text-slate-700" onclick="closeCart()">✕</button>
 </div>
 <div class="p-3" id="cartBody">Loading…</div>
 </div>
 
-<button class="btn btn-dark position-fixed bottom-0 end-0 m-4"
+<button class="px-4 py-3 bg-slate-900 text-white rounded-lg fixed bottom-4 right-4 hover:bg-slate-800 transition-colors"
 onclick="openCart()">
-🛒 Cart <span id="cartCount" class="badge bg-danger">0</span>
+🛒 Cart <span id="cartCount" class="px-2 py-1 bg-red-600 rounded-full text-xs">0</span>
 </button>
 
 {% endblock %}

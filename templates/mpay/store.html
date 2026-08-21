@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{SCHOOL_ECOMMERCE}} Store — {{SCHOOL_NAME}}{% endblock %}
+{% block title %}{{ SCHOOL_ECOMMERCE }} Store — {{ SCHOOL_NAME }}{% endblock %}
 
 {% block content %}
 <style>
@@ -39,43 +39,43 @@
   }
 </style>
 
-<section class="hero d-flex flex-column flex-md-row align-items-center justify-content-between">
+<section class="hero flex flex-col md:flex-row items-center justify-between">
   <div style="max-width:680px">
-    <h1 class="display-6 fw-bold">Welcome to {{SCHOOL_ECOMMERCE}}</h1>
-    <p class="lead text-white-50">A curated school store where students can buy verified exam access and essential school items safely. Fast checkout, teacher-approved products and easy parental control.</p>
+    <h1 class="text-3xl md:text-4xl font-bold">Welcome to {{SCHOOL_ECOMMERCE}}</h1>
+    <p class="text-lg text-white/80">A curated school store where students can buy verified exam access and essential school items safely. Fast checkout, teacher-approved products and easy parental control.</p>
 
-    <div class="d-flex gap-2 mt-4 flex-wrap">
-      <a class="btn btn-light btn-lg cta" href="{% url 'mpay:select_ward' %}">Shop Now</a>
-      <a class="btn btn-outline-light btn-lg" href="#featured">Explore Featured</a>
-      <a class="btn btn-warning btn-lg cta" href="{% url 'mpay:parent_orders' %}">
+    <div class="flex gap-2 mt-4 flex-wrap">
+      <a class="px-6 py-3 bg-white text-slate-900 rounded-lg hover:bg-slate-100 transition-colors text-lg cta" href="{% url 'mpay:select_ward' %}">Shop Now</a>
+      <a class="px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors text-lg" href="#featured">Explore Featured</a>
+      <a class="px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-lg cta" href="{% url 'mpay:parent_orders' %}">
         <i class="bi bi-bag-check"></i> My Orders
       </a>
     </div>
 
   </div>
-  <div class="d-none d-md-block" style="width:360px">
+  <div class="hidden md:block" style="width:360px">
     <img src="{% static 'images/school-illustration.jpg' %}" alt="Store illustration" style="width:100%;border-radius:10px;object-fit:cover;filter:grayscale(.02) brightness(.95)">
   </div>
 </section>
 
 <section id="featured" class="featured">
-  <h4 class="mb-3">Featured Products</h4>
-  <div class="row g-4">
+  <h4 class="text-xl font-bold text-slate-900 mb-3">Featured Products</h4>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     {% for product in products|slice:":8" %}
-      <div class="col-6 col-md-3 fade-up">
-        <div class="card product-card h-100">
-          <div class="ratio ratio-4x3">
+      <div class="fade-up">
+        <div class="bg-white rounded-2xl shadow-sm product-card h-full overflow-hidden">
+          <div class="aspect-[4/3]">
             {% if product.image %}
-              <img src="{{ product.image.url }}" class="card-img-top object-fit-cover" alt="{{ product.name }}">
+              <img src="{{ product.image.url }}" class="w-full h-full object-cover" alt="{{ product.name }}">
             {% else %}
-              <img src="{% static 'images/default_product.png' %}" class="card-img-top object-fit-cover" alt="{{ product.name }}">
+              <img src="{% static 'images/default_product.png' %}" class="w-full h-full object-cover" alt="{{ product.name }}">
             {% endif %}
           </div>
-          <div class="card-body d-flex flex-column">
-            <h6 class="mb-1">{{ product.name }}</h6>
-            <div class="mt-auto d-flex flex-column gap-2">
-              <span class="fw-bold">₦{{ product.price }}</span>
-              <a href="{% url 'mpay:products' %}?ward={{ wards.0.id|default:'' }}" class="btn btn-sm btn-outline-primary product-view-btn w-100 text-center">
+          <div class="p-4 flex flex-col">
+            <h6 class="font-semibold text-slate-900 mb-1">{{ product.name }}</h6>
+            <div class="mt-auto flex flex-col gap-2">
+              <span class="font-bold text-slate-900">₦{{ product.price }}</span>
+              <a href="{% url 'mpay:products' %}?ward={{ wards.0.id|default:'' }}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors product-view-btn w-full text-center">
                 View
               </a>
             </div>
@@ -83,7 +83,7 @@
         </div>
       </div>
     {% empty %}
-      <div class="col-12">No products yet.</div>
+      <div class="col-span-4 text-slate-500">No products yet.</div>
     {% endfor %}
   </div>
 </section>

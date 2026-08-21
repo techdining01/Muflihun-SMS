@@ -1,0 +1,26 @@
+{
+  "name": "muflihun-sms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css",
+    "watch:css": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techdining01/Muflihun-SMS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/techdining01/Muflihun-SMS/issues"
+  },
+  "homepage": "https://github.com/techdining01/Muflihun-SMS#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.3.3"
+  }
+}

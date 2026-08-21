@@ -2,145 +2,117 @@
 
 {% block title %}Admin Dashboard - Exam System{% endblock %}
 
-{% block extra_css %}
-<style>
-    .stat-card {
-        background: #fff;
-        border-radius: 15px;
-        padding: 1.5rem;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
-    }
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h3 fw-bold mb-1"><i class="bi bi-speedometer2 text-primary me-2"></i>Admin Dashboard</h1>
-            <p class="text-muted small">Welcome back, Admin! System overview and management.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-slate-900 mb-1"><i class="bi bi-speedometer2 text-blue-600 mr-2"></i>Admin Dashboard</h1>
+        <p class="text-slate-500 text-sm">Welcome back, Admin! System overview and management.</p>
     </div>
 
     <!-- Statistics Row -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
-                    <i class="bi bi-people text-primary fs-3"></i>
-                </div>
-                <h3 class="fw-bold mb-0">{{ total_students }}</h3>
-                <p class="text-muted small mb-0">Total Students</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <div class="bg-blue-100 p-3 rounded-full inline-block mb-3">
+                <i class="bi bi-people text-blue-600 text-3xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-0">{{ total_students }}</h3>
+            <p class="text-slate-500 text-sm mb-0">Total Students</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="bg-success bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
-                    <i class="bi bi-person-badge text-success fs-3"></i>
-                </div>
-                <h3 class="fw-bold mb-0">{{ total_teachers }}</h3>
-                <p class="text-muted small mb-0">Teachers</p>
+        <div class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <div class="bg-green-100 p-3 rounded-full inline-block mb-3">
+                <i class="bi bi-person-badge text-green-600 text-3xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-0">{{ total_teachers }}</h3>
+            <p class="text-slate-500 text-sm mb-0">Teachers</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="bg-warning bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
-                    <i class="bi bi-building text-warning fs-3"></i>
-                </div>
-                <h3 class="fw-bold mb-0">{{ total_classes }}</h3>
-                <p class="text-muted small mb-0">Classes</p>
+        <div class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <div class="bg-amber-100 p-3 rounded-full inline-block mb-3">
+                <i class="bi bi-building text-amber-600 text-3xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-0">{{ total_classes }}</h3>
+            <p class="text-slate-500 text-sm mb-0">Classes</p>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="bg-danger bg-opacity-10 p-3 rounded-circle d-inline-block mb-3">
-                    <i class="bi bi-file-earmark-text text-danger fs-3"></i>
-                </div>
-                <h3 class="fw-bold mb-0">{{ total_exams }}</h3>
-                <p class="text-muted small mb-0">Exams Created</p>
+        <div class="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <div class="bg-red-100 p-3 rounded-full inline-block mb-3">
+                <i class="bi bi-file-earmark-text text-red-600 text-3xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-0">{{ total_exams }}</h3>
+            <p class="text-slate-500 text-sm mb-0">Exams Created</p>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-header bg-white border-bottom py-3">
-            <h5 class="fw-bold mb-0"><i class="bi bi-lightning-charge text-warning me-2"></i>Quick Actions</h5>
+    <div class="bg-white border-0 shadow-sm rounded-2xl mb-4">
+        <div class="bg-white border-b border-slate-100 px-6 py-4">
+            <h5 class="font-bold text-slate-900 mb-0"><i class="bi bi-lightning-charge text-amber-500 mr-2"></i>Quick Actions</h5>
         </div>
-        <div class="card-body p-3">
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{% url 'dashboards:admin_classes_list' %}" class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-plus-circle me-1"></i>Classes
+        <div class="p-4">
+            <div class="flex flex-wrap gap-2">
+                <a href="{% url 'dashboards:admin_classes_list' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-plus-circle mr-1"></i>Classes
                 </a>
-                <a href="{% url 'dashboards:admin_exams_list' %}" class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-plus-circle me-1"></i>Exams
+                <a href="{% url 'dashboards:admin_exams_list' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-plus-circle mr-1"></i>Exams
                 </a>
-                <a href="{% url 'dashboards:admin_students_list' %}" class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-plus-circle me-1"></i>Students
+                <a href="{% url 'dashboards:admin_students_list' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-plus-circle mr-1"></i>Students
                 </a>
-                <a href="{% url 'dashboards:admin_subjects_list' %}" class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-book me-1"></i>Subjects
+                <a href="{% url 'dashboards:admin_subjects_list' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-book mr-1"></i>Subjects
                 </a>
-                <a href="{% url 'dashboards:admin_results_dashboard' %}" class="btn btn-outline-primary rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-bar-chart me-1"></i>Results
+                <a href="{% url 'dashboards:admin_results_dashboard' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-bar-chart mr-1"></i>Results
                 </a>
-                <a href="{% url 'dashboards:admin_retake_requests' %}" class="btn btn-warning text-white rounded-pill px-3 py-2 flex-grow-1 flex-md-grow-0">
-                    <i class="bi bi-arrow-repeat me-1"></i>Retakes <span class="badge bg-white text-warning rounded-circle ms-1">{{ pending_retake_requests }}</span>
+                <a href="{% url 'dashboards:admin_retake_requests' %}" class="px-4 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors flex-grow md:flex-grow-0">
+                    <i class="bi bi-arrow-repeat mr-1"></i>Retakes <span class="bg-white text-amber-500 rounded-full px-2 py-0.5 text-xs ml-1">{{ pending_retake_requests }}</span>
                 </a>
             </div>
         </div>
     </div>
 
     <!-- Menu Shortcuts -->
-    <div class="row g-3">
-        <div class="col-6 col-md-3">
-            <a href="{% url 'dashboards:admin_leaderboard' %}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none">
-                <div class="card-body text-center p-3">
-                    <div class="bg-info bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
-                        <i class="bi bi-trophy text-info fs-4"></i>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="col-span-1">
+            <a href="{% url 'dashboards:admin_leaderboard' %}" class="bg-white border-0 shadow-sm rounded-2xl h-full block text-decoration-none hover:shadow-md transition-shadow">
+                <div class="text-center p-4">
+                    <div class="bg-cyan-100 p-3 rounded-full inline-block mb-2">
+                        <i class="bi bi-trophy text-cyan-600 text-xl"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-1">Leaderboards</h6>
-                    <p class="text-muted small mb-0 d-none d-md-block">Student rankings</p>
+                    <h6 class="font-bold text-slate-900 mb-1">Leaderboards</h6>
+                    <p class="text-slate-500 text-sm mb-0 hidden md:block">Student rankings</p>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-3">
-            <a href="{% url 'dashboards:admin_system_logs' %}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none">
-                <div class="card-body text-center p-3">
-                    <div class="bg-secondary bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
-                        <i class="bi bi-file-text text-secondary fs-4"></i>
+        <div class="col-span-1">
+            <a href="{% url 'dashboards:admin_system_logs' %}" class="bg-white border-0 shadow-sm rounded-2xl h-full block text-decoration-none hover:shadow-md transition-shadow">
+                <div class="text-center p-4">
+                    <div class="bg-slate-100 p-3 rounded-full inline-block mb-2">
+                        <i class="bi bi-file-text text-slate-600 text-xl"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-1">System Logs</h6>
-                    <p class="text-muted small mb-0 d-none d-md-block">System activities</p>
+                    <h6 class="font-bold text-slate-900 mb-1">System Logs</h6>
+                    <p class="text-slate-500 text-sm mb-0 hidden md:block">System activities</p>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-3">
-            <a href="{% url 'dashboards:admin_backup_restore' %}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none">
-                <div class="card-body text-center p-3">
-                    <div class="bg-dark bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
-                        <i class="bi bi-cloud-arrow-up text-dark fs-4"></i>
+        <div class="col-span-1">
+            <a href="{% url 'dashboards:admin_backup_restore' %}" class="bg-white border-0 shadow-sm rounded-2xl h-full block text-decoration-none hover:shadow-md transition-shadow">
+                <div class="text-center p-4">
+                    <div class="bg-slate-800 p-3 rounded-full inline-block mb-2">
+                        <i class="bi bi-cloud-arrow-up text-slate-800 text-xl"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-1">Backup</h6>
-                    <p class="text-muted small mb-0 d-none d-md-block">Manage backups</p>
+                    <h6 class="font-bold text-slate-900 mb-1">Backup</h6>
+                    <p class="text-slate-500 text-sm mb-0 hidden md:block">Manage backups</p>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-3">
-            <a href="/admin/" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none" target="_blank">
-                <div class="card-body text-center p-3">
-                    <div class="bg-danger bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
-                        <i class="bi bi-gear text-danger fs-4"></i>
+        <div class="col-span-1">
+            <a href="/admin/" class="bg-white border-0 shadow-sm rounded-2xl h-full block text-decoration-none hover:shadow-md transition-shadow" target="_blank">
+                <div class="text-center p-4">
+                    <div class="bg-red-100 p-3 rounded-full inline-block mb-2">
+                        <i class="bi bi-gear text-red-600 text-xl"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-1">Admin Core Engine</h6>
-                    <p class="text-muted small mb-0 d-none d-md-block">Advanced config</p>
+                    <h6 class="font-bold text-slate-900 mb-1">Admin Core Engine</h6>
+                    <p class="text-slate-500 text-sm mb-0 hidden md:block">Advanced config</p>
                 </div>
             </a>
         </div>

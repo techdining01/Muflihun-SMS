@@ -4,114 +4,108 @@
 {% block title %}Leaderboard - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<div class="py-4">
     {% if selected_class %}
         <!-- Leaderboard View -->
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
+        <div class="mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <a href="{% url 'dashboards:admin_leaderboard' %}" class="btn btn-outline-secondary mb-2">
-                        <i class="bi bi-arrow-left"></i> Back to Classes
+                    <a href="{% url 'dashboards:admin_leaderboard' %}" class="inline-flex items-center px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors mb-2">
+                        <i class="bi bi-arrow-left mr-2"></i> Back to Classes
                     </a>
-                    <h2><i class="bi bi-trophy text-warning"></i> {{ selected_class.name }} Leaderboard</h2>
-                    <p class="text-muted">Rankings based on average exam scores</p>
+                    <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-trophy text-amber-500"></i> {{ selected_class.name }} Leaderboard</h2>
+                    <p class="text-slate-500">Rankings based on average exam scores</p>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive p-0">
-                    <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4" style="width: 10%;">Rank</th>
-                                <th style="width: 40%;">Student</th>
-                                <th class="text-center" style="width: 25%;">Exams Taken</th>
-                                <th class="text-center" style="width: 25%;">Average Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for student in leaderboard %}
-                            <tr>
-                                <td class="ps-4" data-label="Rank">
-                                    {% if forloop.counter == 1 %}
-                                        <i class="bi bi-trophy-fill text-warning fs-4"></i>
-                                    {% elif forloop.counter == 2 %}
-                                        <i class="bi bi-trophy-fill text-secondary fs-4"></i>
-                                    {% elif forloop.counter == 3 %}
-                                        <i class="bi bi-trophy-fill text-danger fs-4"></i> <!-- Bronze-ish -->
-                                    {% else %}
-                                        <span class="badge bg-light text-dark border rounded-pill px-3 py-2">{{ forloop.counter }}</span>
-                                    {% endif %}
-                                </td>
-                                <td data-label="Student">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                            <span class="text-primary fw-bold">{{ student.first_name|first }}{{ student.last_name|first }}</span>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">{{ student.get_full_name }}</h6>
-                                            <small class="text-muted">{{ student.email }}</small>
-                                        </div>
+        <div class="bg-white shadow-sm rounded-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700" style="width: 10%;">Rank</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700" style="width: 40%;">Student</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700" style="width: 25%;">Exams Taken</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700" style="width: 25%;">Average Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in leaderboard %}
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                {% if forloop.counter == 1 %}
+                                    <i class="bi bi-trophy-fill text-amber-500 text-2xl"></i>
+                                {% elif forloop.counter == 2 %}
+                                    <i class="bi bi-trophy-fill text-slate-400 text-2xl"></i>
+                                {% elif forloop.counter == 3 %}
+                                    <i class="bi bi-trophy-fill text-orange-600 text-2xl"></i>
+                                {% else %}
+                                    <span class="px-3 py-2 bg-slate-100 text-slate-700 border border-slate-200 rounded-full text-sm">{{ forloop.counter }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        <span class="text-blue-600 font-bold">{{ student.first_name|first }}{{ student.last_name|first }}</span>
                                     </div>
-                                </td>
-                                <td class="text-center" data-label="Exams Taken">
-                                    <span class="badge bg-info bg-opacity-10 text-info px-3">{{ student.exams_taken }}</span>
-                                </td>
-                                <td class="text-center" data-label="Average Score">
-                                    <span class="fw-bold fs-5">{{ student.average_score|floatformat:1 }}</span>
-                                    <span class="text-muted small">/ 100</span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="bi bi-clipboard-x fs-1 d-block mb-3"></i>
-                                    No performance data available for this class yet.
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    <div>
+                                        <h6 class="font-semibold text-slate-900 mb-0">{{ student.get_full_name }}</h6>
+                                        <small class="text-slate-500">{{ student.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm">{{ student.exams_taken }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="font-bold text-xl text-slate-900">{{ student.average_score|floatformat:1 }}</span>
+                                <span class="text-slate-500 text-sm">/ 100</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="px-4 py-8 text-center text-slate-500">
+                                <i class="bi bi-clipboard-x text-4xl block mb-3"></i>
+                                No performance data available for this class yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
 
     {% else %}
         <!-- Class Selection View -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2><i class="bi bi-trophy"></i> Class Leaderboards</h2>
-                <p class="text-muted">Select a class to view student performance rankings</p>
-            </div>
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-trophy"></i> Class Leaderboards</h2>
+            <p class="text-slate-500">Select a class to view student performance rankings</p>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {% for class in classes %}
-            <div class="col">
-                <div class="card h-100 shadow-sm hover-shadow transition-all">
-                    <div class="card-body text-center py-5">
-                        <div class="avatar-lg bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
-                            <i class="bi bi-people fs-2 text-primary"></i>
-                        </div>
-                        <h4 class="card-title">{{ class.name }}</h4>
-                        <p class="card-text text-muted">Level: {{ class.level }}</p>
-                        <div class="mt-4">
-                            <a href="?class={{ class.id }}" class="btn btn-primary">
-                                View Leaderboard <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
+            <div class="bg-white shadow-sm rounded-2xl hover:shadow-md transition-shadow">
+                <div class="text-center py-6 px-4">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="bi bi-people text-2xl text-blue-600"></i>
                     </div>
-                    <div class="card-footer bg-light text-center text-muted">
-                        <small>{{ class.students.count }} Students • {{ class.class_exam.count }} Exams</small>
+                    <h4 class="font-bold text-slate-900">{{ class.name }}</h4>
+                    <p class="text-slate-500">Level: {{ class.level }}</p>
+                    <div class="mt-4">
+                        <a href="?class={{ class.id }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            View Leaderboard <i class="bi bi-arrow-right ml-1"></i>
+                        </a>
                     </div>
+                </div>
+                <div class="bg-slate-50 text-center text-slate-500 px-4 py-3 rounded-b-2xl">
+                    <small>{{ class.students.count }} Students • {{ class.class_exam.count }} Exams</small>
                 </div>
             </div>
             {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i> No classes available.
+            <div class="col-span-3">
+                <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-800">
+                    <i class="bi bi-info-circle mr-2"></i> No classes available.
                 </div>
             </div>
             {% endfor %}

@@ -11,10 +11,6 @@
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <meta name="theme-color" content="#2563eb">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
     <!-- AOS CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
@@ -26,116 +22,17 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10/ext/csrf.js"></script>
 
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #3b82f6;
-            --secondary: #64748b;
-            --accent: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            height: 100%;
-        }
-
+        /* Custom styles that can't be easily converted to Tailwind utilities */
         body {
-            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: #334155;
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        /* Fix oval-looking circles by enforcing square boxes where no explicit width/height is set */
-        .rounded-circle:not(img):not([style*="width"]) {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1 / 1;
-        }
-        .rounded-circle:not(img):not([style*="width"])[class*="p-"] {
-            width: 2.1em;
-            height: 2.1em;
-            padding: 0 !important;
-        }
-        @media (max-width: 576px) {
-            .rounded-circle:not(img):not([style*="width"])[class*="p-"] {
-                width: 1.8em;
-                height: 1.8em;
-            }
-        }
-
-        /* Global overflow fix */
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-        img, video, iframe, table {
-            max-width: 100%;
-        }
-
-        /* Enhanced Sticky Navigation */
-        .navbar-main {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            padding: 0.75rem 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .navbar-main.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem 0;
-        }
-
-        .navbar-brand {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .navbar-brand img {
-            height: 38px;
-            width: 38px;
-            object-fit: cover;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
         }
 
         /* Prevent flash of un-animated content for GSAP */
@@ -145,2845 +42,472 @@
             will-change: transform, opacity;
         }
 
-        .navbar-brand:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Custom Mobile Toggle Button */
-        .navbar-toggler {
-            border: none;
-            padding: 0.25rem;
-            background: transparent;
-            width: 40px;
-            height: 40px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: none;
-            outline: none;
-        }
-
-        .navbar-toggler-icon {
-            width: 24px;
-            height: 2px;
-            background: var(--dark);
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-toggler-icon::before,
-        .navbar-toggler-icon::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 2px;
-            background: var(--dark);
-            left: 0;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-toggler-icon::before {
-            top: -8px;
-        }
-
-        .navbar-toggler-icon::after {
-            top: 8px;
-        }
-
-        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
-            background: transparent;
-        }
-
-        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
-            transform: rotate(45deg);
-            top: 0;
-        }
-
-        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
-            transform: rotate(-45deg);
-            top: 0;
-        }
-
-        /* Mobile Navbar Collapse */
-        .navbar-collapse {
-            transition: all 0.3s ease-in-out;
-        }
-
-        @media (max-width: 991.98px) {
-            #mainNavbar .container {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: nowrap;
-                gap: 0.5rem;
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-                max-width: 100%;
-                overflow: hidden;
-            }
-
-            #mainNavbar .navbar-brand {
-                flex: 1 1 auto;
-                min-width: 0;
-                margin-right: 0;
-                overflow: hidden;
-            }
-
-            #mainNavbar .navbar-brand span {
-                display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 100%;
-                font-size: clamp(0.8rem, 3.5vw, 1.4rem);
-            }
-
-            #mainNavbar .navbar-toggler {
-                flex: 0 0 40px;
-                margin-left: 0.25rem;
-            }
-
-            .navbar-collapse {
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
-                border-radius: 12px;
-                box-shadow: var(--shadow-lg);
-                margin-top: 0.75rem;
-                padding: 0.75rem;
-                position: absolute;
-                top: 100%;
-                left: 0.75rem;
-                right: 0.75rem;
-                max-height: 80vh;
-                overflow-y: auto;
-                overflow-x: hidden;
-                z-index: 1050;
-            }
-
-            .navbar-nav {
-                text-align: left;
-                padding: 0.25rem 0;
-            }
-
-            .nav-item {
-                margin: 0;
-                border-bottom: 1px solid rgba(0,0,0,0.05);
-            }
-
-            .nav-item:last-child {
-                border-bottom: none;
-            }
-
-            .nav-link {
-                padding: 0.65rem 0.75rem !important;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-size: 0.95rem;
-            }
-
-            .dropdown-menu {
-                background: rgba(248, 250, 252, 0.95);
-                backdrop-filter: blur(10px);
-                border: none;
-                box-shadow: none;
-                text-align: left;
-                padding-left: 0.75rem;
-                margin: 0;
-                /* prevent dropdown from overflowing viewport */
-                max-width: 100%;
-            }
-
-            .dropdown-item {
-                padding: 0.55rem 0.75rem;
-                font-size: 0.9rem;
-                white-space: normal;
-            }
-
-            /* User section sits inline on mobile */
-            .navbar-nav.ms-auto,
-            .navbar-collapse .navbar-nav:last-child {
-                border-top: 1px solid rgba(0,0,0,0.07);
-                padding-top: 0.5rem;
-                margin-top: 0.25rem;
-            }
-        }
-
-        /* Phones only (< 576px) */
-        @media (max-width: 575.98px) {
-            .navbar-collapse {
-                left: 0.5rem;
-                right: 0.5rem;
-            }
-            #mainNavbar .navbar-brand img {
-                height: 32px;
-                width: 32px;
-            }
-        }
-
-        /* Very small phones (< 380px) */
-        @media (max-width: 380px) {
-            #mainNavbar .navbar-brand img {
-                height: 26px;
-                width: 26px;
-            }
-            #mainNavbar .navbar-toggler {
-                width: 34px;
-                height: 34px;
-            }
-            .container, .container-fluid {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-        }
-
-
-        .nav-link {
-            font-weight: 500;
-            color: var(--dark) !important;
-            padding: 0.35rem 0.75rem !important;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .nav-link:hover {
-            color: var(--primary) !important;
-            background: rgba(37, 99, 235, 0.05);
-            transform: translateY(-1px);
-        }
-
-        .nav-link.active {
-            color: var(--primary) !important;
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 1rem;
-            right: 1rem;
-            height: 2px;
-            background: var(--primary);
-            border-radius: 2px;
-        }
-
-        /* Cart Badge */
-        .cart-badge {
-            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Enhanced Dropdown */
-        .dropdown-menu {
-            border: none;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            animation: dropdownFade 0.3s ease;
-        }
-
-        @keyframes dropdownFade {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            border-radius: 8px;
-            padding: 0.5rem 0.75rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .dropdown-item:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        /* Enhanced Buttons */
-        .btn {
-            font-weight: 600;
-            border-radius: 10px;
-            padding: 0.38rem 0.9rem;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-sm {
-            padding: 0.22rem 0.55rem !important;
-            font-size: 0.8rem !important;
-            border-radius: 8px;
-        }
-        .btn-lg {
-            padding: 0.5rem 1.25rem !important;
-            font-size: 0.95rem !important;
-        }
-        /* Neutralise oversized py-* overrides on buttons */
-        .btn.py-3 { padding-top: 0.38rem !important; padding-bottom: 0.38rem !important; }
-        .btn.py-2 { padding-top: 0.3rem !important; padding-bottom: 0.3rem !important; }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-outline-primary {
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Enhanced Messages */
-        .alert {
-            border: none;
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1rem;
-            backdrop-filter: blur(10px);
-            border-left: 4px solid;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #065f46;
-            border-left-color: var(--success);
-        }
-
-        .alert-error,
-        .alert-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #991b1b;
-            border-left-color: var(--danger);
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: #92400e;
-            border-left-color: var(--warning);
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1e40af;
-            border-left-color: var(--primary);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding-top: 100px;
-            padding-bottom: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding-top: 80px;
-            }
-        }
-
-        /* Enhanced Cards */
-        .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        @media (max-width: 991.98px) {
-            .card {
-                margin-bottom: 0.5rem;
-            }
-        }
-
-
-        .product-card {
-            min-height: 300px;
-        }
-
-        .btn-fixed-size {
-            min-width: 120px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-        }
-
-        .price-section {
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        /* Admin Dashboard Mobile Fixes */
-        @media (max-width: 768px) {
-            .admin-stats .card {
-                margin-bottom: 1rem;
-            }
-
-            .admin-table {
-                font-size: 0.875rem;
-            }
-
-            .admin-table .btn-sm {
-                padding: 0.2rem 0.45rem;
-                font-size: 0.75rem;
-            }
-
-            /* Ensure tables are scrollable on mobile */
-            .table-responsive {
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* Responsive Table Helper - Hide on Mobile, Show as Cards */
-            .desktop-only {
-                display: none !important;
-            }
-
-            /* Stacked layout for small screens */
-            .mobile-stacked {
-                display: block !important;
-                width: 100% !important;
-                margin-bottom: 1rem;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .mobile-only {
-                display: none !important;
-            }
-        }
-
-        /* Dashboard card enhancements */
-        .dashboard-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Stats cards */
-        .stat-card {
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Enhanced Mobile Responsiveness */
-        @media (max-width: 576px) {
-            .container, .container-fluid {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-            .btn-lg {
-                padding: 0.5rem 1.1rem;
-                font-size: 0.95rem;
-            }
-            .card-body {
-                padding: 0.875rem;
-            }
-            .form-control, .form-select {
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
-            /* Prevent any element from overflowing on mobile */
-            .row {
-                margin-left: 0;
-                margin-right: 0;
-            }
-            .row > * {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-        }
-
-        /* Touch-friendly buttons for mobile */
-        @media (hover: none) and (pointer: coarse) {
-            .btn {
-                min-height: 38px;
-            }
-            .btn-sm {
-                min-height: 32px;
-            }
-            .nav-link,
-            .dropdown-item {
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-            }
-            .btn-group .btn {
-                min-height: 34px;
-            }
-        }
-
-        /* Print styles */
-        @media print {
-
-            .navbar,
-            footer,
-            .btn,
-            .no-print {
-                display: none !important;
-            }
-
-            .main-content {
-                padding-top: 0;
-            }
-        }
-
-        /* Enhanced Footer */
-        footer {
-            background: var(--gradient-dark);
-            color: #cbd5e1;
-            margin-top: auto;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            left: 0;
-            right: 0;
-        }
-
-        @media (max-width: 576px) {
-            footer .container-fluid {
-                padding-left: 0;
-                padding-right: 0;
-            }
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        }
-
-        footer h5 {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        footer h5::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 30px;
-            height: 2px;
-            background: var(--primary);
-            border-radius: 2px;
-        }
-
-        footer a {
-            color: #cbd5e1;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        footer a:hover {
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
-        }
-
-        /* Mobile Backdrop for Navbar */
-        .navbar-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-backdrop.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Loading Animation */
-        .loading-spinner {
+        /* HTMX spinner animation */
+        .htmx-indicator {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
         }
-
-        .loading-spinner.active {
-            display: flex;
+        .htmx-indicator.htmx-request {
+            display: inline-block;
         }
-
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
+        .htmx-request.htmx-indicator {
+            display: inline-block;
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Animation Classes */
-        .fade-in-up {
-            animation: fadeInUp 0.8s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .scale-in {
-            animation: scaleIn 0.5s ease forwards;
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* HTMX Spinner Animation */
         .spin-animation {
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .htmx-indicator {
-            display: none;
-            opacity: 0;
-            transition: opacity 200ms ease-in;
-        }
-
-        .htmx-indicator.htmx-request {
-            display: inline-block;
-            opacity: 1;
-        }
-
-        .htmx-request .htmx-indicator {
-            display: inline-block;
-            opacity: 1;
-        }
-    </style>
-
-    <style>
-        /* Mpay Specific Styles */
-        .mpay-badge {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .student-badge {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .parent-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Global Responsive Table Styles */
-        .table-responsive-stack tr {
-            display: table-row;
-        }
-
-        @media (max-width: 991.98px) {
-            .table-responsive-stack .thead-light,
-            .table-responsive-stack thead {
-                display: none;
-            }
-            .table-responsive-stack tr {
-                display: block;
-                margin-bottom: 1.25rem;
-                border: 1px solid #e2e8f0;
-                border-radius: 16px;
-                background: #fff;
-                padding: 0.75rem;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            }
-            .table-responsive-stack td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.875rem 0.75rem;
-                border-bottom: 1px solid #f1f5f9;
-                text-align: right;
-                font-size: 0.9rem;
-            }
-            .table-responsive-stack td:last-child {
-                border-bottom: none;
-            }
-            .table-responsive-stack td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                text-transform: uppercase;
-                font-size: 0.7rem;
-                color: #64748b;
-                text-align: left;
-                margin-right: 1.5rem;
-                flex: 1;
-            }
-            .table-responsive-stack td > :not(.modal) {
-                flex: 2;
-                display: flex;
-                justify-content: flex-end;
-            }
-            .table-responsive-stack td.product-cell,
-            .table-responsive-stack td.product-cell > :not(.modal) {
-                justify-content: flex-start;
-                text-align: left;
-            }
-            .table-responsive-stack td.product-cell::before {
-                margin-right: 0.75rem;
-                flex: 0 0 auto;
-            }
-            .table-responsive-stack td.product-cell > :not(.modal) {
-                flex: 1 1 auto;
-            }
-            /* Reset specific padding/alignment for mobile cards */
-            .table-responsive-stack .ps-4, 
-            .table-responsive-stack .pe-4,
-            .table-responsive-stack .px-4 {
-                padding-left: 0.75rem !important;
-                padding-right: 0.75rem !important;
-            }
-        }
-
-
-        /* Dashboard Cards */
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border-left: 4px solid;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        /* Badges */
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-processing {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-completed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* Fee Structure */
-        .fee-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .fee-card:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 768px) {
-            .mobile-hide {
-                display: none !important;
-            }
-
-            .mobile-full {
-                width: 100% !important;
-            }
-
-            .mobile-stack {
-                flex-direction: column !important;
-            }
-
-            .mobile-center {
-                text-align: center !important;
-            }
-        }
-
-
-        body:not(.cart-open) #cart-overlay {
-            display: none !important;
-        }
-
-
-        .cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .45);
-            z-index: 1040;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .25s ease;
-        }
-
-        .cart-overlay.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-
-        /* Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .animate-slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -380px;
-            width: 360px;
-            height: 100vh;
-            background: #fff;
-            z-index: 1050;
-            transition: right .35s ease;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, .15);
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        #cartBody {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-
-        body.cart-open .cart-sidebar {
-            right: 0;
-        }
-
-        #cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .45);
-            z-index: 1040;
-            opacity: 0;
-            pointer-events: none;
-            transition: .25s;
-        }
-
-        body.cart-open #cart-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        body.cart-open {
-            overflow: hidden;
-        }
-
-        #cartBody::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #cartBody::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, .2);
-            border-radius: 10px;
-        }
-
-        .floating-cart-btn {
-            position: fixed;
-            right: 1.5rem;
-            bottom: 1.5rem;
-            z-index: 1060;
-        }
-
-        /* Footer safe zone */
-        /*footer{
-        position: relative;
-        z-index: 1;
-    } */
-
-        @media (max-width: 576px) {
-            .mpay-shop .row {
-                --bs-gutter-y: .5rem;
-                /* reduce vertical spacing */
-            }
-        }
-
-
-        /* Push cart above footer height */
-        @media (max-width: 768px) {
-            .floating-cart-btn {
-                bottom: 5.5rem;
-                /* adjust to footer height */
-            }
-        }
-
-        @media (max-width: 576px) {
-            .product-card .p-2 {
-                padding: .5rem !important;
-            }
-
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: #3b82f6;
-        }
-
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-
-        /* PRODUCT GRID FIX */
-        .product-card {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: inline;
-        }
-
-        /* Mobile tightening */
-        @media (max-width: 576px) {
-            .mpay-shop .row {
-                --bs-gutter-y: .75rem;
-            }
-
-            .product-card .p-2 {
-                padding: .5rem !important;
-            }
-        }
-
-        /* Hover Dropdowns for Desktop */
-        @media (min-width: 992px) {
-            .nav-item.dropdown:hover>.dropdown-menu {
-                display: block;
-                opacity: 1;
-                visibility: visible;
-                transform: translateY(0);
-                margin-top: 0;
-            }
-
-            .nav-item.dropdown>.dropdown-menu {
-                display: block;
-                opacity: 0;
-                visibility: hidden;
-                transform: translateY(10px);
-                transition: all 0.3s ease;
-            }
-        }
-
-        /* ============================================================
-           NATIVE MOBILE BOTTOM NAVIGATION (iOS / Android Style)
-           ============================================================ */
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06), 0 -1px 0 rgba(0, 0, 0, 0.04);
-            padding: 0.25rem 0 calc(0.25rem + env(safe-area-inset-bottom));
-            z-index: 999;
-            display: none;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .bottom-nav.hidden {
-            transform: translateY(100%);
-        }
-
-        .bottom-nav-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: stretch;
-            justify-content: space-around;
-            height: 100%;
-        }
-
-        .bottom-nav-item {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-        }
-
-        .bottom-nav-link {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.35rem 0.2rem 0.2rem;
-            color: #86868b;
-            text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            min-height: 54px;
-            gap: 2px;
-            border-radius: 10px;
-        }
-
-        .bottom-nav-link:active {
-            transform: scale(0.92);
-            background: rgba(37, 99, 235, 0.06);
-        }
-
-        .bottom-nav-icon {
-            font-size: 1.35rem;
-            line-height: 1;
-            position: relative;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .bottom-nav-label {
-            font-size: 0.62rem;
-            font-weight: 600;
-            line-height: 1;
-            letter-spacing: 0.01em;
-            transition: all 0.25s ease;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .bottom-nav-link.active {
-            color: var(--primary);
-        }
-
-        .bottom-nav-link.active .bottom-nav-icon {
-            transform: translateY(-2px) scale(1.05);
-        }
-
-        .bottom-nav-link.active::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 28px;
-            height: 3px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 0 0 3px 3px;
-        }
-
-        .bottom-nav-badge {
-            position: absolute;
-            top: 0;
-            right: 50%;
-            transform: translateX(12px);
-            min-width: 16px;
-            height: 16px;
-            padding: 0 4px;
-            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
-            color: white;
-            font-size: 0.62rem;
-            font-weight: 700;
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            box-shadow: 0 1px 4px rgba(239, 68, 68, 0.4);
-            border: 1.5px solid white;
-        }
-
-        /* Ensure main content doesn't hide behind bottom nav */
-        @media (max-width: 991.98px) {
-            .bottom-nav {
-                display: block;
-            }
-
-            /* Only main-content needs bottom guard (nav is fixed). Padding on
-               body + footer would stack and leave blank space past the footer. */
-            .main-content {
-                padding-bottom: calc(3rem + 72px + env(safe-area-inset-bottom));
-            }
-
-            /* Push floating cart above bottom nav */
-            .floating-cart-btn {
-                bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
-                right: 1rem !important;
-            }
-
-            /* Mobile: bump up brand name/logo sizes */
-            #mainNavbar .container {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-                gap: 0.6rem;
-            }
-            #mainNavbar .navbar-brand {
-                margin-right: 0;
-            }
-            #mainNavbar .navbar-brand span {
-                font-size: clamp(1rem, 4.6vw, 1.65rem);
-                font-weight: 700;
-                letter-spacing: -0.01em;
-            }
-            #mainNavbar .navbar-brand img {
-                height: 40px;
-                width: 40px;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .bottom-nav-link {
-                min-height: 58px;
-                padding: 0.3rem 0.15rem 0.15rem;
-            }
-            .bottom-nav-icon {
-                font-size: 1.25rem;
-            }
-            .bottom-nav-label {
-                font-size: 0.58rem;
-            }
-            /* Smaller phones - slightly trim logo/name but keep readable */
-            #mainNavbar .navbar-brand img {
-                height: 36px;
-                width: 36px;
-            }
-            #mainNavbar .navbar-brand span {
-                font-size: clamp(0.95rem, 4.3vw, 1.4rem);
-            }
-        }
-
-        @media (max-width: 380px) {
-            #mainNavbar .navbar-brand img {
-                height: 30px;
-                width: 30px;
-            }
-            #mainNavbar .navbar-brand span {
-                font-size: clamp(0.88rem, 4.1vw, 1.2rem);
-            }
-        }
-
-        /* iOS safe-area fallback for browsers without env() */
-        @supports not (padding-bottom: env(safe-area-inset-bottom)) {
-            @media (max-width: 991.98px) {
-                .main-content { padding-bottom: calc(3rem + 72px); }
-                .floating-cart-btn { bottom: 5.5rem !important; }
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
-
-
-    <!-- Mobile Navbar Backdrop -->
-    <div class="navbar-backdrop" id="navbarBackdrop"></div>
+<body class="font-sans text-slate-700 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen flex flex-col">
 
     <!-- Sticky Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-main" id="mainNavbar">
-        <div class="container">
-            <!-- Brand -->
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'landing_page' %}">
-                <img src="{% static 'images/school_logo.png' %}" alt="{{ SCHOOL_NAME }}" class="me-3 school-logo-img">
-                <span>{{ SCHOOL_NAME }}</span>
-            </a>
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm z-50 transition-all duration-300" id="mainNavbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand -->
+                <a class="flex items-center gap-3 font-poppins font-bold text-xl bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent" href="{% url 'landing_page' %}">
+                    <img src="{% static 'images/school_logo.png' %}" alt="{{ SCHOOL_NAME }}" class="h-10 w-10 object-cover transition-transform hover:scale-105">
+                    <span>{{ SCHOOL_NAME }}</span>
+                </a>
 
-            <!-- Mobile Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navbar Content -->
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center gap-1">
                     {% if user.is_authenticated %}
-
-                    <!-- Admin Dropdown -->
-                    {% if user.role in 'ADMIN SUPERADMIN' %}
-
-
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" data-bs-auto-close="outside">
-                            {{SCHOOL_ECOMMERCE}}
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'admin_grand_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Motherboard
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Dashboard
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_product_list' %}">
-                                    Products
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_order_list' %}">
-                                    Orders
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:webhook_monitor' %}">
-                                    Monitor
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_access_list' %}">
-                                    Exam Access
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_mercy_access' %}">
-                                    Mercy
-                                </a></li>
-
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-
-                            <li><a class="dropdown-item" href="{% url 'mpay:admin_analytics' %}">
-                                    Analytics
-                                </a></li>
-                            <li><a href="{% url 'accounts:users' %}" class="dropdown-item">
-                                    Users
-                                </a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" data-bs-auto-close="outside">
-                            Exams
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'dashboards:admin_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Dashboard
-                                </a></li>
-                                
-                            <li><a class="dropdown-item" href="{% url 'dashboards:admin_create_class' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Classes
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:bulk_import' %}">
-                                    Bulk Exam
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:notifications_list' %}">
-                                    Notification
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:broadcast_center' %}">
-                                    Broadcast 
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:chat_dashboard' %}">
-                                    Chat
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:admin_results_dashboard' %}">
-                                    Granular Result
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:admin_leaderboard' %}">
-                                    Leaderboard
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:teacher_grading_dashboard' %}">
-                                    Grading
-                            </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:certificate_list' %}">
-                                    Certificate
-                            </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'dashboards:analytics_dashboard' %}">
-                                    Analytics
-                            </a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" data-bs-auto-close="outside">
-                            Benefits
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'loans:admin_loan_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Loan
-                            </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'leaves:admin_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Leave
-                                </a></li>
-                        </ul>
-
-                    </li>
-
-
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" data-bs-auto-close="outside">
-                            Payroll
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'payroll:admin_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Dashboard
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:admin_create_payee' %}">
-                                    Add Payee
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:admin_payee_list' %}">
-                                    Payee List
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:generate_payroll' %}">
-                                    Run Payroll </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:manage_bank_account' %}">
-                                    Banking
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:payee_profile' %}">
-                                    Payee Profile
-                                </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'payroll:payroll_list' %}">
-                                    History
-                                </a></li>
-                        </ul>
-                    </li>
-
-                    <li><a class="dropdown-item" href="{% url 'pickup:admin_dashboard' %}"
-                            data-bs-dismiss="navbarContent">
-                            Pickups
-                        </a></li>
-
-
-
-                    {% elif user.role in 'TEACHER PARENT' %}
-                   
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:dashboard_redirect' %}"
-                            data-bs-dismiss="navbarContent">
-                            Dashboard
-                        </a>
-                    </li>
-
-                     <li class="nav-item">
-                        <a class="nav-link" href="/mpay/" data-bs-dismiss="navbarContent">
-                            {{SCHOOL_ECOMMERCE}}
-                        </a>
-                    </li>
-
-                    {% if user.role == 'TEACHER' %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'payroll:payee_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Payslip
-                        </a>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" data-bs-auto-close="outside">
-                            Benefits
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'loans:staff_loan_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Loan
-                            </a></li>
-
-                            <li><a class="dropdown-item" href="{% url 'leaves:staff_dashboard' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Leave
-                                </a></li>
-                        </ul>
-
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pickup:parent_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Pickup
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboards:chat_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Chat
-                        </a>
-                    </li>
-
-                    {% else %}
-
-                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboards:parent_children_list' %}" data-bs-dismiss="navbarContent">
-                            Ward
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pickup:parent_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Pickup
-                        </a>
-                    </li>
-
-                    {% endif %}
-
-                    <li>
-                        <a class="nav-link position-relative" href="{% url 'about' %}" data-bs-dismiss="navbarContent">
-                            About</a>
-                    </li>
-
-                    {% else %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboards:cbt' %}" data-bs-dismiss="navbarContent">
-                            CBT
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboards:student_dashboard' %}" data-bs-dismiss="navbarContent">
-                            Dashboard
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class="nav-link position-relative" href="{% url 'about' %}" data-bs-dismiss="navbarContent">
-                            About</a>
-                    </li>
-                    {% endif %}
-
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboards:cbt' %}" data-bs-dismiss="navbarContent">
-                            CBT
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mpay:select_ward' %}"
-                            data-bs-dismiss="navbarContent">
-                            {{SCHOOL_ECOMMERCE}}
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class="nav-link position-relative" href="{% url 'about' %}" data-bs-dismiss="navbarContent">
-                            About</a>
-                    </li>
-                    {% endif %}
-                </ul>
-
-                <!-- User Section -->
-                <div class="navbar-nav">
-                    {% if user.is_authenticated %}
-                    
-                    <!-- Notification Bell -->
-                    <div class="nav-item dropdown me-3 d-flex align-items-center">
-                        <a class="nav-link dropdown-toggle position-relative text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-bell fs-5"></i>
-                            <span id="notification-badge"
-                                  hx-get="{% url 'dashboards:notification_badge' %}"
-                                  hx-trigger="load, every 30s, notificationUpdated from:body, cartUpdated from:body"
-                                  hx-swap="innerHTML"
-                                  hx-indicator="#notification-spinner">
-                                {% include 'partials/dashboards/notification_badge.html' %}
-                            </span>
-                            <span id="notification-spinner" class="htmx-indicator">
-                                <i class="bi bi-arrow-repeat spin-animation"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end p-0 shadow border-0" style="width: min(320px, 92vw); max-height: 400px; overflow-y: auto; z-index: 1050;">
-                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white sticky-top">
-                                <h6 class="mb-0 fw-bold">Notifications</h6>
-                                {% if unread_notifications_count > 0 %}
-                                <a href="{% url 'dashboards:mark_all_notifications_read' %}"
-                                   hx-post="{% url 'dashboards:mark_all_notifications_read' %}"
-                                   hx-target="#notification-badge"
-                                   hx-swap="innerHTML"
-                                   class="small text-primary text-decoration-none">Mark all read</a>
-                                {% endif %}
-                            </li>
-                            
-                            {% if unread_chats_count > 0 %}
-                            <li>
-                                <a class="dropdown-item py-3 border-bottom bg-light" href="{% url 'dashboards:chat_list' %}">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
-                                            <i class="bi bi-chat-dots text-primary"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-0 fw-bold">{{ unread_chats_count }} New Message(s)</p>
-                                            <small class="text-muted">Check your inbox</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            {% endif %}
-
-            {% if recent_chats %}
-                                <li><h6 class="dropdown-header text-primary"><i class="bi bi-chat-dots me-1"></i> Messages</h6></li>
-                                {% for chat in recent_chats %}
-                                <li>
-                                    <a class="dropdown-item py-2 border-bottom {% if not chat.is_read %}bg-light bg-opacity-25{% endif %}" href="{% url 'dashboards:chat_list' %}">
-                                        <div class="d-flex align-items-center">
-                                            <div class="me-3 text-success">
-                                                <i class="bi bi-person-circle"></i>
-                                            </div>
-                                            <div class="flex-grow-1 overflow-hidden">
-                                                <p class="mb-0 text-truncate small fw-bold">{{ chat.sender.get_full_name|default:chat.sender.username }}</p>
-                                                <p class="mb-0 text-muted small text-truncate">{{ chat.message }}</p>
-                                            </div>
-                                            <small class="text-muted ms-2" style="font-size: 0.65rem;">{{ chat.created_at|timesince }}</small>
-                                        </div>
-                                    </a>
-                                </li>
-                                {% endfor %}
-                                {% if recent_notifications %}
-                                    <li><hr class="dropdown-divider"></li>
-                                {% endif %}
-                            {% endif %}
-
-            {% if recent_notifications %}
-                                {% if recent_chats %}
-                                    <li><h6 class="dropdown-header text-primary"><i class="bi bi-bell me-1"></i> Notifications</h6></li>
-                                {% endif %}
-                                {% for notification in recent_notifications %}
-                                <li>
-                                    <a class="dropdown-item py-3 border-bottom {% if not notification.is_read %}bg-light bg-opacity-25{% endif %}" href="{% url 'dashboards:notification_detail' notification.id %}">
-                                        <div class="d-flex align-items-start">
-                                            <div class="me-3 mt-1 text-primary">
-                                                <i class="bi bi-info-circle-fill"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-1 text-wrap small fw-medium">{{ notification.title }}</p>
-                                                <p class="mb-1 text-muted small text-truncate" style="max-width: 200px;">{{ notification.message }}</p>
-                                                <small class="text-muted" style="font-size: 0.7rem;">{{ notification.created_at|timesince }} ago</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            {% endif %}
-
-            {% if not recent_notifications and not recent_chats %}
-                                <li class="text-center p-4 text-muted">
-                                    <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
-                                    <small>No recent notifications</small>
-                                </li>
-                            {% endif %}
-                            <li class="p-2 text-center bg-light sticky-bottom">
-                                <a href="{% url 'dashboards:notifications_list' %}" class="small text-decoration-none text-muted">View all notifications</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            <div class="d-flex align-items-center">
-                                {% if user.profile_picture %}
-                                    <img src="{{ user.profile_picture.url }}" class="rounded-circle" alt="{{ user.username }}"
-                                        style="width: 35px; height: 35px; object-fit: cover;">
-                                {% else %}
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                        style="width: 35px; height: 35px; font-size: 0.9rem;">
-                                        {{ user.username|first|upper }}
-                                    </div>
-                                {% endif %}
-                                <span class="ms-2 d-none d-lg-inline">{{ user.username }}</span>
+                        <!-- Admin Dropdown -->
+                        {% if user.role in 'ADMIN SUPERADMIN' %}
+                        <div class="relative group">
+                            <button class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all flex items-center gap-2">
+                                {{ SCHOOL_ECOMMERCE }}
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'admin_grand_dashboard' %}">Motherboard</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_dashboard' %}">Dashboard</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_product_list' %}">Products</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_order_list' %}">Orders</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:webhook_monitor' %}">Monitor</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_access_list' %}">Exam Access</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_mercy_access' %}">Mercy</a>
+                                    <hr class="my-2 border-slate-100">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'mpay:admin_analytics' %}">Analytics</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'accounts:users' %}">Users</a>
+                                </div>
                             </div>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        </div>
 
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:complete_profile' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Profile
-                                </a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
-                                    data-bs-dismiss="navbarContent">
-                                    Logout
-                                </a></li>
-                        </ul>
+                        <!-- Exams Dropdown -->
+                        <div class="relative group">
+                            <button class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all flex items-center gap-2">
+                                Exams
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:admin_dashboard' %}">Dashboard</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:admin_create_class' %}">Classes</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:bulk_import' %}">Bulk Exam</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:notifications_list' %}">Notification</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:broadcast_center' %}">Broadcast</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:chat_dashboard' %}">Chat</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:admin_results_dashboard' %}">Granular Result</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:admin_leaderboard' %}">Leaderboard</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:teacher_grading_dashboard' %}">Grading</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:certificate_list' %}">Certificate</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'dashboards:analytics_dashboard' %}">Analytics</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Benefits Dropdown -->
+                        <div class="relative group">
+                            <button class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all flex items-center gap-2">
+                                Benefits
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'loans:admin_loan_dashboard' %}">Loan</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'leaves:admin_dashboard' %}">Leave</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payroll Dropdown -->
+                        <div class="relative group">
+                            <button class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all flex items-center gap-2">
+                                Payroll
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:admin_dashboard' %}">Dashboard</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:admin_create_payee' %}">Add Payee</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:admin_payee_list' %}">Payee List</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:generate_payroll' %}">Run Payroll</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:manage_bank_account' %}">Banking</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:payee_profile' %}">Payee Profile</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'payroll:payroll_list' %}">History</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'pickup:admin_dashboard' %}">Pickups</a>
+
+                        {% elif user.role in 'TEACHER PARENT' %}
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="/mpay/">{{ SCHOOL_ECOMMERCE }}</a>
+
+                        {% if user.role == 'TEACHER' %}
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'payroll:payee_dashboard' %}">Payslip</a>
+
+                        <div class="relative group">
+                            <button class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all flex items-center gap-2">
+                                Benefits
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'loans:staff_loan_dashboard' %}">Loan</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'leaves:staff_dashboard' %}">Leave</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'pickup:parent_dashboard' %}">Pickup</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'dashboards:chat_dashboard' %}">Chat</a>
+
+                        {% else %}
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'dashboards:parent_children_list' %}">Ward</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'pickup:parent_dashboard' %}">Pickup</a>
+                        {% endif %}
+
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'about' %}">About</a>
+
+                        {% else %}
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'dashboards:cbt' %}">CBT</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'dashboards:student_dashboard' %}">Dashboard</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'about' %}">About</a>
+                        {% endif %}
+
+                        {% else %}
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'dashboards:cbt' %}">CBT</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'mpay:select_ward' %}">{{ SCHOOL_ECOMMERCE }}</a>
+                        <a class="px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'about' %}">About</a>
+                        {% endif %}
+
+                    <!-- User Section -->
+                    {% if user.is_authenticated %}
+                    <div class="flex items-center gap-3 ml-4 pl-4 border-l border-slate-200">
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg transition-all">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+                                    {{ user.username|slice:":1"|upper }}
+                                </div>
+                                <span class="text-sm font-medium hidden xl:block">{{ user.username }}</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+                                <div class="py-2">
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'accounts:complete_profile' %}">Profile</a>
+                                    <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-blue-600 hover:text-white rounded-lg transition-all" href="{% url 'accounts:logout' %}">Logout</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {% else %}
-                    <a class="btn btn-primary" href="{% url 'accounts:login' %}" data-bs-dismiss="navbarContent">
-                        Login
-                    </a>
+                    <div class="flex items-center gap-2 ml-4 pl-4 border-l border-slate-200">
+                        <a class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all" href="{% url 'accounts:login' %}">Login</a>
+                        <a class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg transition-all shadow-md hover:shadow-lg" href="{% url 'accounts:register' %}">Register</a>
+                    </div>
                     {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden p-2 text-slate-700 hover:bg-slate-50 rounded-lg transition-all" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="lg:hidden hidden" id="mobileMenu">
+                <div class="py-4 space-y-2">
+                    {% if user.is_authenticated %}
+                        {% if user.role in 'ADMIN SUPERADMIN' %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'admin_grand_dashboard' %}">Motherboard</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'mpay:admin_dashboard' %}">Dashboard</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'dashboards:admin_dashboard' %}">Exams Dashboard</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'payroll:admin_dashboard' %}">Payroll</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'pickup:admin_dashboard' %}">Pickups</a>
+
+                        {% elif user.role in 'TEACHER PARENT' %}
+                        <a class="block px-4 py- text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="/mpay/">{{ SCHOOL_ECOMMERCE }}</a>
+                        {% if user.role == 'TEACHER' %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'payroll:payee_dashboard' %}">Payslip</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'loans:staff_loan_dashboard' %}">Loan</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'leaves:staff_dashboard' %}">Leave</a>
+                        {% endif %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'pickup:parent_dashboard' %}">Pickup</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'dashboards:chat_dashboard' %}">Chat</a>
+
+                        {% else %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'dashboards:cbt' %}">CBT</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'dashboards:student_dashboard' %}">Dashboard</a>
+                        {% endif %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'about' %}">About</a>
+
+                        {% else %}
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'dashboards:cbt' %}">CBT</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'mpay:select_ward' %}">{{ SCHOOL_ECOMMERCE }}</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'about' %}">About</a>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                        <hr class="my-3 border-slate-200">
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'accounts:complete_profile' %}">Profile</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all" href="{% url 'accounts:logout' %}">Logout</a>
+                        {% else %}
+                        <hr class="my-3 border-slate-200">
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'accounts:login' %}">Login</a>
+                        <a class="block px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all" href="{% url 'accounts:register' %}">Register</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-
     <!-- Main Content -->
-    <main class="main-content " style="min-height: 100vh;">
-
+    <main class="flex-grow pt-20 px-4 sm:px-6 lg:px-8">
         <!-- Messages -->
         {% if messages %}
-        <div class="container mt-4 pt-3">
+        <div class="max-w-7xl mx-auto space-y-3 mb-6">
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show scale-in" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fas 
-                    {% if message.tags == 'success' %}fa-check-circle
-                    {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle
-                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
-                    {% else %}fa-info-circle{% endif %}
-                    me-3 fa-lg"></i>
-                    <div class="flex-grow-1">
-                        {{ message }}
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="flex items-center p-4 rounded-lg shadow-sm scale-in
+                {% if message.tags == 'success' %}bg-green-50 border border-green-200 text-green-800
+                {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 border border-red-200 text-red-800
+                {% elif message.tags == 'warning' %}bg-yellow-50 border border-yellow-200 text-yellow-800
+                {% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %}">
+                <i class="fas 
+                {% if message.tags == 'success' %}fa-check-circle text-green-600
+                {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle text-red-600
+                {% elif message.tags == 'warning' %}fa-exclamation-triangle text-yellow-600
+                {% else %}fa-info-circle text-blue-600{% endif %}
+                mr-3 text-lg"></i>
+                <div class="flex-grow-1">
+                    {{ message }}
                 </div>
+                <button type="button" class="ml-4 text-gray-400 hover:text-gray-600 transition-colors" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-
         <!-- Content -->
-        <div class="{% block container_class %}container{% endblock %}">
+        <div class="max-w-7xl mx-auto {% block container_class %}{% endblock %}">
             {% block content %}{% endblock %}
         </div>
     </main>
 
-    <footer class="mt-auto py-5 w-100">
-        <div class="container-fluid px-4 px-md-5">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <h5>{{ SCHOOL_NAME }}</h5>
-                    <p class="mb-0">Providing quality education and seamless payment solutions for parents and students
-                        through innovative technology.</p>
+    <!-- Footer -->
+    <footer class="mt-auto py-8 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-1">
+                    <h5 class="font-semibold text-slate-900 mb-3">{{ SCHOOL_NAME }}</h5>
+                    <p class="text-sm text-slate-600">Providing quality education and seamless payment solutions for parents and students through innovative technology.</p>
                 </div>
 
-                <div class="col-lg-2 col-md-6">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <a href="{% url 'landing_page' %}">
-                                <i class="fas fa-chevron-right me-2 fa-xs"></i>Home
+                <div>
+                    <h5 class="font-semibold text-slate-900 mb-3">Quick Links</h5>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="{% url 'landing_page' %}" class="text-sm text-slate-600 hover:text-blue-600 transition-colors flex items-center">
+                                <i class="fas fa-chevron-right mr-2 text-xs"></i>Home
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a href="{% url 'mpay:store' %}">
-                                <i class="fas fa-chevron-right me-2 fa-xs"></i>Products
+                        <li>
+                            <a href="{% url 'mpay:store' %}" class="text-sm text-slate-600 hover:text-blue-600 transition-colors flex items-center">
+                                <i class="fas fa-chevron-right mr-2 text-xs"></i>Products
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a href="{% url 'pickup:parent_dashboard' %}">
-                                <i class="fas fa-chevron-right me-2 fa-xs"></i>Pickup Codes
+                        <li>
+                            <a href="{% url 'pickup:parent_dashboard' %}" class="text-sm text-slate-600 hover:text-blue-600 transition-colors flex items-center">
+                                <i class="fas fa-chevron-right mr-2 text-xs"></i>Pickup Codes
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <h5>Contact Info</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="fas fa-phone me-3 text-primary"></i>
-                            {{SCHOOL_PHONE}}
+                <div>
+                    <h5 class="font-semibold text-slate-900 mb-3">Contact Info</h5>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-phone mr-3 text-blue-600"></i>
+                            {{ SCHOOL_PHONE }}
                         </li>
-                        <li class="mb-3">
-                            <i class="fas fa-envelope me-3 text-primary"></i>
-                            {{SCHOOL_EMAIL}}
+                        <li class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-envelope mr-3 text-blue-600"></i>
+                            {{ SCHOOL_EMAIL }}
                         </li>
-                        <li class="mb-3">
-                            <i class="fas fa-map-marker-alt me-3 text-primary"></i>
-                            {{SCHOOL_ADDRESS}}
+                        <li class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-600"></i>
+                            {{ SCHOOL_ADDRESS }}
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <h5>Follow Us</h5>
-                    <div class="social-links d-flex gap-3 mb-4">
-                        <a href="https://www.facebook.com/muflihun.high/" target="_blank" title="Facebook">
+                <div>
+                    <h5 class="font-semibold text-slate-900 mb-3">Follow Us</h5>
+                    <div class="flex gap-3 mb-4">
+                        <a href="https://www.facebook.com/muflihun.high/" target="_blank" title="Facebook" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="{{SCHOOL_INSTAGRAM_URL}}" target="_blank" title="Instagram">
+                        <a href="{{ SCHOOL_INSTAGRAM_URL }}" target="_blank" title="Instagram" class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center hover:from-purple-600 hover:to-pink-600 transition-all">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="{{SCHOOL_YOUTUBE_URL}}" target="_blank"
-                            title="YouTube">
+                        <a href="{{ SCHOOL_YOUTUBE_URL }}" target="_blank" title="YouTube" class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="{{SCHOOL_TWITTER_URL}}" target="_blank" title="Twitter">
+                        <a href="{{ SCHOOL_TWITTER_URL }}" target="_blank" title="Twitter" class="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center hover:bg-sky-600 transition-colors">
                             <i class="fab fa-twitter"></i>
                         </a>
                     </div>
-                    <small>Stay connected with us on social media</small>
+                    <p class="text-sm text-slate-600">Stay connected with us on social media</p>
                 </div>
             </div>
 
-            <hr class="my-4 border-secondary">
+            <hr class="my-6 border-slate-200">
 
             <div class="text-center">
-                <small class="d-block mb-2">
+                <p class="text-sm text-slate-600 mb-2">
                     &copy; <span id="currentYear"></span> {{ SCHOOL_NAME }}. All Rights Reserved.
-                </small>
-                <small class="d-block mb-3">
-                    Powered by <a href="mailto:logiclanesolutions@gmail.com" class="text-warning">LogicLane
-                        Solutions</a>
-                </small>
-                <div class="d-flex justify-content-center gap-4 flex-wrap">
-                    <small><i class="fas fa-shield-alt me-1"></i> Secure Payments</small>
-                    <small><i class="fas fa-lock me-1"></i> Data Protected</small>
-                    <small><i class="fas fa-history me-1"></i> Transaction Backups</small>
+                </p>
+                <p class="text-sm text-slate-600 mb-3">
+                    Powered by <a href="mailto:logiclanesolutions@gmail.com" class="text-amber-500 hover:text-amber-600 transition-colors">LogicLane Solutions</a>
+                </p>
+                <div class="flex justify-center gap-4 flex-wrap text-sm text-slate-600">
+                    <span><i class="fas fa-shield-alt mr-1"></i> Secure Payments</span>
+                    <span><i class="fas fa-lock mr-1"></i> Data Protected</span>
+                    <span><i class="fas fa-history mr-1"></i> Transaction Backups</span>
                 </div>
-                <small class="d-block mt-2">{{PORTAL_DOMAIN}}</small>
+                <p class="text-sm text-slate-600 mt-2">{{ PORTAL_DOMAIN }}</p>
             </div>
         </div>
         {% if debug %}
-        <div class="fixed-bottom bg-dark text-white p-2 small">
+        <div class="fixed bottom-0 left-0 right-0 bg-slate-900 text-white p-2 text-sm">
             Queries: {{ request.connection.queries|length }}
         </div>
         {% endif %}
     </footer>
 
-    <!-- ============================================================
-         NATIVE MOBILE BOTTOM NAVIGATION
-         ============================================================ -->
-    <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
-        <ul class="bottom-nav-list">
-
-            {# =================== GUEST (not logged in) =================== #}
-            {% if not user.is_authenticated %}
-            <li class="bottom-nav-item">
-                <a href="{% url 'landing_page' %}" class="bottom-nav-link" data-nav-key="home">
-                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
-                    <span class="bottom-nav-label">Home</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:cbt' %}" class="bottom-nav-link" data-nav-key="cbt">
-                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
-                    <span class="bottom-nav-label">CBT</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'mpay:select_ward' %}" class="bottom-nav-link" data-nav-key="shop">
-                    <span class="bottom-nav-icon"><i class="bi bi-bag-fill"></i></span>
-                    <span class="bottom-nav-label">{{SCHOOL_ECOMMERCE|default:"Store"}}</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'about' %}" class="bottom-nav-link" data-nav-key="about">
-                    <span class="bottom-nav-icon"><i class="bi bi-info-circle-fill"></i></span>
-                    <span class="bottom-nav-label">About</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:login' %}" class="bottom-nav-link" data-nav-key="login">
-                    <span class="bottom-nav-icon"><i class="bi bi-box-arrow-in-right"></i></span>
-                    <span class="bottom-nav-label">Login</span>
-                </a>
-            </li>
-
-            {# =================== ADMIN / SUPERADMIN =================== #}
-            {% elif user.role == 'ADMIN' or user.role == 'SUPERADMIN' or user.is_superuser %}
-            <li class="bottom-nav-item">
-                <a href="{% url 'admin_grand_dashboard' %}" class="bottom-nav-link" data-nav-key="home">
-                    <span class="bottom-nav-icon"><i class="bi bi-grid-fill"></i></span>
-                    <span class="bottom-nav-label">Overview</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:admin_dashboard' %}" class="bottom-nav-link" data-nav-key="exams">
-                    <span class="bottom-nav-icon"><i class="bi bi-journal-text"></i></span>
-                    <span class="bottom-nav-label">Exams</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'mpay:admin_order_list' %}" class="bottom-nav-link" data-nav-key="shop">
-                    <span class="bottom-nav-icon">
-                        <i class="bi bi-bag-fill"></i>
-                        {% if stats and stats.pending_orders and stats.pending_orders > 0 %}
-                        <span class="bottom-nav-badge">{{ stats.pending_orders }}</span>
-                        {% elif total_pending_orders and total_pending_orders > 0 %}
-                        <span class="bottom-nav-badge">{{ total_pending_orders }}</span>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Orders</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:chat_list' %}" class="bottom-nav-link" data-nav-key="chat">
-                    <span class="bottom-nav-icon">
-                        <i class="bi bi-chat-dots-fill"></i>
-                        {% if stats and stats.unread_count and stats.unread_count > 0 %}
-                        <span class="bottom-nav-badge">{{ stats.unread_count }}</span>
-                        {% elif unread_chats_count and unread_chats_count > 0 %}
-                        <span class="bottom-nav-badge">{{ unread_chats_count }}</span>
-                        {% elif total_unread_count and total_unread_count > 0 %}
-                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Chat</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
-                    <span class="bottom-nav-icon">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
-                        {% else %}
-                        <i class="bi bi-person-circle"></i>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Me</span>
-                </a>
-            </li>
-
-            {# =================== TEACHER =================== #}
-            {% elif user.role == 'TEACHER' %}
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:dashboard_redirect' %}" class="bottom-nav-link" data-nav-key="home">
-                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
-                    <span class="bottom-nav-label">Home</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:teacher_grading_dashboard' %}" class="bottom-nav-link" data-nav-key="exams">
-                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
-                    <span class="bottom-nav-label">Grading</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'payroll:payee_dashboard' %}" class="bottom-nav-link" data-nav-key="payslip">
-                    <span class="bottom-nav-icon"><i class="bi bi-wallet2"></i></span>
-                    <span class="bottom-nav-label">Payslip</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:chat_list' %}" class="bottom-nav-link" data-nav-key="chat">
-                    <span class="bottom-nav-icon">
-                        <i class="bi bi-chat-dots-fill"></i>
-                        {% if unread_chats_count and unread_chats_count > 0 %}
-                        <span class="bottom-nav-badge">{{ unread_chats_count }}</span>
-                        {% elif total_unread_count and total_unread_count > 0 %}
-                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Chat</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
-                    <span class="bottom-nav-icon">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
-                        {% else %}
-                        <i class="bi bi-person-circle"></i>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Me</span>
-                </a>
-            </li>
-
-            {# =================== PARENT =================== #}
-            {% elif user.role == 'PARENT' %}
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:dashboard_redirect' %}" class="bottom-nav-link" data-nav-key="home">
-                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
-                    <span class="bottom-nav-label">Home</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:parent_children_list' %}" class="bottom-nav-link" data-nav-key="ward">
-                    <span class="bottom-nav-icon"><i class="bi bi-people-fill"></i></span>
-                    <span class="bottom-nav-label">Wards</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="/mpay/" class="bottom-nav-link" data-nav-key="shop">
-                    <span class="bottom-nav-icon"><i class="bi bi-bag-fill"></i></span>
-                    <span class="bottom-nav-label">{{SCHOOL_ECOMMERCE|default:"Store"}}</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'pickup:parent_dashboard' %}" class="bottom-nav-link" data-nav-key="pickup">
-                    <span class="bottom-nav-icon"><i class="bi bi-car-front-fill"></i></span>
-                    <span class="bottom-nav-label">Pickup</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
-                    <span class="bottom-nav-icon">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
-                        {% else %}
-                        <i class="bi bi-person-circle"></i>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Me</span>
-                </a>
-            </li>
-
-            {# =================== STUDENT (default) =================== #}
-            {% else %}
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:student_dashboard' %}" class="bottom-nav-link" data-nav-key="home">
-                    <span class="bottom-nav-icon"><i class="bi bi-house-door-fill"></i></span>
-                    <span class="bottom-nav-label">Home</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:cbt' %}" class="bottom-nav-link" data-nav-key="cbt">
-                    <span class="bottom-nav-icon"><i class="bi bi-pencil-square"></i></span>
-                    <span class="bottom-nav-label">CBT</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:admin_leaderboard' %}" class="bottom-nav-link" data-nav-key="leaderboard">
-                    <span class="bottom-nav-icon"><i class="bi bi-trophy-fill"></i></span>
-                    <span class="bottom-nav-label">Ranks</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'dashboards:notifications_list' %}" class="bottom-nav-link" data-nav-key="notifs">
-                    <span class="bottom-nav-icon">
-                        <i class="bi bi-bell-fill"></i>
-                        {% if total_unread_count and total_unread_count > 0 %}
-                        <span class="bottom-nav-badge">{{ total_unread_count }}</span>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Alerts</span>
-                </a>
-            </li>
-            <li class="bottom-nav-item">
-                <a href="{% url 'accounts:complete_profile' %}" class="bottom-nav-link" data-nav-key="profile">
-                    <span class="bottom-nav-icon">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="" style="width:24px;height:24px;object-fit:cover;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);">
-                        {% else %}
-                        <i class="bi bi-person-circle"></i>
-                        {% endif %}
-                    </span>
-                    <span class="bottom-nav-label">Me</span>
-                </a>
-            </li>
-            {% endif %}
-
-        </ul>
-    </nav>
-
     <!-- JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Global Confirmation Modal -->
-<div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirm Action</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="globalConfirmBody">
-        Are you sure?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="globalConfirmYesBtn">Yes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set current year
-        const yearEl = document.getElementById('currentYear');
-        if(yearEl) yearEl.textContent = new Date().getFullYear();
-
-        // Handle data-confirm
-        const modalEl = document.getElementById('globalConfirmModal');
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            const confirmBody = document.getElementById('globalConfirmBody');
-            const yesBtn = document.getElementById('globalConfirmYesBtn');
-            let targetUrl = '';
-            let targetForm = null;
-
-            document.body.addEventListener('click', function(e) {
-                const trigger = e.target.closest('[data-confirm]');
-                if (trigger) {
-                    e.preventDefault();
-                    const message = trigger.getAttribute('data-confirm');
-                    confirmBody.textContent = message || 'Are you sure?';
-                    
-                    if (trigger.tagName === 'A') {
-                        targetUrl = trigger.href;
-                        targetForm = null;
-                    } else if (trigger.tagName === 'BUTTON' && trigger.type === 'submit') {
-                        targetForm = trigger.closest('form');
-                        targetUrl = '';
-                    }
-                    
-                    modal.show();
-                }
-            });
-
-            yesBtn.addEventListener('click', function() {
-                if (targetUrl) {
-                    window.location.href = targetUrl;
-                } else if (targetForm) {
-                    targetForm.submit();
-                }
-                modal.hide();
-            });
-        }
-    });
-</script>
-
-    <!-- PWA Service Worker Registration -->
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('{% static 'js/serviceworker.js' %}')
-            .then(registration => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch(error => {
-                console.log('Service Worker registration failed:', error);
-            });
-        });
-    }
-</script>
-
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const navbar = document.getElementById('mainNavbar');
-        const navbarContent = document.getElementById('navbarContent');
-        const navbarBackdrop = document.getElementById('navbarBackdrop');
-        const navLinks = document.querySelectorAll('.nav-link, .dropdown-item');
-        const navbarToggler = document.querySelector('.navbar-toggler');
-        const heroTitle = document.querySelector('.gsap-hero-title');
-        const heroSub = document.querySelector('.gsap-hero-sub');
-
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: false,
-            mirror: true,
-            easing: "ease-out-quart"
-        });
-
-        // GSAP Animations
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Navbar entrance animation
-        gsap.from('#mainNavbar', {
-            y: -100,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power3.out'
-        });
-
-        // Global fade-in animations
-        gsap.utils.toArray('.fade-in-up').forEach(element => {
-            gsap.from(element, {
-                y: 50,
-                opacity: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: element,
-                    start: 'top 85%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none none'
-                }
-            });
-        });
-
-        if (heroTitle || heroSub) {
-            gsap.from(".gsap-hero-title", {
-                y: 30,
-                opacity: 0,
-                duration: 0.8,
-                ease: "power3.out",
-                stagger: 0.08
-            });
-            gsap.from(".gsap-hero-sub", {
-                y: 20,
-                opacity: 0,
-                duration: 0.9,
-                delay: 0.12,
-                ease: "power3.out"
-            });
-        }
-
-        // Sticky navbar scroll effect
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Mobile backdrop functionality using Bootstrap events
-        navbarContent.addEventListener('show.bs.collapse', function () {
-            navbarBackdrop.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
-        });
-
-        navbarContent.addEventListener('hide.bs.collapse', function () {
-            navbarBackdrop.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scroll
-        });
-
-        // Close navbar when clicking backdrop
-        navbarBackdrop.addEventListener('click', function () {
-            const bsCollapse = bootstrap.Collapse.getInstance(navbarContent) || new bootstrap.Collapse(navbarContent);
-            bsCollapse.hide();
-        });
-
-        // Auto-close navbar when clicking nav links on mobile
-        navLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                // Only auto-close on mobile if it's not a dropdown toggle
-                if (window.innerWidth < 992 && !this.classList.contains('dropdown-toggle')) {
-                    const bsCollapse = bootstrap.Collapse.getInstance(navbarContent);
-                    if (bsCollapse) {
-                        bsCollapse.hide();
-                    }
-                }
-            });
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 992) {
-                navbarBackdrop.classList.remove('active');
-                document.body.style.overflow = '';
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarContent);
-                if (bsCollapse) {
-                    bsCollapse.hide(); // Hide the collapse state for desktop
-                }
-            }
-        });
-
-        // Card hover animations
-        gsap.utils.toArray('.card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                gsap.to(card, {
-                    y: -8,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            });
-
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    y: 0,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            });
-        });
-
-        // Auto-hide alerts
-        const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
-        alerts.forEach(alert => {
-            setTimeout(() => {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }, 5000);
-        });
-
-        // Initialize Responsive Stack Tables
-        function initResponsiveTables() {
-            const tables = document.querySelectorAll('.table-responsive-stack');
-            tables.forEach(table => {
-                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
-                const rows = table.querySelectorAll('tbody tr');
-                
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    cells.forEach((cell, index) => {
-                        if (headers[index] && !cell.getAttribute('data-label')) {
-                            cell.setAttribute('data-label', headers[index]);
-                        }
-                    });
-                });
-            });
-        }
-        initResponsiveTables();
-
-        // ================================================================
-        // NATIVE MOBILE BOTTOM NAV: Active link + scroll hide/show
-        // ================================================================
-        (function initBottomNav() {
-            const bottomNav = document.getElementById('bottomNav');
-            if (!bottomNav) return;
-
-            const currentPath = window.location.pathname.replace(/\/+$/, '') + '/';
-            const links = bottomNav.querySelectorAll('.bottom-nav-link');
-
-            // --- 1. Active link highlighting ---
-            let bestMatch = null;
-            let bestLen = -1;
-            links.forEach(link => {
-                try {
-                    const href = link.getAttribute('href') || '';
-                    if (!href || href === '#') return;
-                    // Resolve href to absolute path (handles relative, '/', named routes)
-                    const absUrl = new URL(href, window.location.origin);
-                    let linkPath = absUrl.pathname.replace(/\/+$/, '') + '/';
-                    if (linkPath.length > bestLen &&
-                        (currentPath === linkPath || currentPath.startsWith(linkPath) || linkPath === '//')) {
-                        bestLen = linkPath.length;
-                        bestMatch = link;
-                    }
-                } catch (e) { /* ignore invalid URLs in nav */ }
-            });
-            // Fallback: use data-nav-key matching against path segments
-            if (!bestMatch) {
-                const segments = currentPath.split('/').filter(Boolean);
-                for (const link of links) {
-                    const key = link.getAttribute('data-nav-key') || '';
-                    if (key && segments.includes(key)) {
-                        bestMatch = link;
-                        break;
-                    }
-                }
-            }
-            if (bestMatch) bestMatch.classList.add('active');
-
-            // --- 2. Scroll hide/show (native feel: hide when scrolling down, show when up) ---
-            let lastScrollY = window.scrollY;
-            let ticking = false;
-            window.addEventListener('scroll', function () {
-                if (ticking) return;
-                window.requestAnimationFrame(function () {
-                    const curY = window.scrollY;
-                    const delta = curY - lastScrollY;
-
-                    if (curY < 60) {
-                        // Always show near the top
-                        bottomNav.classList.remove('hidden');
-                    } else if (Math.abs(delta) > 6) {  // threshold to ignore jitter
-                        if (delta > 0) {
-                            // Scrolling down -> hide
-                            bottomNav.classList.add('hidden');
-                        } else {
-                            // Scrolling up -> show
-                            bottomNav.classList.remove('hidden');
-                        }
-                    }
-                    lastScrollY = curY;
-                    ticking = false;
-                });
-                ticking = true;
-            }, { passive: true });
-
-            // --- 3. Ripple/tap feedback for touch devices ---
-            links.forEach(link => {
-                link.addEventListener('click', function () {
-                    // Visual tap confirmation
-                    links.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        })();
-
-    });
-
-    // Show/Hide loading
-    function showLoading() {
-        document.getElementById('globalLoader').style.display = 'flex';
-    }
-
-    function hideLoading() {
-        document.getElementById('globalLoader').style.display = 'none';
-    }
-
-    // Toast notification
-    function showToast(message, type = 'success') {
-        const toastContainer = document.getElementById('toastContainer') || createToastContainer();
-
-        const toastId = 'toast-' + Date.now();
-        const toastHtml = `
-                <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-                            ${message}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                    </div>
+    <div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50" id="globalConfirmModal">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Confirm Action</h3>
+                <p class="text-slate-600 mb-6" id="globalConfirmBody">Are you sure?</p>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" class="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors" id="globalConfirmNoBtn">Cancel</button>
+                    <button type="button" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors" id="globalConfirmYesBtn">Yes</button>
                 </div>
-            `;
+            </div>
+        </div>
+    </div>
 
-        toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-        const toast = new bootstrap.Toast(document.getElementById(toastId), {
-            delay: 3000
-        });
-        toast.show();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year
+            const yearEl = document.getElementById('currentYear');
+            if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-        // Remove after hide
-        document.getElementById(toastId).addEventListener('hidden.bs.toast', function () {
-            this.remove();
-        });
-    }
-
-    function createToastContainer() {
-        const container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-        container.style.zIndex = '99999';
-        document.body.appendChild(container);
-        return container;
-    }
-
-
-    // Add smooth scrolling to all links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href === '#' || href.length < 2) return;
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
             
-            try {
-                const target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            } catch (err) {
-                // Ignore invalid selectors
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
             }
-        });
-    });
 
-    (function () {
-        "use strict";
+            // Handle data-confirm
+            const modalEl = document.getElementById('globalConfirmModal');
+            if (modalEl) {
+                const confirmBody = document.getElementById('globalConfirmBody');
+                const yesBtn = document.getElementById('globalConfirmYesBtn');
+                const noBtn = document.getElementById('globalConfirmNoBtn');
+                let targetUrl = '';
+                let targetForm = null;
 
-        /* ---------- CSRF ---------- */
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== "") {
-                document.cookie.split(";").forEach(cookie => {
-                    cookie = cookie.trim();
-                    if (cookie.startsWith(name + "=")) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                document.body.addEventListener('click', function(e) {
+                    const trigger = e.target.closest('[data-confirm]');
+                    if (trigger) {
+                        e.preventDefault();
+                        const message = trigger.getAttribute('data-confirm');
+                        confirmBody.textContent = message || 'Are you sure?';
+                        
+                        if (trigger.tagName === 'A') {
+                            targetUrl = trigger.href;
+                            targetForm = null;
+                        } else if (trigger.tagName === 'BUTTON' && trigger.type === 'submit') {
+                            targetForm = trigger.closest('form');
+                            targetUrl = '';
+                        }
+                        
+                        modalEl.classList.remove('hidden');
+                        modalEl.classList.add('flex');
+                    }
+                });
+
+                noBtn.addEventListener('click', function() {
+                    modalEl.classList.add('hidden');
+                    modalEl.classList.remove('flex');
+                });
+
+                yesBtn.addEventListener('click', function() {
+                    modalEl.classList.add('hidden');
+                    modalEl.classList.remove('flex');
+                    if (targetUrl) {
+                        window.location.href = targetUrl;
+                    } else if (targetForm) {
+                        targetForm.submit();
                     }
                 });
             }
-            return cookieValue;
-        }
 
-        const CSRF_TOKEN = getCookie("csrftoken");
-
-        /* ---------- HTMX CSRF Configuration ---------- */
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            evt.detail.headers['X-CSRFToken'] = CSRF_TOKEN;
-        });
-
-        /* ---------- HTMX Event Handlers ---------- */
-        document.body.addEventListener('htmx:beforeSwap', function(evt) {
-            // Handle error responses
-            if (evt.detail.xhr.status >= 400) {
-                evt.detail.shouldSwap = false;
-                const errorMsg = evt.detail.xhr.responseText || 'An error occurred';
-                toastError(errorMsg);
-            }
-        });
-
-        document.body.addEventListener('htmx:afterRequest', function(evt) {
-            // Show success messages for successful POST requests
-            if (evt.detail.xhr.status >= 200 && evt.detail.xhr.status < 300 &&
-                evt.detail.requestConfig.method.toUpperCase() === 'POST') {
-                // You can add custom success handling here
-            }
-        });
-
-        /* ---------- TOASTS ---------- */
-        window.toastSuccess = function (msg) {
-            if (window.Swal) {
-                Swal.fire({
-                    toast: true,
-                    position: "top-end",
-                    icon: "success",
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
+            // Initialize AOS
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-out-cubic',
+                    once: true,
+                    offset: 50,
                 });
             }
-        };
 
-        window.toastError = function (msg) {
-            if (window.Swal) {
-                Swal.fire({
-                    toast: true,
-                    position: "top-end",
-                    icon: "error",
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 4000,
-                });
+            // GSAP ScrollTrigger
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
             }
-        };
-
-
-
-        /* ===============================
-           CART MODULE (FULLY GUARDED)
-        ================================ */
-        document.addEventListener("DOMContentLoaded", () => {
-
-            const cartSidebar = document.getElementById("cartSidebar");
-            const cartOverlay = document.getElementById("cart-overlay");
-
-            // 🚨 EXIT COMPLETELY IF CART IS NOT PRESENT
-            if (!cartSidebar || !cartOverlay) return;
-
-            const wardId = new URLSearchParams(window.location.search).get("ward");
-
-            function openCart() {
-                loadCart();
-                cartSidebar.classList.add("show");
-                cartOverlay.classList.add("show");
-                document.body.classList.add("cart-open");
-            }
-
-            function closeCart() {
-                cartSidebar.classList.remove("show");
-                cartOverlay.classList.remove("show");
-                document.body.classList.remove("cart-open");
-                refreshCartCount();
-
-                // Auto-refresh product list on dismissal to show updated "In Cart" states
-                if (window.location.pathname.includes("/mpay/products/")) {
-                    location.reload();
-                }
-            }
-
-            function toggleCart() {
-                cartSidebar.classList.toggle("show");
-                cartOverlay.classList.toggle("show");
-            }
-
-            cartOverlay.addEventListener("click", closeCart);
-
-            window.openCart = openCart;
-            window.closeCart = closeCart;
-            window.toggleCart = toggleCart;
-
-            /* ---------- LOAD CART ---------- */
-            function loadCart() {
-                if (!wardId) return;
-                fetch(`/mpay/cart/sidebar/?ward=${wardId}`)
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById("cartBody").innerHTML = html;
-                        // Trigger cart count update after loading cart
-                        refreshCartCount();
-                        // Trigger notification update after cart changes
-                        const notificationBadge = document.getElementById("notification-badge");
-                        if (notificationBadge && htmx) {
-                            htmx.trigger(notificationBadge, "notificationUpdated");
-                        }
-                    });
-            }
-
-            /* ---------- COUNT ---------- */
-            function refreshCartCount() {
-                if (!wardId) return;
-                // Trigger HTMX to refresh cart count
-                const cartCount = document.getElementById("cartCount");
-                if (cartCount && htmx) {
-                    htmx.trigger(cartCount, "cartUpdated");
-                }
-            }
-
-            window.refreshCartCount = refreshCartCount;
-            refreshCartCount();
-
-            /* ---------- UPDATE QTY ---------- */
-            window.updateQty = function (itemId, action) {
-                // This function is now handled by HTMX directly in the template
-                // Kept for backward compatibility
-                console.log("updateQty called - handled by HTMX");
-            };
-
-            /* ---------- REMOVE ---------- */
-            window.removeItem = function (itemId) {
-                // This function is now handled by HTMX directly in the template
-                // Kept for backward compatibility
-                console.log("removeItem called - handled by HTMX");
-            };
-
-            /* ---------- CLEAR ---------- */
-            window.clearCart = function () {
-                // This function is now handled by HTMX directly in the template
-                // Kept for backward compatibility
-                console.log("clearCart called - handled by HTMX");
-            };
-
-            /* ---------- ADD TO CART ---------- */
-            document.addEventListener("click", e => {
-                const btn = e.target.closest(".btn-add-cart");
-                if (!btn) return;
-
-                btn.disabled = true;
-                btn.innerText = "Adding…";
-
-                fetch(btn.dataset.url || "/mpay/cart/add/", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": CSRF_TOKEN,
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: new URLSearchParams({
-                        product_id: btn.dataset.product,
-                        ward_id: btn.dataset.ward,
-                    }),
-                })
-                    .then(() => {
-                        btn.innerText = "Added ✓";
-                        refreshCartCount();
-                    })
-                    .catch(() => {
-                        btn.innerText = "Error";
-                        btn.disabled = false;
-                    });
-            });
-
-
-            /* ---------- MOBILE SWIPE CLOSE ---------- */
-            let startX = 0;
-            document.addEventListener("touchstart", e => {
-                startX = e.touches[0].clientX;
-            });
-
-            document.addEventListener("touchend", e => {
-                const diff = e.changedTouches[0].clientX - startX;
-                if (diff > 80) closeCart();
-            });
-
         });
-    })();
-
     </script>
 
-    {% block extra_scripts %}{% endblock %}
-
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

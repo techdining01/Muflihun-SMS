@@ -3,221 +3,184 @@
 {% block title %}Parent Dashboard - Exam System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-house-heart"></i> Parent Dashboard</h2>
-            <p class="text-muted">Welcome, {{ request.user.get_full_name }}! Monitor your child's academic progress.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-house-heart"></i> Parent Dashboard</h2>
+        <p class="text-slate-500">Welcome, {{ request.user.get_full_name }}! Monitor your child's academic progress.</p>
     </div>
 
     <!-- Select Child -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-person-check"></i> Select Child</h5>
-                </div>
-                <div class="card-body">
-                    {% if children %}
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for child in children %}
-                                <a href="?child_id={{ child.id }}" class="btn btn-outline-primary flex-grow-1 flex-md-grow-0 {% if selected_child.id == child.id %}active{% endif %}">
-                                    {{ child.get_full_name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted mb-0">No children linked to your account yet.</p>
-                    {% endif %}
-                </div>
+    <div class="mb-6">
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-person-check"></i> Select Child</h5>
+            </div>
+            <div class="p-6">
+                {% if children %}
+                    <div class="flex flex-wrap gap-2">
+                        {% for child in children %}
+                            <a href="?child_id={{ child.id }}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors {% if selected_child.id == child.id %}bg-blue-600 text-white{% endif %}">
+                                {{ child.get_full_name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-slate-500 mb-0">No children linked to your account yet.</p>
+                {% endif %}
             </div>
         </div>
     </div>
 
     {% if selected_child %}
         <!-- Child Statistics -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-person-check" style="font-size: 2em; color: #3498db;"></i>
-                    <h3 style="font-size:1rem;">{{ selected_child.get_full_name }}</h3>
-                    <p>Class: {{ selected_child.student_class.name }}</p>
-                </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+                <i class="bi bi-person-check text-3xl text-blue-500"></i>
+                <h3 class="text-lg font-bold text-slate-900 my-2">{{ selected_child.get_full_name }}</h3>
+                <p class="text-sm text-slate-500">Class: {{ selected_child.student_class.name }}</p>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-file-earmark" style="font-size: 2em; color: #27ae60;"></i>
-                    <h3>{{ exams_taken }}</h3>
-                    <p>Exams Taken</p>
-                </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+                <i class="bi bi-file-earmark text-3xl text-green-500"></i>
+                <h3 class="text-lg font-bold text-slate-900 my-2">{{ exams_taken }}</h3>
+                <p class="text-sm text-slate-500">Exams Taken</p>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-star" style="font-size: 2em; color: #f39c12;"></i>
-                    <h3>{{ average_score }}%</h3>
-                    <p>Average Score</p>
-                </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+                <i class="bi bi-star text-3xl text-amber-500"></i>
+                <h3 class="text-lg font-bold text-slate-900 my-2">{{ average_score }}%</h3>
+                <p class="text-sm text-slate-500">Average Score</p>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-trophy" style="font-size: 2em; color: #e74c3c;"></i>
-                    <h3>{{ class_rank }}</h3>
-                    <p>Class Rank</p>
-                </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-all hover:-translate-y-0.5">
+                <i class="bi bi-trophy text-3xl text-red-500"></i>
+                <h3 class="text-lg font-bold text-slate-900 my-2">{{ class_rank }}</h3>
+                <p class="text-sm text-slate-500">Class Rank</p>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-lightning"></i> Actions</h5>
-                    </div>
-                    <div class="card-body d-flex flex-wrap gap-2">
-                        <a href="{% url 'dashboards:parent_child_results' selected_child.id %}" class="btn btn-primary flex-fill flex-md-grow-0">
-                            <i class="bi bi-graph-up"></i> View Results
-                        </a>
-                        <a href="{% url 'dashboards:parent_children_list' %}" class="btn btn-info flex-fill flex-md-grow-0">
-                            <i class="bi bi-list"></i> All Children
-                        </a>
-                    </div>
+        <div class="mb-6">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="bg-blue-600 text-white px-6 py-4 rounded-t-2xl">
+                    <h5 class="font-semibold mb-0"><i class="bi bi-lightning"></i> Actions</h5>
+                </div>
+                <div class="p-6 flex flex-wrap gap-2">
+                    <a href="{% url 'dashboards:parent_child_results' selected_child.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 md:flex-grow-0">
+                        <i class="bi bi-graph-up"></i> View Results
+                    </a>
+                    <a href="{% url 'dashboards:parent_children_list' %}" class="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors flex-1 md:flex-grow-0">
+                        <i class="bi bi-list"></i> All Children
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Recent Results -->
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-award"></i> Recent Exam Results</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if recent_results %}
-                            <div class="table-responsive p-0">
-                                <table class="table table-sm table-hover table-responsive-stack">
-                                    <thead>
-                                        <tr>
-                                            <th>Exam Name</th>
-                                            <th class="text-nowrap">Date</th>
-                                            <th class="text-nowrap">Score</th>
-                                            <th>Percentage</th>
-                                            <th>Grade</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+        <div class="mb-6">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-award"></i> Recent Exam Results</h5>
+                </div>
+                <div class="p-6">
+                    {% if recent_results %}
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Exam Name</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700 whitespace-nowrap">Date</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700 whitespace-nowrap">Score</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Percentage</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Grade</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in recent_results %}
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                            <td class="px-4 py-3 align-middle">
+                                                <div class="font-semibold text-blue-600">{{ result.exam.title }}</div>
+                                                <small class="text-slate-500">{{ result.exam.school_class.name }}</small>
+                                            </td>
+                                            <td class="px-4 py-3 align-middle whitespace-nowrap">
+                                                <div>{{ result.started_at|date:"d M Y" }}</div>
+                                                <small class="text-slate-500">{{ result.started_at|date:"h:i A" }}</small>
+                                            </td>
+                                            <td class="px-4 py-3 align-middle whitespace-nowrap">
+                                                <span class="text-lg font-bold text-slate-900">{{ result.total_score }}</span>
+                                                <span class="text-slate-500">/ {{ result.exam.total_marks }}</span>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="px-2 py-1 rounded-full text-xs {% if result.percentage >= 80 %}bg-green-100 text-green-800{% elif result.percentage >= 60 %}bg-amber-100 text-amber-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                                    {{ result.percentage }}%
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <strong class="{% if result.grade == 'A' %}text-green-600{% elif result.grade == 'B' %}text-cyan-600{% elif result.grade == 'C' %}text-amber-600{% else %}text-red-600{% endif %}">
+                                                    {{ result.grade }}
+                                                </strong>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                {% if result.is_fully_graded %}
+                                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Graded</span>
+                                                {% else %}
+                                                    <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Pending</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <a href="{% url 'dashboards:exam_result' result.id %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for result in recent_results %}
-                                            <tr>
-                                                <td class="align-middle" data-label="Exam Name">
-                                                    <div class="fw-bold text-primary">{{ result.exam.title }}</div>
-                                                    <small class="text-muted">{{ result.exam.school_class.name }}</small>
-                                                </td>
-                                                <td class="align-middle text-nowrap" data-label="Date">
-                                                    <div>{{ result.started_at|date:"d M Y" }}</div>
-                                                    <small class="text-muted">{{ result.started_at|date:"h:i A" }}</small>
-                                                </td>
-                                                <td class="align-middle text-nowrap" data-label="Score">
-                                                    <span class="fs-6 fw-bold text-dark">{{ result.total_score }}</span>
-                                                    <span class="text-muted">/ {{ result.exam.total_marks }}</span>
-                                                </td>
-                                                <td data-label="Percentage">
-                                                    <span class="badge bg-{% if result.percentage >= 80 %}success{% elif result.percentage >= 60 %}warning{% else %}danger{% endif %}">
-                                                        {{ result.percentage }}%
-                                                    </span>
-                                                </td>
-                                                <td data-label="Grade">
-                                                    <strong class="text-{% if result.grade == 'A' %}success{% elif result.grade == 'B' %}info{% elif result.grade == 'C' %}warning{% else %}danger{% endif %}">
-                                                        {{ result.grade }}
-                                                    </strong>
-                                                </td>
-                                                <td data-label="Status">
-                                                    {% if result.is_fully_graded %}
-                                                        <span class="badge bg-success">Graded</span>
-                                                    {% else %}
-                                                        <span class="badge bg-warning">Pending</span>
-                                                    {% endif %}
-                                                </td>
-                                                <td data-label="Action">
-                                                    <a href="{% url 'dashboards:exam_result' result.id %}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <p class="text-muted">No exam results available yet.</p>
-                        {% endif %}
-                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-slate-500">No exam results available yet.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Performance Trends -->
-        <div class="row g-3">
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-graph-up"></i> Performance Trend</h5>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-graph-up"></i> Performance Trend</h5>
+                </div>
+                <div class="p-6">
+                    <div class="w-full bg-slate-200 rounded-full h-4 mb-2">
+                        <div class="bg-green-500 h-4 rounded-full" style="width: {{ average_score }}%"></div>
                     </div>
-                    <div class="card-body">
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-success" role="progressbar" 
-                                 style="width: {{ average_score }}%">
-                            </div>
-                        </div>
-                        <p class="small text-muted">
-                            Average Score: <strong>{{ average_score }}%</strong>
-                        </p>
-                        <p class="small">
-                            <i class="bi bi-arrow-up text-success"></i>
-                            Great progress! Keep up the good work.
-                        </p>
-                    </div>
+                    <p class="text-sm text-slate-500">
+                        Average Score: <strong class="text-slate-900">{{ average_score }}%</strong>
+                    </p>
+                    <p class="text-sm">
+                        <i class="bi bi-arrow-up text-green-500"></i>
+                        Great progress! Keep up the good work.
+                    </p>
                 </div>
             </div>
 
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Class Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Class:</strong> {{ selected_child.student_class.name }}</p>
-                        <p><strong>Class Rank:</strong> <span class="badge bg-primary">{{ class_rank }}</span></p>
-                        <p><strong>Total Students:</strong> {{ total_students }}</p>
-                        <p class="small text-muted mt-3">
-                            For detailed progress reports and teacher feedback, visit the Results section.
-                        </p>
-                    </div>
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h5 class="font-semibold text-slate-900 mb-0"><i class="bi bi-info-circle"></i> Class Information</h5>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-700"><strong>Class:</strong> {{ selected_child.student_class.name }}</p>
+                    <p class="text-slate-700"><strong>Class Rank:</strong> <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">{{ class_rank }}</span></p>
+                    <p class="text-slate-700"><strong>Total Students:</strong> {{ total_students }}</p>
+                    <p class="text-sm text-slate-500 mt-3">
+                        For detailed progress reports and teacher feedback, visit the Results section.
+                    </p>
                 </div>
             </div>
         </div>
     {% else %}
-        <div class="alert alert-info">
+        <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-800">
             <i class="bi bi-info-circle"></i> Please select a child to view their progress and exam results.
         </div>
     {% endif %}
 </div>
-
-<style>
-    .stat-card {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: clamp(0.75rem, 3vw, 1.25rem);
-        text-align: center;
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-    .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
-    .stat-card h3 { color: #333; margin: 8px 0; font-size: clamp(1rem, 3.5vw, 1.75rem); }
-    .stat-card p { font-size: 0.85em; margin: 0; }
-</style>
 {% endblock %}

@@ -3,20 +3,20 @@
 {% block title %}Mercy Exam Access{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <h3 class="fw-bold mb-0">Mercy Exam Access</h3>
-        <a href="{% url 'mpay:admin_dashboard' %}" class="btn btn-outline-secondary">
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 mb-6">
+        <h3 class="font-bold text-slate-900 mb-0">Mercy Exam Access</h3>
+        <a href="{% url 'mpay:admin_dashboard' %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
             Back to Brillspay
         </a>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-6">
-                    <label for="classSelect" class="form-label">Select Class</label>
-                    <select id="classSelect" name="class" class="form-select" onchange="this.form.submit()">
+    <div class="bg-white rounded-2xl shadow-sm mb-4">
+        <div class="p-4">
+            <form method="get" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label for="classSelect" class="block text-sm font-medium text-slate-700 mb-1">Select Class</label>
+                    <select id="classSelect" name="class" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="this.form.submit()">
                         <option value="">Choose...</option>
                         {% for c in classes %}
                         <option value="{{ c.id }}" {% if selected_class and selected_class.id == c.id %}selected{% endif %}>
@@ -31,18 +31,18 @@
 
     {% if selected_class %}
         {% if students and exams %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3">Toggle exam access for {{ selected_class.name }} ({{ selected_class.academic_year }})</h5>
-                <div class="table-responsive table-responsive-stack">
-                    <table class="table table-bordered align-middle mb-0 table-responsive-stack">
-                        <thead class="table-light">
+        <div class="bg-white rounded-2xl shadow-sm">
+            <div class="p-4">
+                <h5 class="font-semibold text-slate-900 mb-3">Toggle exam access for {{ selected_class.name }} ({{ selected_class.academic_year }})</h5>
+                <div class="overflow-x-auto table-responsive-stack">
+                    <table class="w-full border-collapse align-middle table-responsive-stack">
+                        <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th>Student</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-700">Student</th>
                                 {% for exam in exams %}
-                                <th class="text-center">
+                                <th class="px-4 py-3 text-center font-semibold text-slate-700">
                                     {{ exam.title }}
-                                    <div class="small text-muted">
+                                    <div class="text-xs text-slate-500">
                                         {{ exam.start_time|date:"M d" }}
                                     </div>
                                 </th>
@@ -51,21 +51,21 @@
                         </thead>
                         <tbody>
                             {% for student in students %}
-                            <tr>
-                                <td data-label="Student">
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="px-4 py-3 text-slate-900">
                                     {{ student.get_full_name|default:student.username }}
                                 </td>
                                 {% for exam in exams %}
                                 {% with key=student.id|stringformat:"s"|add:"|"|add:exam.id|stringformat:"s" %}
-                                <td class="text-center" data-label="{{ exam.title }}">
-                                    <form method="post" class="d-inline">
+                                <td class="px-4 py-3 text-center">
+                                    <form method="post" class="inline">
                                         {% csrf_token %}
                                         <input type="hidden" name="student_id" value="{{ student.id }}">
                                         <input type="hidden" name="exam_id" value="{{ exam.id }}">
                                         <input type="hidden" name="action"
                                                value="{% if key in access_pairs %}revoke{% else %}grant{% endif %}">
                                         <button type="submit"
-                                                class="btn btn-sm {% if key in access_pairs %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                                class="px-3 py-1 text-sm {% if key in access_pairs %}border-2 border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition-colors{% else %}border-2 border-green-600 text-green-600 rounded hover:bg-green-600 hover:text-white transition-colors{% endif %}">
                                             {% if key in access_pairs %}
                                                 Revoke
                                             {% else %}
@@ -84,12 +84,12 @@
             </div>
         </div>
         {% else %}
-            <div class="alert alert-info">
+            <div class="px-4 py-3 bg-cyan-50 border border-cyan-200 text-cyan-800 rounded-lg">
                 No students or exams found for this class.
             </div>
         {% endif %}
     {% else %}
-        <div class="alert alert-secondary">
+        <div class="px-4 py-3 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg">
             Select a class to manage mercy exam access.
         </div>
     {% endif %}

@@ -2,45 +2,45 @@
 {% block title %}Payment Detail{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="py-4">
 
-<h4 class="fw-bold mb-3">Payment Detail</h4>
+<h4 class="font-bold text-slate-900 mb-3">Payment Detail</h4>
 
-<div class="card mb-3">
-  <div class="card-body">
-    <p><strong>Reference:</strong> {{ tx.reference }}</p>
-    <p><strong>User:</strong> {{ tx.user.get_full_name }}</p>
-    <p><strong>Amount:</strong> ₦{{ tx.amount }}</p>
-    <p><strong>Status:</strong> {{ tx.paystack_status }}</p>
-    <p><strong>Date:</strong> {{ tx.created_at }}</p>
+<div class="bg-white rounded-2xl shadow-sm mb-3">
+  <div class="p-4">
+    <p class="text-slate-700"><strong class="text-slate-900">Reference:</strong> {{ tx.reference }}</p>
+    <p class="text-slate-700"><strong class="text-slate-900">User:</strong> {{ tx.user.get_full_name }}</p>
+    <p class="text-slate-700"><strong class="text-slate-900">Amount:</strong> ₦{{ tx.amount }}</p>
+    <p class="text-slate-700"><strong class="text-slate-900">Status:</strong> {{ tx.paystack_status }}</p>
+    <p class="text-slate-700"><strong class="text-slate-900">Date:</strong> {{ tx.created_at }}</p>
   </div>
 </div>
 
-<h5>Order Items</h5>
+<h5 class="font-semibold text-slate-900 mb-2">Order Items</h5>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-responsive-stack">
-        <thead>
+<div class="overflow-x-auto">
+    <table class="w-full border-collapse table-responsive-stack">
+        <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
-                <th>Product</th>
-                <th>Ward</th>
-                <th>Price</th>
+                <th class="px-4 py-3 text-left font-semibold text-slate-700">Product</th>
+                <th class="px-4 py-3 text-left font-semibold text-slate-700">Ward</th>
+                <th class="px-4 py-3 text-left font-semibold text-slate-700">Price</th>
             </tr>
         </thead>
         <tbody>
             {% for item in tx.order.items.all %}
-            <tr>
-                <td data-label="Product">{{ item.product.name }}</td>
-                <td data-label="Ward">{{ tx.order.ward.get_full_name }}</td>
-                <td data-label="Price">₦{{ item.price }}</td>
+            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                <td class="px-4 py-3 text-slate-900">{{ item.product.name }}</td>
+                <td class="px-4 py-3 text-slate-700">{{ tx.order.ward.get_full_name }}</td>
+                <td class="px-4 py-3 text-slate-700">₦{{ item.price }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
-<h5 class="mt-4">Raw Paystack Response</h5>
-<pre class="bg-light p-3 small">
+<h5 class="font-semibold text-slate-900 mt-4 mb-2">Raw Paystack Response</h5>
+<pre class="bg-slate-100 p-3 text-sm rounded-lg overflow-x-auto">
 {{ tx.raw_response|json_script:"txjson" }}
 </pre>
 

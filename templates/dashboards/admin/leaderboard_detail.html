@@ -4,56 +4,54 @@
 {% block title %}Leaderboard - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-trophy"></i> Leaderboard</h2>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-trophy"></i> Leaderboard</h2>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Top Performers</h5>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h5 class="font-semibold text-slate-900 mb-0">Top Performers</h5>
                 </div>
-                <div class="table-responsive p-0">
-                    <table class="table table-hover table-responsive-stack mb-0">
-                        <thead class="table-light">
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th width="50">#</th>
-                                <th>Student</th>
-                                <th>Class</th>
-                                <th>Score</th>
-                                <th>Exams</th>
-                                <th>Average</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700" width="50">#</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Student</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Class</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Score</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Exams</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Average</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if leaderboard %}
                                 {% for entry in leaderboard %}
-                                <tr>
-                                    <td data-label="#">
+                                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                    <td class="px-4 py-3">
                                         {% if forloop.counter == 1 %}
-                                            <span class="badge bg-warning">🥇</span>
+                                            <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">🥇</span>
                                         {% elif forloop.counter == 2 %}
-                                            <span class="badge bg-secondary">🥈</span>
+                                            <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-sm">🥈</span>
                                         {% elif forloop.counter == 3 %}
-                                            <span class="badge bg-danger">🥉</span>
+                                            <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">🥉</span>
                                         {% else %}
-                                            {{ forloop.counter }}
+                                            <span class="text-slate-700">{{ forloop.counter }}</span>
                                         {% endif %}
                                     </td>
-                                    <td data-label="Student"><strong>{{ entry.student.first_name }} {{ entry.student.last_name }}</strong></td>
-                                    <td data-label="Class">{{ entry.class_name }}</td>
-                                    <td data-label="Score"><strong>{{ entry.total_score }}</strong></td>
-                                    <td data-label="Exams">{{ entry.exams_count }}</td>
-                                    <td data-label="Average">{{ entry.average_score|floatformat:2 }}%</td>
+                                    <td class="px-4 py-3 font-semibold text-slate-900">{{ entry.student.first_name }} {{ entry.student.last_name }}</td>
+                                    <td class="px-4 py-3 text-slate-700">{{ entry.class_name }}</td>
+                                    <td class="px-4 py-3 font-semibold text-slate-900">{{ entry.total_score }}</td>
+                                    <td class="px-4 py-3 text-slate-700">{{ entry.exams_count }}</td>
+                                    <td class="px-4 py-3 text-slate-700">{{ entry.average_score|floatformat:2 }}%</td>
                                 </tr>
                                 {% endfor %}
                             {% else %}
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">
                                     No data available
                                 </td>
                             </tr>
@@ -64,27 +62,27 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5 class="mb-0">Statistics</h5>
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-sm mb-4">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h5 class="font-semibold text-slate-900 mb-0">Statistics</h5>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <small class="text-muted d-block mb-1">Total Exams Conducted</small>
-                        <h4 class="mb-0">0</h4>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <small class="text-slate-500 block mb-1">Total Exams Conducted</small>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-0">0</h4>
                     </div>
-                    <div class="mb-3">
-                        <small class="text-muted d-block mb-1">Total Attempts</small>
-                        <h4 class="mb-0">0</h4>
+                    <div class="mb-4">
+                        <small class="text-slate-500 block mb-1">Total Attempts</small>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-0">0</h4>
                     </div>
-                    <div class="mb-3">
-                        <small class="text-muted d-block mb-1">Average Score</small>
-                        <h4 class="mb-0">0%</h4>
+                    <div class="mb-4">
+                        <small class="text-slate-500 block mb-1">Average Score</small>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-0">0%</h4>
                     </div>
                     <div>
-                        <small class="text-muted d-block mb-1">Pass Rate</small>
-                        <h4 class="mb-0">0%</h4>
+                        <small class="text-slate-500 block mb-1">Pass Rate</small>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-0">0%</h4>
                     </div>
                 </div>
             </div>

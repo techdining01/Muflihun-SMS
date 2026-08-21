@@ -3,70 +3,68 @@
 {% block title %}Manage Subjects - Admin{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-book"></i> Manage Subjects</h2>
-            <p class="text-muted">View and manage subjects for all classes.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-book"></i> Manage Subjects</h2>
+        <p class="text-slate-500">View and manage subjects for all classes.</p>
     </div>
 
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">All Subjects</h5>
-            <a href="{% url 'dashboards:admin_create_subject' %}" class="btn btn-primary btn-sm">
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="flex justify-between items-center p-4 border-b border-slate-100">
+            <h5 class="font-semibold text-slate-900 mb-0">All Subjects</h5>
+            <a href="{% url 'dashboards:admin_create_subject' %}" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors">
                 <i class="bi bi-plus-lg"></i> Add New Subject
             </a>
         </div>
-        <div class="card-body">
-            <div class="table-responsive p-0">
-                <table class="table table-hover align-middle table-responsive-stack">
-                    <thead class="table-light">
+        <div class="p-4">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th>Name</th>
-                            <th>Classes</th>
-                            <th>Department</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Name</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Classes</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Department</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for subject in subjects %}
-                        <tr>
-                            <td data-label="Name">
-                                <strong>{{ subject.name }}</strong>
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                <strong class="text-slate-900">{{ subject.name }}</strong>
                                 {% if subject.description %}
-                                <div class="small text-muted">{{ subject.description|truncatechars:50 }}</div>
+                                <div class="text-sm text-slate-500">{{ subject.description|truncatechars:50 }}</div>
                                 {% endif %}
                             </td>
-                            <td data-label="Classes">
+                            <td class="px-4 py-3">
                                 {% for school_class in subject.classes.all %}
-                                <span class="badge bg-secondary me-1">{{ school_class.name }}</span>
+                                <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs mr-1">{{ school_class.name }}</span>
                                 {% empty %}
-                                <span class="text-muted">No classes assigned</span>
+                                <span class="text-slate-500">No classes assigned</span>
                                 {% endfor %}
                             </td>
-                            <td data-label="Department">{{ subject.department|default:"-" }}</td>
-                            <td data-label="Status">
+                            <td class="px-4 py-3 text-slate-700">{{ subject.department|default:"-" }}</td>
+                            <td class="px-4 py-3">
                                 {% if subject.is_active %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
                                 {% else %}
-                                <span class="badge bg-danger">Inactive</span>
+                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Inactive</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Actions">
-                                <a href="{% url 'dashboards:admin_edit_subject' subject.id %}" class="btn btn-sm btn-outline-primary me-1">
+                            <td class="px-4 py-3">
+                                <a href="{% url 'dashboards:admin_edit_subject' subject.id %}" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors mr-1">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'dashboards:admin_delete_subject' subject.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this subject?');">
+                                <a href="{% url 'dashboards:admin_delete_subject' subject.id %}" class="px-2 py-1 border-2 border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors" data-confirm="Are you sure you want to delete this subject?">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
-                                <i class="bi bi-book display-4 d-block mb-2"></i>
+                            <td colspan="5" class="px-4 py-8 text-center text-slate-500">
+                                <i class="bi bi-book text-4xl block mb-2"></i>
                                 No subjects found. Click "Add New Subject" to create one.
                             </td>
                         </tr>
@@ -78,36 +76,36 @@
             <!-- Pagination -->
             {% if subjects.has_other_pages %}
             <nav aria-label="Subject list pagination" class="mt-4">
-                <ul class="pagination justify-content-center">
+                <ul class="flex justify-center gap-1">
                     {% if subjects.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ subjects.previous_page_number }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ subjects.previous_page_number }}" aria-label="Previous">
+                            <span>&laquo;</span>
                         </a>
                     </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
+                    <li>
+                        <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&laquo;</span>
                     </li>
                     {% endif %}
 
                     {% for i in subjects.paginator.page_range %}
                         {% if subjects.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ i }}</span></li>
                         {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        <li><a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ i }}">{{ i }}</a></li>
                         {% endif %}
                     {% endfor %}
 
                     {% if subjects.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ subjects.next_page_number }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ subjects.next_page_number }}" aria-label="Next">
+                            <span>&raquo;</span>
                         </a>
                     </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
+                    <li>
+                        <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&raquo;</span>
                     </li>
                     {% endif %}
                 </ul>

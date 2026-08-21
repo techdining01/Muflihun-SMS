@@ -4,72 +4,70 @@
 {% block title %}{{ certificate.certificate_number }} - Certificate{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-award"></i> Certificate Details</h2>
-        </div>
+<div class="py-4">
+    <div class="mb-4">
+        <h2 class="font-bold text-slate-900"><i class="bi bi-award"></i> Certificate Details</h2>
     </div>
 
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h5 class="mb-1">{{ certificate.certificate_number }}</h5>
-                            <small class="text-muted">Issued on {{ certificate.issued_date|date:"F d, Y" }}</small>
+    <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="p-4 bg-slate-50 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h5 class="font-semibold text-slate-900 mb-1">{{ certificate.certificate_number }}</h5>
+                            <small class="text-slate-500">Issued on {{ certificate.issued_date|date:"F d, Y" }}</small>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div>
                             {% if certificate.is_revoked %}
-                                <span class="badge bg-danger">Revoked</span>
+                                <span class="px-2 py-1 bg-red-600 text-white rounded-full text-xs">Revoked</span>
                             {% else %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Active</span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <small class="text-muted d-block mb-1">Student</small>
-                            <h6 class="mb-3">{{ certificate.student.first_name }} {{ certificate.student.last_name }}</h6>
+                <div class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <small class="text-slate-500 block mb-1">Student</small>
+                            <h6 class="font-semibold text-slate-900 mb-3">{{ certificate.student.first_name }} {{ certificate.student.last_name }}</h6>
                         </div>
-                        <div class="col-md-6">
-                            <small class="text-muted d-block mb-1">Exam</small>
-                            <h6 class="mb-3">{{ certificate.exam.title }}</h6>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Score</small>
-                            <h6 class="mb-3">{{ certificate.score }}/{{ certificate.total_marks }}</h6>
-                        </div>
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Percentage</small>
-                            <h6 class="mb-3">{{ certificate.percentage|floatformat:2 }}%</h6>
-                        </div>
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Grade</small>
-                            <h6 class="mb-3">{{ certificate.grade }}</h6>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Exam</small>
+                            <h6 class="font-semibold text-slate-900 mb-3">{{ certificate.exam.title }}</h6>
                         </div>
                     </div>
 
-                    <hr>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <small class="text-slate-500 block mb-1">Score</small>
+                            <h6 class="font-semibold text-slate-900 mb-3">{{ certificate.score }}/{{ certificate.total_marks }}</h6>
+                        </div>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Percentage</small>
+                            <h6 class="font-semibold text-slate-900 mb-3">{{ certificate.percentage|floatformat:2 }}%</h6>
+                        </div>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Grade</small>
+                            <h6 class="font-semibold text-slate-900 mb-3">{{ certificate.grade }}</h6>
+                        </div>
+                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <small class="text-muted d-block mb-1">Verification Code</small>
-                            <code>{{ certificate.verification_code }}</code>
+                    <hr class="border-slate-200 my-4">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <small class="text-slate-500 block mb-1">Verification Code</small>
+                            <code class="px-2 py-1 bg-slate-100 rounded text-sm">{{ certificate.verification_code }}</code>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light">
-                    <a href="{% url 'dashboards:certificate_download' certificate.id %}" class="btn btn-primary">
+                <div class="p-4 bg-slate-50 rounded-b-2xl flex gap-2">
+                    <a href="{% url 'dashboards:certificate_download' certificate.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="bi bi-download"></i> Download Certificate
                     </a>
-                    <a href="{% url 'dashboards:certificate_list' %}" class="btn btn-outline-secondary">
+                    <a href="{% url 'dashboards:certificate_list' %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                         <i class="bi bi-arrow-left"></i> Back
                     </a>
                 </div>

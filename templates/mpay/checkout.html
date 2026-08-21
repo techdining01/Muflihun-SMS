@@ -4,41 +4,41 @@
 {% block title %}Checkout | MPay{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="py-4">
 
-  <div class="row mb-4 g-3">
-    <div class="col-md-8">
-      <h4 class="fw-bold">Checkout</h4>
-      <p class="text-muted mb-0">
-        Review items for <strong>{{ order.ward.get_full_name }} ({{order.ward.student_class}})</strong>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div>
+      <h4 class="font-bold text-slate-900">Checkout</h4>
+      <p class="text-slate-500 mb-0">
+        Review items for <strong class="text-slate-900">{{ order.ward.get_full_name }} ({{order.ward.student_class}})</strong>
       </p>
     </div>
 
-    <div class="col-md-4 text-md-end">
-      <a href="javascript:void(0)" onclick="history.back()" class="btn btn-outline-secondary w-100 w-md-auto">
+    <div class="text-right">
+      <a href="javascript:void(0)" onclick="history.back()" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors w-full md:w-auto">
         ← Continue Shopping
       </a>
     </div>
   </div>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body p-3 p-md-4">
+  <div class="bg-white rounded-2xl shadow-sm mb-6">
+    <div class="p-3 p-md-4">
 
-      <div class="table-responsive">
-        <table class="table align-middle table-responsive-stack mb-0">
-          <thead class="d-none d-md-table-header-group">
-            <tr>
-              <th>Product</th>
-              <th class="text-center">Qty</th>
-              <th class="text-end">Subtotal</th>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse align-middle table-responsive-stack">
+          <thead class="hidden md:table-header-group">
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Product</th>
+              <th class="px-4 py-3 text-center font-semibold text-slate-700">Qty</th>
+              <th class="px-4 py-3 text-right font-semibold text-slate-700">Subtotal</th>
             </tr>
           </thead>
 
           <tbody>
             {% for item in order.items.all %}
-            <tr class="border-bottom">
-              <td data-label="Product" class="py-3 product-cell">
-                <div class="d-flex align-items-center gap-3 w-100">
+            <tr class="border-b border-slate-100">
+              <td class="py-3 product-cell">
+                <div class="flex items-center gap-3 w-full">
                   {% if item.product and item.product.image %}
                     <img src="{{ item.product.image.url }}"
                          class="rounded flex-shrink-0"
@@ -52,37 +52,37 @@
                          height="60">
                   {% endif %}
                   <div class="min-w-0 flex-grow-1">
-                    <div class="fw-semibold">{{ item.product_name }}</div>
-                    <small class="text-muted d-block d-md-inline mt-1">Unit price: ₦{{ item.price }}</small>
+                    <div class="font-semibold text-slate-900">{{ item.product_name }}</div>
+                    <small class="text-slate-500 block md:inline mt-1">Unit price: ₦{{ item.price }}</small>
                   </div>
                 </div>
               </td>
 
-              <td data-label="Qty" class="text-center py-3">{{ item.quantity }}</td>
-              <td data-label="Subtotal" class="text-end py-3 fw-semibold">₦{{ item.subtotal|floatformat:2 }}</td>
+              <td class="text-center py-3 text-slate-700">{{ item.quantity }}</td>
+              <td class="text-right py-3 font-semibold text-slate-900">₦{{ item.subtotal|floatformat:2 }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
 
-      <hr class="my-4">
+      <hr class="my-4 border-slate-200">
 
-      <div class="d-flex justify-content-between align-items-center fw-bold fs-5 mb-3">
-        <span>Total</span>
-        <span class="text-primary">₦{{ order.total_amount|floatformat:2 }}</span>
+      <div class="flex justify-between items-center font-bold text-xl mb-3">
+        <span class="text-slate-900">Total</span>
+        <span class="text-blue-600">₦{{ order.total_amount|floatformat:2 }}</span>
       </div>
     </div>
   </div>
 
   {% if order.status == "PENDING" %}
     <a href="{% url 'mpay:paystack_init' order.id %}"
-       class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+       class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg w-full flex items-center justify-center gap-2">
       <i class="bi bi-credit-card"></i>
       Pay with Paystack
     </a>
   {% else %}
-    <button class="btn btn-secondary w-100" disabled>
+    <button class="px-6 py-3 bg-slate-400 text-white rounded-lg w-full cursor-not-allowed" disabled>
       Payment Not Available
     </button>
   {% endif %}

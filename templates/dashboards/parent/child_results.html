@@ -4,105 +4,109 @@
 {% block title %}{{ child.get_full_name }}'s Exam Results{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>{{ child.get_full_name }}'s Exam Results</h2>
-            <p class="text-muted">Class: {{ child.student_class.name|default:"Not Assigned" }}</p>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900">{{ child.get_full_name }}'s Exam Results</h2>
+            <p class="text-slate-500">Class: {{ child.student_class.name|default:"Not Assigned" }}</p>
         </div>
-        <div class="col-md-4">
-            <a href="{% url 'dashboards:parent_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        <div>
+            <a href="{% url 'dashboards:parent_dashboard' %}" class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">Back to Dashboard</a>
         </div>
     </div>
 
     <!-- Results Table -->
     {% if page_obj %}
-        <div class="table-responsive p-0">
-            <table class="table table-striped table-hover table-responsive-stack">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Exam Name</th>
-                        <th>Date Taken</th>
-                        <th>Score</th>
-                        <th>Total Marks</th>
-                        <th>Percentage</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for attempt in page_obj %}
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-800 text-white">
                         <tr>
-                            <td data-label="Exam Name"><strong>{{ attempt.exam.title }}</strong></td>
-                            <td data-label="Date Taken">{{ attempt.started_at|date:"d M Y, H:i" }}</td>
-                            <td data-label="Score">{{ attempt.total_score }}</td>
-                            <td data-label="Total Marks">{{ attempt.exam.total_marks }}</td>
-                            <td data-label="Percentage">
-                                {% if attempt.exam.total_marks > 0 %}
-                                    {% widthratio attempt.total_score attempt.exam.total_marks 100 as percentage %}
-                                    <span class="badge bg-{% if percentage >= 80 %}success{% elif percentage >= 60 %}warning{% else %}danger{% endif %}">
-                                        {{ percentage }}%
-                                    </span>
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td data-label="Status">
-                                {% if attempt.status == 'submitted' %}
-                                    <span class="badge bg-success">Submitted</span>
-                                {% elif attempt.status == 'in_progress' %}
-                                    <span class="badge bg-warning">In Progress</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">{{ attempt.status|title }}</span>
-                                {% endif %}
-                            </td>
-                            <td data-label="Action">
-                                <a href="{% url 'dashboards:parent_child_result' attempt.id %}" class="btn btn-sm btn-info">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                            </td>
+                            <th class="px-4 py-3 text-left font-semibold">Exam Name</th>
+                            <th class="px-4 py-3 text-left font-semibold">Date Taken</th>
+                            <th class="px-4 py-3 text-left font-semibold">Score</th>
+                            <th class="px-4 py-3 text-left font-semibold">Total Marks</th>
+                            <th class="px-4 py-3 text-left font-semibold">Percentage</th>
+                            <th class="px-4 py-3 text-left font-semibold">Status</th>
+                            <th class="px-4 py-3 text-left font-semibold">Action</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for attempt in page_obj %}
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="px-4 py-3 font-semibold text-slate-900">{{ attempt.exam.title }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.started_at|date:"d M Y, H:i" }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.total_score }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ attempt.exam.total_marks }}</td>
+                                <td class="px-4 py-3">
+                                    {% if attempt.exam.total_marks > 0 %}
+                                        {% widthratio attempt.total_score attempt.exam.total_marks 100 as percentage %}
+                                        <span class="px-2 py-1 rounded-full text-xs {% if percentage >= 80 %}bg-green-100 text-green-800{% elif percentage >= 60 %}bg-amber-100 text-amber-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                            {{ percentage }}%
+                                        </span>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-3">
+                                    {% if attempt.status == 'submitted' %}
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Submitted</span>
+                                    {% elif attempt.status == 'in_progress' %}
+                                        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">In Progress</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">{{ attempt.status|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-3">
+                                    <a href="{% url 'dashboards:parent_child_result' attempt.id %}" class="px-3 py-1 bg-cyan-500 text-white rounded-lg text-sm hover:bg-cyan-600 transition-colors">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <div class="p-4 border-t border-slate-100">
+                    <nav aria-label="Page navigation">
+                        <ul class="flex justify-center gap-1">
+                            {% if page_obj.has_previous %}
+                                <li>
+                                    <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page=1">First</a>
+                                </li>
+                                <li>
+                                    <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ num }}</span></li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li>
+                                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li>
+                                    <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                                <li>
+                                    <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            {% endif %}
         </div>
-
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                        </li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if page_obj.number == num %}
-                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
     {% else %}
-        <div class="alert alert-info" role="alert">
+        <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-800">
             No exam results available for {{ child.get_full_name }} yet.
         </div>
     {% endif %}

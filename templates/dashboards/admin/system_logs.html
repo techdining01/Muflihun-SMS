@@ -4,14 +4,14 @@
 {% block title %}System Logs - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-journal-text"></i> System Logs</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-journal-text"></i> System Logs</h2>
         </div>
-        <div class="col-md-4">
-            <form method="get" class="d-flex">
-                <select name="level" class="form-select me-2" onchange="this.form.submit()">
+        <div>
+            <form method="get">
+                <select name="level" class="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="this.form.submit()">
                     <option value="">All Levels</option>
                     {% for level in levels %}
                     <option value="{{ level }}" {% if level_filter == level %}selected{% endif %}>{{ level }}</option>
@@ -21,32 +21,32 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="table-responsive p-0">
-            <table class="table table-hover table-sm mb-0 font-monospace table-responsive-stack" style="font-size: 0.9rem;">
-                <thead class="table-light">
+    <div class="bg-white shadow-sm rounded-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse font-mono text-sm">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Timestamp</th>
-                        <th>Level</th>
-                        <th>Source</th>
-                        <th>Message</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Timestamp</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Level</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Source</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Message</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for log in page_obj %}
-                    <tr class="{% if log.level == 'ERROR' or log.level == 'CRITICAL' %}table-danger{% elif log.level == 'WARNING' %}table-warning{% endif %}">
-                        <td data-label="Timestamp" style="white-space: nowrap;">{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
-                        <td data-label="Level">
-                            <span class="badge {% if log.level == 'INFO' %}bg-info{% elif log.level == 'WARNING' %}bg-warning{% elif log.level == 'ERROR' %}bg-danger{% else %}bg-secondary{% endif %}">
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 {% if log.level == 'ERROR' or log.level == 'CRITICAL' %}bg-red-50{% elif log.level == 'WARNING' %}bg-amber-50{% endif %}">
+                        <td class="px-4 py-3 whitespace-nowrap">{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs {% if log.level == 'INFO' %}bg-cyan-100 text-cyan-700{% elif log.level == 'WARNING' %}bg-amber-100 text-amber-700{% elif log.level == 'ERROR' %}bg-red-100 text-red-700{% else %}bg-slate-200 text-slate-700{% endif %}">
                                 {{ log.level }}
                             </span>
                         </td>
-                        <td data-label="Source">{{ log.source }}</td>
-                        <td data-label="Message">{{ log.message }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ log.source }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ log.message }}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
+                        <td colspan="4" class="px-4 py-8 text-center text-slate-500">
                             No logs found
                         </td>
                     </tr>
@@ -56,7 +56,7 @@
         </div>
         
         {% if page_obj.has_other_pages %}
-        <div class="card-footer">
+        <div class="p-4 border-t border-slate-100">
             {% include 'includes/pagination.html' %}
         </div>
         {% endif %}

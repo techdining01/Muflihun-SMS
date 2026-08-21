@@ -4,95 +4,95 @@
 {% block title %}Student Performance - {{ student.get_full_name }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-person-badge"></i> Student Performance</h2>
-            <p class="text-muted">{{ student.get_full_name }} ({{ student.username }})</p>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <div>
+            <h2 class="font-bold text-slate-900"><i class="bi bi-person-badge"></i> Student Performance</h2>
+            <p class="text-slate-500">{{ student.get_full_name }} ({{ student.username }})</p>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+        <div>
+            <a href="javascript:history.back()" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                 <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Average Score</h6>
-                    <h2 class="text-primary">{{ performance.average_score|default:"0" }}%</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm text-center h-full p-4">
+                <div class="p-4">
+                    <h6 class="text-slate-500">Average Score</h6>
+                    <h2 class="text-blue-600 font-bold">{{ performance.average_score|default:"0" }}%</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Exams Taken</h6>
-                    <h2 class="text-info">{{ performance.exams_taken|default:"0" }}</h2>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm text-center h-full p-4">
+                <div class="p-4">
+                    <h6 class="text-slate-500">Exams Taken</h6>
+                    <h2 class="text-cyan-600 font-bold">{{ performance.exams_taken|default:"0" }}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Passed</h6>
-                    <h2 class="text-success">{{ performance.exams_passed|default:"0" }}</h2>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm text-center h-full p-4">
+                <div class="p-4">
+                    <h6 class="text-slate-500">Passed</h6>
+                    <h2 class="text-green-600 font-bold">{{ performance.exams_passed|default:"0" }}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Attendance</h6>
-                    <h2 class="text-warning">{{ performance.attendance_rate|default:"0" }}%</h2>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm text-center h-full p-4">
+                <div class="p-4">
+                    <h6 class="text-slate-500">Attendance</h6>
+                    <h2 class="text-amber-500 font-bold">{{ performance.attendance_rate|default:"0" }}%</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Exam History</h5>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-4 border-b border-slate-200 bg-white">
+            <h5 class="font-semibold text-slate-900 mb-0">Exam History</h5>
         </div>
-        <div class="table-responsive p-0">
-            <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                <thead class="table-light">
+        <div class="overflow-x-auto p-0">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Exam</th>
-                        <th>Date</th>
-                        <th>Score</th>
-                        <th>Status</th>
-                        <th>Grade</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Exam</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Date</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Score</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Grade</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for attempt in performance.recent_attempts %}
-                    <tr>
-                        <td data-label="Exam">{{ attempt.exam.title }}</td>
-                        <td data-label="Date">{{ attempt.completed_at|date:"M d, Y H:i" }}</td>
-                        <td data-label="Score">
-                            <strong>{{ attempt.score }}</strong> / {{ attempt.exam.total_marks }}
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3 text-slate-900">{{ attempt.exam.title }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ attempt.completed_at|date:"M d, Y H:i" }}</td>
+                        <td class="px-4 py-3">
+                            <strong class="text-slate-900">{{ attempt.score }}</strong> / {{ attempt.exam.total_marks }}
                         </td>
-                        <td data-label="Status">
+                        <td class="px-4 py-3">
                             {% if attempt.status == 'submitted' %}
-                                <span class="badge bg-success">Completed</span>
+                                <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Completed</span>
                             {% else %}
-                                <span class="badge bg-warning text-dark">{{ attempt.status }}</span>
+                                <span class="px-2 py-1 bg-amber-500 text-white rounded-full text-xs">{{ attempt.status }}</span>
                             {% endif %}
                         </td>
-                        <td data-label="Grade">
+                        <td class="px-4 py-3">
                             {% if attempt.score >= attempt.exam.pass_mark %}
-                                <span class="badge bg-success">Pass</span>
+                                <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Pass</span>
                             {% else %}
-                                <span class="badge bg-danger">Fail</span>
+                                <span class="px-2 py-1 bg-red-600 text-white rounded-full text-xs">Fail</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
+                        <td colspan="5" class="text-center py-4 text-slate-500">
                             No exam attempts recorded
                         </td>
                     </tr>

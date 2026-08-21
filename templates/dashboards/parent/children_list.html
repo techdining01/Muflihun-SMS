@@ -4,57 +4,53 @@
 {% block title %}My Children - Parent Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="bi bi-people-fill"></i> My Children</h2>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-people-fill"></i> My Children</h2>
     </div>
 
-    <div class="row">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {% if page_obj %}
             {% for child in page_obj %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">{{ child.first_name }} {{ child.last_name }}</h5>
+            <div class="bg-white rounded-2xl shadow-sm h-full">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 rounded-t-2xl">
+                    <h5 class="font-semibold text-slate-900 mb-0">{{ child.first_name }} {{ child.last_name }}</h5>
+                </div>
+                <div class="p-6">
+                    <p class="mb-2">
+                        <small class="text-slate-500">Email:</small><br>
+                        <strong class="text-slate-900">{{ child.email }}</strong>
+                    </p>
+                    <p class="mb-3">
+                        <small class="text-slate-500">Class:</small><br>
+                        <strong class="text-slate-900">
+                            {% if child.student_class %}
+                                {{ child.student_class.name }}
+                            {% else %}
+                                <span class="text-slate-500">Not assigned</span>
+                            {% endif %}
+                        </strong>
+                    </p>
+                    <hr class="border-slate-200 my-3">
+                    <div class="mb-3">
+                        <small class="text-slate-500 block mb-1">Exam Attempts</small>
+                        <h4 class="text-xl font-bold text-slate-900 mb-0">{{ child.attempts_count|default:0 }}</h4>
                     </div>
-                    <div class="card-body">
-                        <p class="mb-2">
-                            <small class="text-muted">Email:</small><br>
-                            <strong>{{ child.email }}</strong>
-                        </p>
-                        <p class="mb-3">
-                            <small class="text-muted">Class:</small><br>
-                            <strong>
-                                {% if child.student_class %}
-                                    {{ child.student_class.name }}
-                                {% else %}
-                                    <span class="text-muted">Not assigned</span>
-                                {% endif %}
-                            </strong>
-                        </p>
-                        <hr>
-                        <div class="mb-3">
-                            <small class="text-muted d-block mb-1">Exam Attempts</small>
-                            <h4 class="mb-0">{{ child.attempts_count|default:0 }}</h4>
-                        </div>
-                        <div class="mb-3">
-                            <small class="text-muted d-block mb-1">Average Score</small>
-                            <h4 class="mb-0">{{ child.avg_score|default:0|floatformat:1 }}%</h4>
-                        </div>
+                    <div class="mb-3">
+                        <small class="text-slate-500 block mb-1">Average Score</small>
+                        <h4 class="text-xl font-bold text-slate-900 mb-0">{{ child.avg_score|default:0|floatformat:1 }}%</h4>
                     </div>
-                    <div class="card-footer bg-light">
-                        <a href="{% url 'dashboards:parent_child_results' child.id %}" class="btn btn-sm btn-primary w-100">
-                            <i class="bi bi-graph-up"></i> View Results
-                        </a>
-                    </div>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 rounded-b-2xl">
+                    <a href="{% url 'dashboards:parent_child_results' child.id %}" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center block">
+                        <i class="bi bi-graph-up"></i> View Results
+                    </a>
                 </div>
             </div>
             {% endfor %}
         {% else %}
-        <div class="col-md-12">
-            <div class="alert alert-info">
+        <div class="col-span-3">
+            <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-800">
                 <i class="bi bi-info-circle"></i> No children linked to your account.
             </div>
         </div>
@@ -63,33 +59,33 @@
 
     <!-- Pagination -->
     {% if page_obj.has_other_pages %}
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination">
+        <nav aria-label="Page navigation" class="mt-6">
+            <ul class="flex justify-center gap-1">
                 {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1&search={{ search_query }}">First</a>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page=1&search={{ search_query }}">First</a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">Previous</a>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">Previous</a>
                     </li>
                 {% endif %}
 
                 {% for num in page_obj.paginator.page_range %}
                     {% if page_obj.number == num %}
-                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ num }}</span></li>
                     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}&search={{ search_query }}">{{ num }}</a>
+                        <li>
+                            <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ num }}&search={{ search_query }}">{{ num }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">Next</a>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">Next</a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}">Last</a>
+                    <li>
+                        <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}">Last</a>
                     </li>
                 {% endif %}
             </ul>

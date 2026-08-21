@@ -345,9 +345,9 @@ def admin_students_list(request):
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
-    # Check if HTMX request
+    # Check if HTMX request - return partial template
     if request.headers.get('HX-Request'):
-        return render(request, 'partials/dashboards/students_table_rows.html', {
+        return render(request, 'partials/dashboards/admin_students_card.html', {
             'students': page_obj,
             'page_obj': page_obj,
             'search_query': search_query,
@@ -421,9 +421,9 @@ def admin_exams_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    # Handle HTMX requests for pagination
+    # Handle HTMX requests for pagination - return partial template
     if request.headers.get('HX-Request'):
-        return render(request, 'partials/dashboards/exams_table_rows.html', {
+        return render(request, 'partials/dashboards/admin_exams_card.html', {
             'page_obj': page_obj,
             'exams': page_obj
         })

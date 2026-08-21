@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4">
-  <h4>Order {{ order.id }}</h4>
+<div class="py-4">
+  <h4 class="font-bold text-slate-900 mb-4">Order {{ order.id }}</h4>
 
-  <ul class="list-group mb-3">
-    <li class="list-group-item">User: {{ order.user }}</li>
-    <li class="list-group-item">Ward: {{ order.ward }}</li>
-    <li class="list-group-item">Amount: ₦{{ order.total_amount }}</li>
-    <li class="list-group-item">Status: {{ order.status }}</li>
+  <ul class="space-y-2 mb-3">
+    <li class="px-4 py-3 bg-white border border-slate-200 rounded-lg">User: {{ order.user }}</li>
+    <li class="px-4 py-3 bg-white border border-slate-200 rounded-lg">Ward: {{ order.ward }}</li>
+    <li class="px-4 py-3 bg-white border border-slate-200 rounded-lg">Amount: ₦{{ order.total_amount }}</li>
+    <li class="px-4 py-3 bg-white border border-slate-200 rounded-lg">Status: {{ order.status }}</li>
   </ul>
 
   {% if order.status != "PAID" %}
   <form method="post">
     {% csrf_token %}
-    <button name="override" class="btn btn-warning">
+    <button name="override" class="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors">
       Admin Override (Mercy)
     </button>
   </form>

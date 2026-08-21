@@ -4,26 +4,24 @@
 {% block title %}Assign Role - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-person-badge"></i> Assign Role</h2>
-            <p class="text-muted">Assign role to {{ user.get_full_name }} ({{ user.username }})</p>
-        </div>
+<div class="py-4">
+    <div class="mb-4">
+        <h2 class="font-bold text-slate-900"><i class="bi bi-person-badge"></i> Assign Role</h2>
+        <p class="text-slate-500">Assign role to {{ user.get_full_name }} ({{ user.username }})</p>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">New Assignment</h5>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm mb-4">
+                <div class="p-4 border-b border-slate-200 bg-white">
+                    <h5 class="font-semibold text-slate-900 mb-0">New Assignment</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-4">
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="role_id" class="form-label">Role</label>
-                            <select class="form-select" id="role_id" name="role_id" required>
+                            <label for="role_id" class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+                            <select class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="role_id" name="role_id" required>
                                 <option value="">Select Role...</option>
                                 {% for role in roles %}
                                 <option value="{{ role.id }}">{{ role.name }}</option>
@@ -32,12 +30,12 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="expires_at" class="form-label">Expiration (Optional)</label>
-                            <input type="datetime-local" class="form-control" id="expires_at" name="expires_at">
-                            <div class="form-text">Leave empty for permanent assignment.</div>
+                            <label for="expires_at" class="block text-sm font-medium text-slate-700 mb-1">Expiration (Optional)</label>
+                            <input type="datetime-local" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="expires_at" name="expires_at">
+                            <div class="text-xs text-slate-500 mt-1">Leave empty for permanent assignment.</div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="bi bi-check-lg me-2"></i>Assign Role
                         </button>
                     </form>
@@ -45,27 +43,27 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Current Roles</h5>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="p-4 border-b border-slate-200 bg-white">
+                    <h5 class="font-semibold text-slate-900 mb-0">Current Roles</h5>
                 </div>
-                <div class="list-group list-group-flush">
+                <div class="divide-y divide-slate-200">
                     {% for assignment in current_roles %}
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ assignment.role.name }}</h6>
-                            <small class="text-muted">Assigned: {{ assignment.assigned_at|date:"M d, Y" }}</small>
+                    <div class="p-4">
+                        <div class="flex justify-between w-full">
+                            <h6 class="font-semibold text-slate-900 mb-1">{{ assignment.role.name }}</h6>
+                            <small class="text-slate-500">Assigned: {{ assignment.assigned_at|date:"M d, Y" }}</small>
                         </div>
                         {% if assignment.expires_at %}
-                        <p class="mb-1 text-warning">Expires: {{ assignment.expires_at|date:"M d, Y H:i" }}</p>
+                        <p class="mb-1 text-amber-600 text-sm">Expires: {{ assignment.expires_at|date:"M d, Y H:i" }}</p>
                         {% else %}
-                        <p class="mb-1 text-success">Permanent</p>
+                        <p class="mb-1 text-green-600 text-sm">Permanent</p>
                         {% endif %}
-                        <small>By: {{ assignment.assigned_by.get_full_name }}</small>
+                        <small class="text-slate-500">By: {{ assignment.assigned_by.get_full_name }}</small>
                     </div>
                     {% empty %}
-                    <div class="list-group-item text-center py-3 text-muted">
+                    <div class="p-4 text-center text-slate-500">
                         No roles assigned
                     </div>
                     {% endfor %}

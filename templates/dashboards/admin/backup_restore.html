@@ -2,226 +2,224 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-0">Backup & Restore Center</h2>
-            <p class="text-muted">Manage system data backups and restoration.</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900 mb-0">Backup & Restore Center</h2>
+        <p class="text-slate-500">Manage system data backups and restoration.</p>
     </div>
 
     <!-- Actions Card -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="fas fa-hdd me-2"></i>Local Backup</h5>
-                </div>
-                <div class="card-body">
-                    <p>Create a backup of the entire database and save it to the server's local storage.</p>
-                    <form action="{% url 'dashboards:trigger_backup' %}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="backup_type" value="local">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Create Local Backup
-                        </button>
-                    </form>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-2xl shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="fas fa-hdd mr-2"></i>Local Backup</h5>
+            </div>
+            <div class="p-6">
+                <p class="text-slate-600 mb-4">Create a backup of the entire database and save it to the server's local storage.</p>
+                <form action="{% url 'dashboards:trigger_backup' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="backup_type" value="local">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-save mr-2"></i>Create Local Backup
+                    </button>
+                </form>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="fab fa-aws me-2"></i>AWS Cloud Backup</h5>
-                </div>
-                <div class="card-body">
-                    <p>Create a backup and upload it securely to AWS S3 (Auto-configured).</p>
-                    <form action="{% url 'dashboards:trigger_backup' %}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="backup_type" value="aws">
-                        <button type="submit" class="btn btn-warning text-dark">
-                            <i class="fas fa-cloud-upload-alt me-2"></i>Trigger AWS Backup
-                        </button>
-                    </form>
-                </div>
+        <div class="bg-white rounded-2xl shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-slate-100">
+                <h5 class="font-semibold text-slate-900 mb-0"><i class="fab fa-aws mr-2"></i>AWS Cloud Backup</h5>
+            </div>
+            <div class="p-6">
+                <p class="text-slate-600 mb-4">Create a backup and upload it securely to AWS S3 (Auto-configured).</p>
+                <form action="{% url 'dashboards:trigger_backup' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="backup_type" value="aws">
+                    <button type="submit" class="px-4 py-2 bg-amber-500 text-slate-900 rounded-lg hover:bg-amber-600 transition-colors">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i>Trigger AWS Backup
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- Available Backups -->
-    <div class="row">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Local Backups List -->
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Local Backups</h5>
-                    <span class="badge bg-secondary">{{ local_backups.paginator.count }} files</span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% for backup in local_backups %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-file-alt me-2 text-muted"></i>
-                                {{ backup.name }}
-                                <br>
-                                <small class="text-muted">{{ backup.size }} | {{ backup.date }}</small>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <form action="{% url 'dashboards:trigger_restore' %}" method="POST" class="d-inline restore-form">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="source_type" value="local">
-                                    <input type="hidden" name="source_path" value="{{ backup.name }}">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" title="Restore" onclick="confirmAction(this.form, 'Restore Database', 'WARNING: This will overwrite the current database. This action cannot be undone. Are you sure you want to restore from <b>{{ backup.name }}</b>?', 'primary', 'Restore')">
-                                        <i class="fas fa-history"></i>
-                                    </button>
-                                </form>
-                                <form action="{% url 'dashboards:delete_backup' %}" method="POST" class="d-inline ms-1 delete-form">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="source_type" value="local">
-                                    <input type="hidden" name="filename" value="{{ backup.name }}">
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete" onclick="confirmAction(this.form, 'Delete Backup', 'Are you sure you want to PERMANENTLY delete local backup <b>{{ backup.name }}</b>?', 'danger', 'Delete')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="p-3 text-center text-muted">No local backups found.</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% if local_backups.has_other_pages %}
-                <div class="card-footer bg-white">
-                    <nav aria-label="Local backups pagination">
-                        <ul class="pagination justify-content-center mb-0 pagination-sm">
-                            {% if local_backups.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page_local={{ local_backups.previous_page_number }}&page_aws={{ aws_backups.number }}">&laquo;</a>
-                            </li>
-                            {% else %}
-                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                            {% endif %}
-                            
-                            {% for i in local_backups.paginator.page_range %}
-                                {% if local_backups.number == i %}
-                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                                {% else %}
-                                <li class="page-item"><a class="page-link" href="?page_local={{ i }}&page_aws={{ aws_backups.number }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if local_backups.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page_local={{ local_backups.next_page_number }}&page_aws={{ aws_backups.number }}">&raquo;</a>
-                            </li>
-                            {% else %}
-                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                </div>
-                {% endif %}
+        <div class="bg-white rounded-2xl shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h5 class="font-semibold text-slate-900 mb-0">Local Backups</h5>
+                <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">{{ local_backups.paginator.count }} files</span>
             </div>
+            <div class="p-0">
+                <div class="divide-y divide-slate-100">
+                    {% for backup in local_backups %}
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <div>
+                            <i class="fas fa-file-alt mr-2 text-slate-400"></i>
+                            {{ backup.name }}
+                            <br>
+                            <small class="text-slate-500">{{ backup.size }} | {{ backup.date }}</small>
+                        </div>
+                        <div class="flex gap-1">
+                            <form action="{% url 'dashboards:trigger_restore' %}" method="POST" class="restore-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="source_type" value="local">
+                                <input type="hidden" name="source_path" value="{{ backup.name }}">
+                                <button type="button" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors" title="Restore" onclick="confirmAction(this.form, 'Restore Database', 'WARNING: This will overwrite the current database. This action cannot be undone. Are you sure you want to restore from <b>{{ backup.name }}</b>?', 'blue-600', 'Restore')">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </form>
+                            <form action="{% url 'dashboards:delete_backup' %}" method="POST" class="delete-form ml-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="source_type" value="local">
+                                <input type="hidden" name="filename" value="{{ backup.name }}">
+                                <button type="button" class="px-2 py-1 border-2 border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors" title="Delete" onclick="confirmAction(this.form, 'Delete Backup', 'Are you sure you want to PERMANENTLY delete local backup <b>{{ backup.name }}</b>?', 'red-600', 'Delete')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-6 text-center text-slate-500">No local backups found.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if local_backups.has_other_pages %}
+            <div class="p-4 border-t border-slate-100">
+                <nav aria-label="Local backups pagination">
+                    <ul class="flex justify-center gap-1">
+                        {% if local_backups.has_previous %}
+                        <li>
+                            <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_local={{ local_backups.previous_page_number }}&page_aws={{ aws_backups.number }}">&laquo;</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in local_backups.paginator.page_range %}
+                            {% if local_backups.number == i %}
+                            <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ i }}</span></li>
+                            {% else %}
+                            <li><a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_local={{ i }}&page_aws={{ aws_backups.number }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if local_backups.has_next %}
+                        <li>
+                            <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_local={{ local_backups.next_page_number }}&page_aws={{ aws_backups.number }}">&raquo;</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
         </div>
 
         <!-- AWS Backups List -->
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">AWS S3 Backups</h5>
-                    <span class="badge bg-secondary">{{ aws_backups.paginator.count }} files</span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% for backup in aws_backups %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-cloud me-2 text-info"></i>
-                                {{ backup.name }}
-                                <br>
-                                <small class="text-muted">{{ backup.size }} | {{ backup.date }}</small>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <form action="{% url 'dashboards:trigger_restore' %}" method="POST" class="d-inline restore-form">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="source_type" value="aws">
-                                    <input type="hidden" name="source_path" value="{{ backup.key }}">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" title="Restore" onclick="confirmAction(this.form, 'Restore Database', 'WARNING: This will overwrite the current database. This action cannot be undone. Are you sure you want to restore from <b>{{ backup.name }}</b>?', 'primary', 'Restore')">
-                                        <i class="fas fa-history"></i>
-                                    </button>
-                                </form>
-                                <form action="{% url 'dashboards:delete_backup' %}" method="POST" class="d-inline ms-1 delete-form">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="source_type" value="aws">
-                                    <input type="hidden" name="filename" value="{{ backup.key }}">
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete" onclick="confirmAction(this.form, 'Delete Backup', 'Are you sure you want to PERMANENTLY delete cloud backup <b>{{ backup.name }}</b>?', 'danger', 'Delete')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="p-3 text-center text-muted">
-                            {% if aws_error %}
-                            <span class="text-danger">Error: {{ aws_error }}</span>
-                            {% else %}
-                            No AWS backups found.
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% if aws_backups.has_other_pages %}
-                <div class="card-footer bg-white">
-                    <nav aria-label="AWS backups pagination">
-                        <ul class="pagination justify-content-center mb-0 pagination-sm">
-                            {% if aws_backups.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page_aws={{ aws_backups.previous_page_number }}&page_local={{ local_backups.number }}">&laquo;</a>
-                            </li>
-                            {% else %}
-                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                            {% endif %}
-                            
-                            {% for i in aws_backups.paginator.page_range %}
-                                {% if aws_backups.number == i %}
-                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                                {% else %}
-                                <li class="page-item"><a class="page-link" href="?page_aws={{ i }}&page_local={{ local_backups.number }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if aws_backups.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page_aws={{ aws_backups.next_page_number }}&page_local={{ local_backups.number }}">&raquo;</a>
-                            </li>
-                            {% else %}
-                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                </div>
-                {% endif %}
+        <div class="bg-white rounded-2xl shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h5 class="font-semibold text-slate-900 mb-0">AWS S3 Backups</h5>
+                <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">{{ aws_backups.paginator.count }} files</span>
             </div>
+            <div class="p-0">
+                <div class="divide-y divide-slate-100">
+                    {% for backup in aws_backups %}
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <div>
+                            <i class="fas fa-cloud mr-2 text-cyan-500"></i>
+                            {{ backup.name }}
+                            <br>
+                            <small class="text-slate-500">{{ backup.size }} | {{ backup.date }}</small>
+                        </div>
+                        <div class="flex gap-1">
+                            <form action="{% url 'dashboards:trigger_restore' %}" method="POST" class="restore-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="source_type" value="aws">
+                                <input type="hidden" name="source_path" value="{{ backup.key }}">
+                                <button type="button" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors" title="Restore" onclick="confirmAction(this.form, 'Restore Database', 'WARNING: This will overwrite the current database. This action cannot be undone. Are you sure you want to restore from <b>{{ backup.name }}</b>?', 'blue-600', 'Restore')">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </form>
+                            <form action="{% url 'dashboards:delete_backup' %}" method="POST" class="delete-form ml-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="source_type" value="aws">
+                                <input type="hidden" name="filename" value="{{ backup.key }}">
+                                <button type="button" class="px-2 py-1 border-2 border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors" title="Delete" onclick="confirmAction(this.form, 'Delete Backup', 'Are you sure you want to PERMANENTLY delete cloud backup <b>{{ backup.name }}</b>?', 'red-600', 'Delete')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-6 text-center text-slate-500">
+                        {% if aws_error %}
+                        <span class="text-red-600">Error: {{ aws_error }}</span>
+                        {% else %}
+                        No AWS backups found.
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if aws_backups.has_other_pages %}
+            <div class="p-4 border-t border-slate-100">
+                <nav aria-label="AWS backups pagination">
+                    <ul class="flex justify-center gap-1">
+                        {% if aws_backups.has_previous %}
+                        <li>
+                            <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_aws={{ aws_backups.previous_page_number }}&page_local={{ local_backups.number }}">&laquo;</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in aws_backups.paginator.page_range %}
+                            {% if aws_backups.number == i %}
+                            <li><span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ i }}</span></li>
+                            {% else %}
+                            <li><a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_aws={{ i }}&page_local={{ local_backups.number }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if aws_backups.has_next %}
+                        <li>
+                            <a class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" href="?page_aws={{ aws_backups.next_page_number }}&page_local={{ local_backups.number }}">&raquo;</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400">&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="confirmationModalBody">
-                    Are you sure?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmationModalConfirmBtn">Confirm</button>
-                </div>
+    <div id="confirmationModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h5 class="font-semibold text-slate-900 mb-0" id="confirmationModalLabel">Confirm Action</h5>
+                <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6" id="confirmationModalBody">
+                Are you sure?
+            </div>
+            <div class="px-6 py-4 border-t border-slate-100 flex justify-end gap-2">
+                <button type="button" class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors" onclick="closeModal()">Cancel</button>
+                <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" id="confirmationModalConfirmBtn">Confirm</button>
             </div>
         </div>
     </div>
@@ -229,22 +227,33 @@
     <script>
         let currentForm = null;
 
-        function confirmAction(form, title, message, btnType, btnText) {
+        function confirmAction(form, title, message, btnColor, btnText) {
             currentForm = form;
             document.getElementById('confirmationModalLabel').textContent = title;
             document.getElementById('confirmationModalBody').innerHTML = message;
             
             const confirmBtn = document.getElementById('confirmationModalConfirmBtn');
             confirmBtn.textContent = btnText;
-            confirmBtn.className = `btn btn-${btnType}`;
+            confirmBtn.className = `px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors`;
+            confirmBtn.style.backgroundColor = btnColor;
             
-            const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-            modal.show();
+            document.getElementById('confirmationModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
         }
 
         document.getElementById('confirmationModalConfirmBtn').addEventListener('click', function() {
             if (currentForm) {
                 currentForm.submit();
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('confirmationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
         });
     </script>

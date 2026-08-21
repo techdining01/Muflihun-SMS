@@ -4,88 +4,76 @@
 {% block title %}Exam Analytics - {{ exam.title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-graph-up"></i> {{ exam.title }} - Analytics</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <div>
+            <h2 class="font-bold text-slate-900"><i class="bi bi-graph-up"></i> {{ exam.title }} - Analytics</h2>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="btn btn-outline-secondary">
+        <div>
+            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                 <i class="bi bi-arrow-left"></i> Back to Exam
             </a>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small class="text-muted d-block mb-1">Total Attempts</small>
-                    <h4 class="mb-0">{{ analytics.total_attempts }}</h4>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm p-4">
+                <small class="text-slate-500 block mb-1">Total Attempts</small>
+                <h4 class="font-bold text-slate-900 mb-0">{{ analytics.total_attempts }}</h4>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small class="text-muted d-block mb-1">Pass Rate</small>
-                    <h4 class="mb-0">{{ analytics.pass_rate|floatformat:1 }}%</h4>
-                </div>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm p-4">
+                <small class="text-slate-500 block mb-1">Pass Rate</small>
+                <h4 class="font-bold text-slate-900 mb-0">{{ analytics.pass_rate|floatformat:1 }}%</h4>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small class="text-muted d-block mb-1">Average Score</small>
-                    <h4 class="mb-0">{{ analytics.average_score|floatformat:2 }}</h4>
-                </div>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm p-4">
+                <small class="text-slate-500 block mb-1">Average Score</small>
+                <h4 class="font-bold text-slate-900 mb-0">{{ analytics.average_score|floatformat:2 }}</h4>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <small class="text-muted d-block mb-1">Last Updated</small>
-                    <h6 class="mb-0">{{ analytics.last_updated|date:"M d, Y" }}</h6>
-                </div>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm p-4">
+                <small class="text-slate-500 block mb-1">Last Updated</small>
+                <h6 class="font-semibold text-slate-900 mb-0">{{ analytics.last_updated|date:"M d, Y" }}</h6>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Question Performance Analysis</h5>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-4 border-b border-slate-200">
+            <h5 class="font-semibold text-slate-900 mb-0">Question Performance Analysis</h5>
         </div>
-        <div class="card-body p-0">
+        <div class="p-0">
             {% if question_stats %}
-            <div class="table-responsive p-0">
-                <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                    <thead>
+            <div class="overflow-x-auto p-0">
+                <table class="w-full border-collapse align-middle table-responsive-stack">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th style="width: 40%">Question</th>
-                            <th>Type</th>
-                            <th class="text-center">Correct / Total</th>
-                            <th style="width: 25%">Accuracy</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700" style="width: 40%">Question</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Type</th>
+                            <th class="px-4 py-3 text-center font-semibold text-slate-700">Correct / Total</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700" style="width: 25%">Accuracy</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for stat in question_stats %}
-                        <tr>
-                            <td data-label="Question">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3">
                                 <div class="text-wrap" style="max-height: 100px; overflow-y: auto;">
                                     {{ stat.question.text|safe|truncatechars_html:150 }}
                                 </div>
                             </td>
-                            <td data-label="Type"><span class="badge bg-secondary">{{ stat.question.get_type_display }}</span></td>
-                            <td class="text-center" data-label="Correct / Total">{{ stat.correct }} / {{ stat.total_attempts }}</td>
-                            <td data-label="Accuracy">
-                                <div class="d-flex align-items-center">
-                                    <div class="progress flex-grow-1 me-2" style="height: 20px;">
-                                        <div class="progress-bar {% if stat.accuracy >= 70 %}bg-success{% elif stat.accuracy >= 40 %}bg-warning{% else %}bg-danger{% endif %}" 
-                                             role="progressbar" 
-                                             style="width: {{ stat.accuracy }}%;" 
-                                             aria-valuenow="{{ stat.accuracy }}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100">
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-slate-600 text-white rounded-full text-xs">{{ stat.question.get_type_display }}</span></td>
+                            <td class="px-4 py-3 text-center">{{ stat.correct }} / {{ stat.total_attempts }}</td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="flex-grow-1 mr-2 h-5 bg-slate-200 rounded-full overflow-hidden">
+                                        <div class="h-full {% if stat.accuracy >= 70 %}bg-green-600{% elif stat.accuracy >= 40 %}bg-amber-500{% else %}bg-red-600{% endif %}" 
+                                             style="width: {{ stat.accuracy }}%;">
                                             {{ stat.accuracy|floatformat:1 }}%
                                         </div>
                                     </div>
@@ -98,7 +86,7 @@
             </div>
             {% else %}
             <div class="text-center py-4">
-                <p class="text-muted mb-0">No detailed statistics available yet.</p>
+                <p class="text-slate-500 mb-0">No detailed statistics available yet.</p>
             </div>
             {% endif %}
         </div>

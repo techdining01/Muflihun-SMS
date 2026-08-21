@@ -8,30 +8,30 @@
     }
 }
 </style>
-<div class="container py-4">
-<h4>Orders</h4>
+<div class="py-4">
+<h4 class="font-bold text-slate-900 mb-4">Orders</h4>
 
-    <div class="card shadow-sm">
-        <div class="card-body table-responsive p-0">
-            <table class="table table-hover align-middle table-responsive-stack mb-0">
-                <thead>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="overflow-x-auto p-0">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Order Ref</th><th>Gateway Ref</th><th>Date</th><th>Parent</th><th>Ward</th><th>Status</th><th>Total</th><th>Actions</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Order Ref</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Gateway Ref</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Date</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Parent</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Ward</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Total</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for o in orders %}
-                    <tr>
-                        <td data-label="Order Ref">{{ o.reference }}</td>
-                        <td data-label="Gateway Ref">{{ o.transaction.gateway_reference|default:"-" }}</td>
-                        <td data-label="Date">{{ o.created_at|date:"M d, Y" }}</td>
-                        <td data-label="Parent">{{ o.buyer.get_full_name }}</td>
-                        <td data-label="Ward">{{ o.ward.get_full_name }}</td>
-                        <td data-label="Status">{{ o.status }}</td>
-                        <td data-label="Total">₦{{ o.total_amount }}</td>
-                        <td data-label="Actions">
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3 text-slate-900">{{ o.reference }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ o.transaction.gateway_reference|default:"-" }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ o.created_at|date:"M d, Y" }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ o.buyer.get_full_name }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ o.ward.get_full_name }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ o.status }}</td>
+                        <td class="px-4 py-3 text-slate-700">₦{{ o.total_amount }}</td>
+                        <td class="px-4 py-3">
                             <div class="admin-order-action">
-                                <a href="{% url 'mpay:admin_order_detail' o.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="{% url 'mpay:admin_order_detail' o.id %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors">View</a>
                             </div>
                         </td>
                     </tr>
@@ -41,38 +41,38 @@
         </div>
 
         {% if orders.has_other_pages %}
-        <div class="border-top px-3 py-2">
+        <div class="border-t border-slate-200 px-3 py-2">
             <nav aria-label="Orders pagination">
-                <ul class="pagination justify-content-center mb-0">
+                <ul class="flex justify-center gap-1 mb-0">
                     {% if orders.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ orders.previous_page_number }}" aria-label="Previous">
+                    <li>
+                        <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ orders.previous_page_number }}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
+                    <li>
+                        <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&laquo;</span>
                     </li>
                     {% endif %}
 
                     {% for i in orders.paginator.page_range %}
                         {% if orders.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        <li><span class="px-3 py-1 bg-blue-600 text-white rounded">{{ i }}</span></li>
                         {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        <li><a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ i }}">{{ i }}</a></li>
                         {% endif %}
                     {% endfor %}
 
                     {% if orders.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ orders.next_page_number }}" aria-label="Next">
+                    <li>
+                        <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ orders.next_page_number }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                     {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
+                    <li>
+                        <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&raquo;</span>
                     </li>
                     {% endif %}
                 </ul>

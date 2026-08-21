@@ -4,20 +4,20 @@
 {% block title %}Page Not Found | Muflihun SMS{% endblock %}
 
 {% block content %}
-<div class="container text-center py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="error-container py-5">
-                <h1 class="display-1 fw-bold text-primary">404</h1>
-                <h2 class="mb-4">Oops! Page Not Found</h2>
-                <p class="text-muted mb-5">
+<div class="text-center py-5">
+    <div class="flex justify-center">
+        <div class="w-full max-w-2xl">
+            <div class="py-5">
+                <h1 class="text-6xl font-bold text-blue-600">404</h1>
+                <h2 class="text-2xl font-semibold text-slate-900 mb-4">Oops! Page Not Found</h2>
+                <p class="text-slate-500 mb-5">
                     The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
                 </p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{% url 'landing_page' %}" class="btn btn-primary px-4">
+                <div class="flex justify-center gap-3">
+                    <a href="{% url 'landing_page' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-home me-2"></i>Go Home
                     </a>
-                    <button onclick="history.back()" class="btn btn-outline-secondary px-4">
+                    <button onclick="history.back()" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                         <i class="fas fa-arrow-left me-2"></i>Go Back
                     </button>
                 </div>

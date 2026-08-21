@@ -2,26 +2,26 @@
 {% block title %}Delete Product{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="card shadow-sm p-4 text-center">
+<div class="py-5">
+    <div class="bg-white rounded-2xl shadow-sm p-4 text-center">
 
-        <h5 class="mb-3 text-danger">Delete Product</h5>
+        <h5 class="mb-3 text-red-600 font-semibold">Delete Product</h5>
 
-        <p>
+        <p class="text-slate-700">
             Are you sure you want to delete
-            <strong>{{ product.name }}</strong>?
+            <strong class="text-slate-900">{{ product.name }}</strong>?
         </p>
 
         <form method="post">
             {% csrf_token %}
 
-            <div class="d-flex justify-content-center gap-3 mt-4">
+            <div class="flex justify-center gap-3 mt-4">
                 <a href="{% url 'mpay:admin_product_list' %}"
-                   class="btn btn-secondary">
+                   class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">
                     Cancel
                 </a>
 
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                     Yes, Delete
                 </button>
             </div>

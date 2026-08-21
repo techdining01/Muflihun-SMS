@@ -17,6 +17,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+NPM_BIN_PATH = "C:/Program Files/nodejs/npm"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -68,7 +69,7 @@ INSTALLED_APPS = [
     
 
     # Local Apps (The four pillars of this project)
-    'exams.apps.ExamsConfig',                         
+    'exams.apps.ExamsConfig',
     'accounts.apps.AccountsConfig',
     'mpay.apps.MpayConfig',
     'pickup.apps.PickupConfig',
@@ -121,40 +122,48 @@ WSGI_APPLICATION = 'school_sms.wsgi.application'
 # Channels Configuration
 REDIS_URL = config("REDIS_URL", default="redis://localhost:6379/0")
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [REDIS_URL],
-            "capacity": 1500,
-            "expiry": 10,
-        },
+if DEBUG:
+    # Use in-memory channel layer for development
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
     }
-}
+else:
+    # Use Redis for production
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [REDIS_URL],
+                "capacity": 1500,
+                "expiry": 10,
+            },
+        }
+    }
 
 
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='muflihun'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='idrees'),
-        'HOST': config('DB_HOST', default='db'),
-        'PORT': config('DB_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-} 
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME', default='muflihun'),
+#         'USER': config('DB_USER', default='postgres'),
+#         'PASSWORD': config('DB_PASSWORD', default='idrees'),
+#         'HOST': config('DB_HOST', default='db'),
+#         'PORT': config('DB_PORT', default='5432'),
+#     }
+# } 
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -252,18 +261,12 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
+
+
 # Login URLs
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "acccounts:dashboard_redirect"
 LOGOUT_REDIRECT_URL = "accounts:login"
-
-
-# SESSION_COOKIE_SECURE = False   # dev only
-# CSRF_COOKIE_SECURE = False      # dev only
-
-# # settings.py
-# SESSION_COOKIE_AGE = 1200 # 20 minutes
-# SESSION_SAVE_EVERY_REQUEST = True
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -287,14 +290,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ## School config (dynamic)
 SCHOOL_NAME = config("SCHOOL_NAME", "Muflihun High School")
-SCHOOL_ADDRESS = config("SCHOOL_ADDRESS", "")
+SCHOOL_ADDRESS = config("SCHOOL_ADDRESS", "123 School Street, Lagos")
 SCHOOL_LOGO_PATH = os.path.join(BASE_DIR, "static", "images", "school_logo.png")
-SCHOOL_SLOGAN = config("SCHOOL_SLOGAN", "")
-SCHOOL_ECOMMERCE = config("SCHOOL_ECOMMERCE", "")
-SCHOOL_PHONE = config("SCHOOL_PHONE", "")
+SCHOOL_SLOGAN = config("SCHOOL_SLOGAN", "Excellence in Education")
+SCHOOL_ECOMMERCE = config("SCHOOL_ECOMMERCE", "Store")
+SCHOOL_PHONE = config("SCHOOL_PHONE", "+234 800 123 4567")
 SCHOOL_EMAIL = config("SCHOOL_EMAIL", "muflihunhighschool@gmail.com")
-SCHOOL_APP_NAME = config("SCHOOL_APP_NAME", "")
-SCHOOL_FACEBOOK_URL = config("SCHOOL_FACEBOOK_URL", "#")
+SCHOOL_APP_NAME = config("SCHOOL_APP_NAME", "Muflihun Portal")
+SCHOOL_FACEBOOK_URL = config("SCHOOL_FACEBOOK_URL", "https://www.facebook.com/muflihun.high/")
 SCHOOL_TWITTER_URL = config("SCHOOL_TWITTER_URL", "#")
 SCHOOL_INSTAGRAM_URL = config("SCHOOL_INSTAGRAM_URL", "#")
 SCHOOL_YOUTUBE_URL = config("SCHOOL_YOUTUBE_URL", "#")

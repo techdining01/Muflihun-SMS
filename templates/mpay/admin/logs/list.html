@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4">
-    <h4>System Logs</h4>
+<div class="py-4">
+    <h4 class="font-bold text-slate-900 mb-4">System Logs</h4>
 
 
-    <div class="card shadow-sm">
-        <div class="card-body table-responsive p-0">
-            <table class="table table-hover align-middle table-responsive-stack mb-0">
-                <thead>
-                    <tr><th>User</th><th>Action</th><th>Date</th></tr>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="overflow-x-auto p-0">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr><th class="px-4 py-3 text-left font-semibold text-slate-700">User</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Action</th><th class="px-4 py-3 text-left font-semibold text-slate-700">Date</th></tr>
                 </thead>
                 <tbody>
                     {% for log in logs %}
-                    <tr>
-                        <td data-label="User">{{ log.user }}</td>
-                        <td data-label="Action">{{ log.action }}</td>
-                        <td data-label="Date">{{ log.created_at|date:"M d, Y H:i" }}</td>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3 text-slate-900">{{ log.user }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ log.action }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ log.created_at|date:"M d, Y H:i" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -3,94 +3,86 @@
 {% block title %}Results for {{ student.get_full_name }} - Admin{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboards:admin_results_dashboard' %}">Results</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'dashboards:admin_class_results' student.student_class.id %}">{{ student.student_class.name }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ student.get_full_name }}</li>
-                </ol>
-            </nav>
-            <h2><i class="bi bi-person-lines-fill"></i> Results: {{ student.get_full_name }}</h2>
-            <p class="text-muted">Admission No: {{ student.admission_number|default:"-" }} | Class: {{ student.student_class.name }}</p>
-        </div>
+<div class="py-4">
+    <div class="mb-6">
+        <nav aria-label="breadcrumb" class="text-sm text-slate-500 mb-2">
+            <a href="{% url 'dashboards:admin_results_dashboard' %}" class="hover:text-slate-700">Results</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'dashboards:admin_class_results' student.student_class.id %}" class="hover:text-slate-700">{{ student.student_class.name }}</a>
+            <span class="mx-2">/</span>
+            <span class="text-slate-900">{{ student.get_full_name }}</span>
+        </nav>
+        <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-person-lines-fill"></i> Results: {{ student.get_full_name }}</h2>
+        <p class="text-slate-500">Admission No: {{ student.admission_number|default:"-" }} | Class: {{ student.student_class.name }}</p>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h3>{{ total_exams }}</h3>
-                    <p class="mb-0">Exams Taken</p>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-600 text-white rounded-2xl shadow-sm">
+            <div class="text-center p-6">
+                <h3 class="text-3xl font-bold">{{ total_exams }}</h3>
+                <p class="mb-0">Exams Taken</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h3>{{ passed_exams }}</h3>
-                    <p class="mb-0">Exams Passed</p>
-                </div>
+        <div class="bg-green-600 text-white rounded-2xl shadow-sm">
+            <div class="text-center p-6">
+                <h3 class="text-3xl font-bold">{{ passed_exams }}</h3>
+                <p class="mb-0">Exams Passed</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h3>{{ total_exams|add:"0"|default:"0" }}</h3> <!-- Placeholder for average score if needed -->
-                    <p class="mb-0">Total Attempts</p>
-                </div>
+        <div class="bg-cyan-600 text-white rounded-2xl shadow-sm">
+            <div class="text-center p-6">
+                <h3 class="text-3xl font-bold">{{ total_exams|add:"0"|default:"0" }}</h3>
+                <p class="mb-0">Total Attempts</p>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Exam History</h5>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h5 class="font-semibold text-slate-900 mb-0">Exam History</h5>
         </div>
-        <div class="card-body">
-            <div class="table-responsive p-0">
-                <table class="table table-hover table-responsive-stack">
-                    <thead class="table-light">
+        <div class="p-6">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th>Exam Title</th>
-                            <th>Date Taken</th>
-                            <th>Score</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Exam Title</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Date Taken</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Score</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for attempt in attempts %}
-                        <tr>
-                            <td data-label="Exam Title">{{ attempt.exam.title }}</td>
-                            <td data-label="Date Taken">{{ attempt.completed_at|date:"M d, Y H:i" }}</td>
-                            <td data-label="Score">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3 text-slate-700">{{ attempt.exam.title }}</td>
+                            <td class="px-4 py-3 text-slate-700">{{ attempt.completed_at|date:"M d, Y H:i" }}</td>
+                            <td class="px-4 py-3">
                                 {% if attempt.score >= attempt.exam.passing_marks %}
-                                <span class="text-success fw-bold">{{ attempt.score }} / {{ attempt.exam.total_marks }}</span>
+                                <span class="text-green-600 font-bold">{{ attempt.score }} / {{ attempt.exam.total_marks }}</span>
                                 {% else %}
-                                <span class="text-danger fw-bold">{{ attempt.score }} / {{ attempt.exam.total_marks }}</span>
+                                <span class="text-red-600 font-bold">{{ attempt.score }} / {{ attempt.exam.total_marks }}</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Status">
+                            <td class="px-4 py-3">
                                 {% if attempt.status == 'submitted' %}
-                                <span class="badge bg-success">Submitted</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Submitted</span>
                                 {% elif attempt.status == 'in_progress' %}
-                                <span class="badge bg-warning">In Progress</span>
+                                <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">In Progress</span>
                                 {% else %}
-                                <span class="badge bg-secondary">{{ attempt.status }}</span>
+                                <span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">{{ attempt.status }}</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Action">
-                                <a href="{% url 'dashboards:exam_result' attempt.id %}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <td class="px-4 py-3">
+                                <a href="{% url 'dashboards:exam_result' attempt.id %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors" target="_blank">
                                     View Script
                                 </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
+                            <td colspan="5" class="px-4 py-8 text-center text-slate-500">
                                 No exam attempts found for this student.
                             </td>
                         </tr>

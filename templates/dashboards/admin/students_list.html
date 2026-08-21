@@ -4,51 +4,51 @@
 {% block title %}Students Management - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-people"></i> Students Management</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900"><i class="bi bi-people"></i> Students Management</h2>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'dashboards:admin_create_student' %}" class="btn btn-primary">
+        <div>
+            <a href="{% url 'dashboards:admin_create_student' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 <i class="bi bi-person-plus"></i> Add Student
             </a>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <form method="get" class="row"
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-4 border-b border-slate-100">
+            <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4"
                   hx-get="{% url 'dashboards:admin_students_list' %}"
                   hx-target="#students-table-body"
                   hx-trigger="search, change from:.form-select, submit">
-                <div class="col-md-6">
-                    <input type="text" name="q" class="form-control" placeholder="Search students..." value="{{ search_query|default:'' }}"
+                <div>
+                    <input type="text" name="q" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Search students..." value="{{ search_query|default:'' }}"
                            hx-trigger="keyup changed delay:500ms">
                 </div>
-                <div class="col-md-3">
-                    <select name="class" class="form-select">
+                <div>
+                    <select name="class" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">All Classes</option>
                         {% for class in classes %}
                             <option value="{{ class.id }}" {% if selected_class == class.id %}selected{% endif %}>{{ class.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-secondary w-100">Search</button>
+                <div>
+                    <button type="submit" class="w-full px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">Search</button>
                 </div>
             </form>
         </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 table-responsive-stack">
-                <thead class="table-light">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Student Name</th>
-                        <th>Email</th>
-                        <th>Class</th>
-                        <th>Enrollment</th>
-                        <th>Exams Taken</th>
-                        <th>Actions</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Student Name</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Class</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Enrollment</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Exams Taken</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="students-table-body">
@@ -56,6 +56,12 @@
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Controls -->
+        {% if page_obj.has_other_pages %}
+        <div class="p-4 border-t border-slate-100 bg-white" id="pagination-container">
+            {% include 'includes/pagination.html' %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -5,72 +5,72 @@
 {% block title %}Admin · Products{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="py-4">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <h4 class="fw-bold mb-0">Products</h4>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 mb-6">
+        <h4 class="font-bold text-slate-900 mb-0">Products</h4>
 
-        <div class="d-flex gap-2">
-            <a href="{% url 'mpay:admin_dashboard' %}" class="btn btn-outline-secondary flex-grow-1 flex-md-grow-0">
+        <div class="flex gap-2">
+            <a href="{% url 'mpay:admin_dashboard' %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors flex-grow-1 md:flex-grow-0">
                 <i class="bi bi-arrow-left"></i> Dashboard
             </a>
-            <a href="{% url 'mpay:admin_add_product' %}" class="btn btn-primary flex-grow-1 flex-md-grow-0">
+            <a href="{% url 'mpay:admin_add_product' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-grow-1 md:flex-grow-0">
                 <i class="bi bi-plus-lg"></i> Add Product
             </a>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
+    <div class="bg-white rounded-2xl shadow-sm border-0">
+        <div class="p-0">
             <!-- Responsive Table -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                    <thead class="bg-light">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse align-middle table-responsive-stack">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="ps-4">Image</th>
-                            <th>Name</th>
-                            <th>Class/Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Status</th>
-                            <th class="text-end pe-4">Actions</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Image</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Name</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Class/Category</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Price</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Stock</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+                            <th class="px-4 py-3 text-right font-semibold text-slate-700">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in products %}
-                        <tr>
-                            <td data-label="Image" class="ps-4">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="px-4 py-3">
                                 {% if p.image %}
                                     <img src="{{ p.image.url }}" class="rounded shadow-sm" style="width:45px;height:45px;object-fit:cover;">
                                 {% else %}
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:45px;height:45px;">
-                                        <i class="bi bi-image text-muted"></i>
+                                    <div class="bg-slate-100 rounded flex items-center justify-center" style="width:45px;height:45px;">
+                                        <i class="bi bi-image text-slate-400"></i>
                                     </div>
                                 {% endif %}
                             </td>
-                            <td data-label="Name" class="fw-semibold text-start">{{ p.name }}</td>
-                            <td data-label="Class/Category">{{ p.category.class_name }}</td>
-                            <td data-label="Price" class="fw-bold text-primary">₦{{ p.price|intcomma }}</td>
-                            <td data-label="Stock">
+                            <td class="px-4 py-3 font-semibold text-slate-900 text-left">{{ p.name }}</td>
+                            <td class="px-4 py-3 text-slate-700">{{ p.category.class_name }}</td>
+                            <td class="px-4 py-3 font-bold text-blue-600">₦{{ p.price|intcomma }}</td>
+                            <td class="px-4 py-3">
                                 {% if p.stock_quantity <= 5 %}
-                                    <span class="badge bg-danger-subtle text-danger">{{ p.stock_quantity }} low</span>
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">{{ p.stock_quantity }} low</span>
                                 {% else %}
-                                    <span class="badge bg-light text-dark border">{{ p.stock_quantity }}</span>
+                                    <span class="px-2 py-1 bg-slate-100 text-slate-700 border border-slate-300 rounded-full text-xs">{{ p.stock_quantity }}</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Status">
+                            <td class="px-4 py-3">
                                 {% if p.is_active %}
-                                    <span class="badge bg-success-subtle text-success">Active</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
                                 {% else %}
-                                    <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
+                                    <span class="px-2 py-1 bg-slate-200 text-slate-600 rounded-full text-xs">Inactive</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Actions" class="text-end pe-4">
-                                <div class="btn-group">
-                                    <a href="{% url 'mpay:admin_product_edit' p.id %}" class="btn btn-sm btn-outline-warning">
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex gap-1 justify-end">
+                                    <a href="{% url 'mpay:admin_product_edit' p.id %}" class="px-2 py-1 border-2 border-amber-500 text-amber-600 rounded text-sm hover:bg-amber-500 hover:text-white transition-colors">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="{% url 'mpay:admin_product_delete' p.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this product?');">
+                                    <a href="{% url 'mpay:admin_product_delete' p.id %}" class="px-2 py-1 border-2 border-red-600 text-red-600 rounded text-sm hover:bg-red-600 hover:text-white transition-colors" onclick="return confirm('Delete this product?');">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
@@ -79,8 +79,8 @@
                         {% empty %}
                         <tr>
                             <td colspan="7" class="text-center py-5">
-                                <i class="bi bi-box-seam display-4 text-muted mb-3 d-block"></i>
-                                <p class="text-muted">No products yet</p>
+                                <i class="bi bi-box-seam text-4xl text-slate-400 mb-3 block"></i>
+                                <p class="text-slate-500">No products yet</p>
                             </td>
                         </tr>
                         {% endfor %}
@@ -89,38 +89,38 @@
             </div>
 
             {% if products.has_other_pages %}
-            <div class="border-top px-3 py-2">
+            <div class="border-t border-slate-200 px-3 py-2">
                 <nav aria-label="Products pagination">
-                    <ul class="pagination justify-content-center mb-0">
+                    <ul class="flex justify-center gap-1 mb-0">
                         {% if products.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                        <li>
+                            <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ products.previous_page_number }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link">&laquo;</span>
+                        <li>
+                            <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&laquo;</span>
                         </li>
                         {% endif %}
 
                         {% for i in products.paginator.page_range %}
                             {% if products.number == i %}
-                            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                            <li><span class="px-3 py-1 bg-blue-600 text-white rounded">{{ i }}</span></li>
                             {% else %}
-                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                            <li><a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ i }}">{{ i }}</a></li>
                             {% endif %}
                         {% endfor %}
 
                         {% if products.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                        <li>
+                            <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ products.next_page_number }}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link">&raquo;</span>
+                        <li>
+                            <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&raquo;</span>
                         </li>
                         {% endif %}
                     </ul>

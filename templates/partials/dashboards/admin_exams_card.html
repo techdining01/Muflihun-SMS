@@ -1,0 +1,27 @@
+    <div class="card" id="table-container">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 table-responsive-stack">
+                <thead class="table-light">
+                    <tr>
+                        <th>Exam Title</th>
+                        <th>Class</th>
+                        <th>Questions</th>
+                        <th>Duration</th>
+                        <th>Attempts</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="exams-table-body">
+                    {% include 'partials/dashboards/exams_table_rows.html' %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination Controls -->
+        {% if page_obj.has_other_pages %}
+        <div class="card-footer bg-white" id="pagination-container">
+            {% include 'includes/pagination.html' %}
+        </div>
+        {% endif %}
+    </div>

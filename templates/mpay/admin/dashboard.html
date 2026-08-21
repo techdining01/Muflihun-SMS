@@ -20,82 +20,74 @@
 </style>
 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-      <h3 class="fw-bold mb-0">{{SCHOOL_ECOMMERCE}} Overview</h3>
-      <button class="back-btn btn btn-outline-primary text-center" onclick="safeBack()">
+<div class="py-4">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-3 mb-6">
+      <h3 class="font-bold text-slate-900 mb-0">{{SCHOOL_ECOMMERCE}} Overview</h3>
+      <button class="back-btn px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors text-center" onclick="safeBack()">
           ← Back
       </button>
     </div>
 
   <!-- KPI CARDS -->
-  <div class="row g-3 mb-4">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
 
-    <div class="col-6 col-md-3">
-      <div class="card shadow-sm h-100 animate fade-in">
-        <div class="card-body text-center p-3">
-          <h6 class="text-muted small mb-2">Total Revenue</h6>
-          <h4 class="fw-bold mb-0">₦{{ total_sales|floatformat:0|intcomma }}</h4>
-        </div>
+    <div>
+      <div class="bg-white rounded-2xl shadow-sm h-full p-3 text-center">
+        <h6 class="text-slate-500 text-sm mb-2">Total Revenue</h6>
+        <h4 class="font-bold text-slate-900 mb-0">₦{{ total_sales|floatformat:0|intcomma }}</h4>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="card shadow-sm h-100 animate fade-in delay-1">
-        <div class="card-body text-center p-3">
-          <h6 class="text-muted small mb-2">Total Orders</h6>
-          <h4 class="fw-bold mb-0">{{ total_orders }}</h4>
-        </div>
+    <div>
+      <div class="bg-white rounded-2xl shadow-sm h-full p-3 text-center">
+        <h6 class="text-slate-500 text-sm mb-2">Total Orders</h6>
+        <h4 class="font-bold text-slate-900 mb-0">{{ total_orders }}</h4>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="card shadow-sm h-100 animate fade-in delay-2">
-        <div class="card-body text-center p-3">
-          <h6 class="text-muted small mb-2">Transactions</h6>
-          <h4 class="fw-bold mb-0">{{ total_transactions }}</h4>
-        </div>
+    <div>
+      <div class="bg-white rounded-2xl shadow-sm h-full p-3 text-center">
+        <h6 class="text-slate-500 text-sm mb-2">Transactions</h6>
+        <h4 class="font-bold text-slate-900 mb-0">{{ total_transactions }}</h4>
       </div>
     </div>
 
-    <div class="col-6 col-md-3">
-      <div class="card shadow-sm h-100 animate fade-in delay-3">
-        <div class="card-body text-center p-3">
-          <h6 class="text-muted small mb-2">Products</h6>
-          <h4 class="fw-bold mb-0">{{ total_products }}</h4>
-        </div>
+    <div>
+      <div class="bg-white rounded-2xl shadow-sm h-full p-3 text-center">
+        <h6 class="text-slate-500 text-sm mb-2">Products</h6>
+        <h4 class="font-bold text-slate-900 mb-0">{{ total_products }}</h4>
       </div>
     </div>
 
   </div>
   
   <!-- RECENT ORDERS -->
-  <div class="card shadow-sm">
-  <div class="card-header fw-bold">Recent Orders</div>
-  <div class="card-body table-responsive p-0">
-    <table class="table table-striped table-hover align-middle mb-0 table-responsive-stack">
-      <thead>
+  <div class="bg-white rounded-2xl shadow-sm">
+  <div class="p-4 border-b border-slate-200 font-bold text-slate-900">Recent Orders</div>
+  <div class="overflow-x-auto p-0">
+    <table class="w-full border-collapse align-middle table-responsive-stack">
+      <thead class="bg-slate-50 border-b border-slate-200">
         <tr>
-          <th>#</th>
-          <th>Time</th>
-          <th>Parent</th>
-          <th>Ward</th>
-          <th>Total</th>
-          <th>Status</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">#</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Time</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Parent</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Ward</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Total</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
         </tr>
       </thead>
       <tbody>
         {% for o in recent_orders %}
-        <tr>
-          <td data-label="#">{{ o.reference }}</td>
-          <td data-label="Time">{{ o.created_at|date:"M d, H:i" }}</td>
-          <td data-label="Parent">{{ o.buyer.get_full_name }}</td>
-          <td data-label="Ward">{{ o.ward.get_full_name }}</td>
-          <td data-label="Total">₦{{ o.total_amount }}</td>
-          <td data-label="Status">{{ o.status }}</td>
+        <tr class="border-b border-slate-100 hover:bg-slate-50">
+          <td class="px-4 py-3 text-slate-900">{{ o.reference }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ o.created_at|date:"M d, H:i" }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ o.buyer.get_full_name }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ o.ward.get_full_name }}</td>
+          <td class="px-4 py-3 text-slate-700">₦{{ o.total_amount }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ o.status }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="6" class="text-center py-4">No orders yet</td></tr>
+        <tr><td colspan="6" class="text-center py-4 text-slate-500">No orders yet</td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -104,12 +96,12 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="container">
-  <div class="row mt-5">
-    <div class="col-md-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+    <div>
       <canvas id="monthlyChart"></canvas>
     </div>
-    <div class="col-md-6">
+    <div>
       <canvas id="classChart"></canvas>
     </div>
   </div>
@@ -134,7 +126,7 @@ new Chart(monthlyCtx, {
     datasets: [{
       label: "Monthly Revenue (₦)",
       data: {{ monthly_data|safe }},
-      backgroundColor: "#0d6efd"
+      backgroundColor: "#2563eb"
     }]
   }
 });
@@ -148,8 +140,8 @@ new Chart(classCtx, {
     datasets: [{
       data: {{ class_data|safe }},
       backgroundColor: [
-        "#0d6efd", "#198754", "#ffc107",
-        "#dc3545", "#6f42c1"
+        "#2563eb", "#16a34a", "#eab308",
+        "#dc2626", "#7c3aed"
       ]
     }]
   }

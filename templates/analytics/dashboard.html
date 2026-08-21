@@ -4,63 +4,59 @@
 {% block title %}Analytics Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-graph-up"></i> Analytics Dashboard</h2>
-        </div>
+<div class="py-4">
+    <div class="mb-4">
+        <h2 class="font-bold text-slate-900"><i class="bi bi-graph-up"></i> Analytics Dashboard</h2>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 bg-primary text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title mb-0">Total Exams</h6>
-                            <h2 class="mt-2 mb-0">{{ total_exams }}</h2>
-                        </div>
-                        <i class="bi bi-file-text fs-1 opacity-50"></i>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div>
+            <div class="bg-blue-600 text-white rounded-2xl shadow-sm h-full p-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="font-semibold mb-0">Total Exams</h6>
+                        <h2 class="text-3xl mt-2 mb-0 font-bold">{{ total_exams }}</h2>
                     </div>
+                    <i class="bi bi-file-text text-4xl opacity-50"></i>
                 </div>
             </div>
         </div>
         <!-- Add more summary cards here if needed -->
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Recent Exams Performance</h5>
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="p-4 border-b border-slate-200 bg-white">
+            <h5 class="font-semibold text-slate-900 mb-0">Recent Exams Performance</h5>
         </div>
-        <div class="table-responsive p-0">
-            <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                <thead class="table-light">
+        <div class="overflow-x-auto p-0">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Exam Title</th>
-                        <th>Class</th>
-                        <th>Date</th>
-                        <th>Attempts</th>
-                        <th>Actions</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Exam Title</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Class</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Date</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Attempts</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for exam in exams %}
-                    <tr>
-                        <td data-label="Exam Title"><strong>{{ exam.title }}</strong></td>
-                        <td data-label="Class">{{ exam.school_class.name }}</td>
-                        <td data-label="Date">{{ exam.created_at|date:"M d, Y" }}</td>
-                        <td data-label="Attempts">
-                            <span class="badge bg-secondary">{{ exam.attempt_count }}</span>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3"><strong class="text-slate-900">{{ exam.title }}</strong></td>
+                        <td class="px-4 py-3 text-slate-700">{{ exam.school_class.name }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ exam.created_at|date:"M d, Y" }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 bg-slate-600 text-white rounded-full text-xs">{{ exam.attempt_count }}</span>
                         </td>
-                        <td data-label="Actions">
-                            <a href="{% url 'dashboards:exam_analytics_phase5' exam.id %}" class="btn btn-sm btn-outline-primary">
+                        <td class="px-4 py-3">
+                            <a href="{% url 'dashboards:exam_analytics_phase5' exam.id %}" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded text-sm hover:bg-blue-600 hover:text-white transition-colors">
                                 <i class="bi bi-bar-chart"></i> View Analytics
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
+                        <td colspan="5" class="text-center py-4 text-slate-500">
                             No exams found
                         </td>
                     </tr>
@@ -71,37 +67,37 @@
 
         <!-- Pagination -->
         {% if exams.has_other_pages %}
-        <nav aria-label="Exam list pagination" class="p-3 border-top">
-            <ul class="pagination justify-content-center mb-0">
+        <nav aria-label="Exam list pagination" class="p-3 border-t border-slate-200">
+            <ul class="flex justify-center gap-1 mb-0">
                 {% if exams.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ exams.previous_page_number }}" aria-label="Previous">
+                <li>
+                    <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ exams.previous_page_number }}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo;</span>
+                <li>
+                    <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&laquo;</span>
                 </li>
                 {% endif %}
 
                 {% for i in exams.paginator.page_range %}
                     {% if exams.number == i %}
-                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    <li><span class="px-3 py-1 bg-blue-600 text-white rounded">{{ i }}</span></li>
                     {% else %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    <li><a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
 
                 {% if exams.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ exams.next_page_number }}" aria-label="Next">
+                <li>
+                    <a class="px-3 py-1 border border-slate-300 rounded hover:bg-slate-100 transition-colors" href="?page={{ exams.next_page_number }}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
                 {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&raquo;</span>
+                <li>
+                    <span class="px-3 py-1 border border-slate-300 rounded text-slate-400">&raquo;</span>
                 </li>
                 {% endif %}
             </ul>

@@ -1,42 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">My Purchases</h4>
-    <a href="{% url 'mpay:store' %}" class="btn btn-outline-primary btn-sm">
+<div class="py-4">
+  <div class="flex justify-between items-center mb-6">
+    <h4 class="font-bold text-slate-900 mb-0">My Purchases</h4>
+    <a href="{% url 'mpay:store' %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors">
       <i class="bi bi-shop"></i> Store
     </a>
   </div>
 
-  <div class="card shadow-sm border-0">
-    <div class="card-body p-0">
+  <div class="bg-white rounded-2xl shadow-sm border-0">
+    <div class="p-0">
       <!-- Responsive Table -->
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 table-responsive-stack">
-          <thead class="bg-light">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse align-middle table-responsive-stack">
+          <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th class="ps-4">Reference</th>
-              <th>Ward</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th class="text-end pe-4">Action</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Reference</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Ward</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Amount</th>
+              <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+              <th class="px-4 py-3 text-right font-semibold text-slate-700">Action</th>
             </tr>
           </thead>
           
           <tbody>
             {% for o in orders %}
-            <tr>
-              <td data-label="Reference" class="ps-4 font-monospace small">{{ o.reference|default:o.id|truncatechars:12 }}</td>
-              <td data-label="Ward">{{ o.ward.get_full_name }}</td>
-              <td data-label="Amount" class="fw-bold text-primary">₦{{ o.total_amount }}</td>
-              <td data-label="Status">
-                <span class="badge rounded-pill {% if o.status == 'PAID' or o.status == 'COMPLETED' %}bg-success-subtle text-success{% else %}bg-info-subtle text-info{% endif %} px-3">
+            <tr class="border-b border-slate-100 hover:bg-slate-50">
+              <td class="px-4 py-3 font-mospace text-sm text-slate-900">{{ o.reference|default:o.id|truncatechars:12 }}</td>
+              <td class="px-4 py-3 text-slate-700">{{ o.ward.get_full_name }}</td>
+              <td class="px-4 py-3 font-bold text-blue-600">₦{{ o.total_amount }}</td>
+              <td class="px-4 py-3">
+                <span class="px-3 py-1 rounded-full text-xs {% if o.status == 'PAID' or o.status == 'COMPLETED' %}bg-green-100 text-green-800{% else %}bg-cyan-100 text-cyan-800{% endif %}">
                   {{ o.status }}
                 </span>
               </td>
-              <td data-label="Action" class="text-end pe-4">
+              <td class="px-4 py-3 text-right">
                 {% if o.transaction %}
-                <a href="{% url 'mpay:receipt_pdf' o.transaction.id %}" class="btn btn-sm btn-outline-primary rounded-pill">
+                <a href="{% url 'mpay:receipt_pdf' o.transaction.id %}" class="px-3 py-1 border-2 border-blue-600 text-blue-600 rounded-full text-sm hover:bg-blue-600 hover:text-white transition-colors">
                   <i class="bi bi-file-earmark-pdf"></i> Receipt
                 </a>
                 {% endif %}
@@ -45,8 +45,8 @@
             {% empty %}
             <tr>
               <td colspan="5" class="text-center py-5">
-                <i class="bi bi-bag-x display-4 text-muted mb-3 d-block"></i>
-                <p class="text-muted">No purchases yet</p>
+                <i class="bi bi-bag-x text-4xl text-slate-400 mb-3 block"></i>
+                <p class="text-slate-500">No purchases yet</p>
               </td>
             </tr>
             {% endfor %}

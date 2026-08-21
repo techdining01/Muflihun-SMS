@@ -4,48 +4,48 @@
 {% block title %}Role Management - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-shield-lock"></i> Role Management</h2>
-            <p class="text-muted">Manage system roles and permissions.</p>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <div>
+            <h2 class="font-bold text-slate-900"><i class="bi bi-shield-lock"></i> Role Management</h2>
+            <p class="text-slate-500">Manage system roles and permissions.</p>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'dashboards:permission_list' %}" class="btn btn-outline-primary">
+        <div>
+            <a href="{% url 'dashboards:permission_list' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
                 <i class="bi bi-list-check me-2"></i>View Permissions
             </a>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                <thead class="table-light">
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Role Name</th>
-                        <th>Description</th>
-                        <th>Permissions</th>
-                        <th>Users Assigned</th>
-                        <th>Actions</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Role Name</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Description</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Permissions</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Users Assigned</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for role in roles %}
-                    <tr>
-                        <td data-label="Role Name">
-                            <span class="fw-bold">{{ role.name }}</span>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3">
+                            <span class="font-bold text-slate-900">{{ role.name }}</span>
                         </td>
-                        <td data-label="Description">{{ role.description }}</td>
-                        <td data-label="Permissions">
-                            <span class="badge bg-secondary">{{ role.permissions.count }}</span>
+                        <td class="px-4 py-3 text-slate-700">{{ role.description }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 bg-slate-600 text-white rounded-full text-xs">{{ role.permissions.count }}</span>
                         </td>
-                        <td data-label="Users Assigned">{{ role.users.count }}</td>
-                        <td data-label="Actions">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" title="Edit">
+                        <td class="px-4 py-3 text-slate-700">{{ role.users.count }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex gap-1">
+                                <button class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded text-sm hover:bg-blue-600 hover:text-white transition-colors" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <button class="btn btn-outline-danger" title="Delete">
+                                <button class="px-2 py-1 border-2 border-red-600 text-red-600 rounded text-sm hover:bg-red-600 hover:text-white transition-colors" title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -53,7 +53,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
+                        <td colspan="5" class="text-center py-4 text-slate-500">
                             No roles defined
                         </td>
                     </tr>

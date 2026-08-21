@@ -4,43 +4,43 @@
 {% block title %}Permissions - Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-key"></i> System Permissions</h2>
-            <p class="text-muted">List of all available system permissions.</p>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <div>
+            <h2 class="font-bold text-slate-900"><i class="bi bi-key"></i> System Permissions</h2>
+            <p class="text-slate-500">List of all available system permissions.</p>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'dashboards:role_management' %}" class="btn btn-outline-primary">
+        <div>
+            <a href="{% url 'dashboards:role_management' %}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
                 <i class="bi bi-shield-lock me-2"></i>Manage Roles
             </a>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 table-responsive-stack">
-                <thead class="table-light">
+    <div class="bg-white rounded-2xl shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse align-middle table-responsive-stack">
+                <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Category</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Code</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Name</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Description</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-700">Category</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for permission in permissions %}
-                    <tr>
-                        <td data-label="Code"><code>{{ permission.codename }}</code></td>
-                        <td data-label="Name" class="fw-bold">{{ permission.name }}</td>
-                        <td data-label="Description">{{ permission.description }}</td>
-                        <td data-label="Category">
-                            <span class="badge bg-light text-dark border">{{ permission.content_type.model|title }}</span>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="px-4 py-3"><code class="px-2 py-1 bg-slate-100 rounded text-sm">{{ permission.codename }}</code></td>
+                        <td class="px-4 py-3 font-bold text-slate-900">{{ permission.name }}</td>
+                        <td class="px-4 py-3 text-slate-700">{{ permission.description }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 bg-slate-100 text-slate-700 border border-slate-300 rounded-full text-xs">{{ permission.content_type.model|title }}</span>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4 text-muted">
+                        <td colspan="4" class="text-center py-4 text-slate-500">
                             No permissions found
                         </td>
                     </tr>

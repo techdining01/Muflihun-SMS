@@ -4,112 +4,112 @@
 {% block title %}Import Job - {{ job.id }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2><i class="bi bi-upload"></i> Import Job #{{ job.id }}</h2>
+<div class="py-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+        <div>
+            <h2 class="font-bold text-slate-900"><i class="bi bi-upload"></i> Import Job #{{ job.id }}</h2>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'dashboards:bulk_import' %}" class="btn btn-outline-secondary">
+        <div>
+            <a href="{% url 'dashboards:bulk_import' %}" class="px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                 <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Job Status</h5>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+            <div class="bg-white rounded-2xl shadow-sm mb-4">
+                <div class="p-4 border-b border-slate-200">
+                    <h5 class="font-semibold text-slate-900 mb-0">Job Status</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <small class="text-muted d-block mb-1">Type</small>
-                            <h6>{{ job.get_import_type_display }}</h6>
+                <div class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <small class="text-slate-500 block mb-1">Type</small>
+                            <h6 class="font-semibold text-slate-900">{{ job.get_import_type_display }}</h6>
                         </div>
-                        <div class="col-md-6">
-                            <small class="text-muted d-block mb-1">Status</small>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Status</small>
                             <h6>
-                                <span class="badge {% if job.status == 'completed' %}bg-success{% elif job.status == 'failed' %}bg-danger{% elif job.status == 'processing' %}bg-info{% else %}bg-warning{% endif %}">
+                                <span class="px-2 py-1 rounded-full text-xs {% if job.status == 'completed' %}bg-green-600 text-white{% elif job.status == 'failed' %}bg-red-600 text-white{% elif job.status == 'processing' %}bg-cyan-600 text-white{% else %}bg-amber-500 text-white{% endif %}">
                                     {{ job.get_status_display }}
                                 </span>
                             </h6>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Total Rows</small>
-                            <h6>{{ job.total_rows }}</h6>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <small class="text-slate-500 block mb-1">Total Rows</small>
+                            <h6 class="font-semibold text-slate-900">{{ job.total_rows }}</h6>
                         </div>
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Successful</small>
-                            <h6 class="text-success">{{ job.successful_rows }}</h6>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Successful</small>
+                            <h6 class="font-semibold text-green-600">{{ job.successful_rows }}</h6>
                         </div>
-                        <div class="col-md-4">
-                            <small class="text-muted d-block mb-1">Failed</small>
-                            <h6 class="text-danger">{{ job.failed_rows }}</h6>
+                        <div>
+                            <small class="text-slate-500 block mb-1">Failed</small>
+                            <h6 class="font-semibold text-red-600">{{ job.failed_rows }}</h6>
                         </div>
                     </div>
                 </div>
             </div>
 
             {% if job.error_log %}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Error Log</h5>
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="p-4 border-b border-slate-200">
+                    <h5 class="font-semibold text-slate-900 mb-0">Error Log</h5>
                 </div>
-                <div class="card-body">
-                    <pre class="mb-0">{{ job.error_log }}</pre>
+                <div class="p-4">
+                    <pre class="mb-0 text-sm text-slate-700 bg-slate-100 p-3 rounded-lg overflow-x-auto">{{ job.error_log }}</pre>
                 </div>
             </div>
             {% endif %}
         </div>
 
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Details</h5>
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm">
+                <div class="p-4 border-b border-slate-200">
+                    <h5 class="font-semibold text-slate-900 mb-0">Details</h5>
                 </div>
-                <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-sm-6">Job ID:</dt>
-                        <dd class="col-sm-6"><code>{{ job.id }}</code></dd>
-                        <dt class="col-sm-6">Imported by:</dt>
-                        <dd class="col-sm-6"><small>{{ job.created_by.get_full_name|default:job.created_by.username }}</small></dd>
-                        <dt class="col-sm-6">Started:</dt>
-                        <dd class="col-sm-6"><small>{{ job.started_at|date:"M d, Y H:i" }}</small></dd>
-                        <dt class="col-sm-6">Completed:</dt>
-                        <dd class="col-sm-6"><small>{{ job.completed_at|date:"M d, Y H:i"|default:"-" }}</small></dd>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <span class="text-slate-500">Job ID:</span>
+                        <span class="text-slate-900"><code class="px-2 py-1 bg-slate-100 rounded text-sm">{{ job.id }}</code></span>
+                        <span class="text-slate-500">Imported by:</span>
+                        <span class="text-slate-900"><small>{{ job.created_by.get_full_name|default:job.created_by.username }}</small></span>
+                        <span class="text-slate-500">Started:</span>
+                        <span class="text-slate-900"><small>{{ job.started_at|date:"M d, Y H:i" }}</small></span>
+                        <span class="text-slate-500">Completed:</span>
+                        <span class="text-slate-900"><small>{{ job.completed_at|date:"M d, Y H:i"|default:"-" }}</small></span>
                         {% if job.exam %}
-                        <dt class="col-sm-6">Exam:</dt>
-                        <dd class="col-sm-6"><small>{{ job.exam.title }}</small></dd>
-                        <dt class="col-sm-6">Class:</dt>
-                        <dd class="col-sm-6"><small>{{ job.exam.school_class.name }}</small></dd>
-                        <dt class="col-sm-6">Published:</dt>
-                        <dd class="col-sm-6">
+                        <span class="text-slate-500">Exam:</span>
+                        <span class="text-slate-900"><small>{{ job.exam.title }}</small></span>
+                        <span class="text-slate-500">Class:</span>
+                        <span class="text-slate-900"><small>{{ job.exam.school_class.name }}</small></span>
+                        <span class="text-slate-500">Published:</span>
+                        <span class="text-slate-900">
                             {% if job.exam.is_published %}
-                            <span class="badge bg-success">Yes</span>
+                            <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Yes</span>
                             {% else %}
-                            <span class="badge bg-secondary">No</span>
+                            <span class="px-2 py-1 bg-slate-600 text-white rounded-full text-xs">No</span>
                             {% endif %}
-                        </dd>
-                        <dt class="col-sm-6">Start Time:</dt>
-                        <dd class="col-sm-6"><small>{{ job.exam.start_time|date:"M d, Y H:i" }}</small></dd>
-                        <dt class="col-sm-6">End Time:</dt>
-                        <dd class="col-sm-6"><small>{{ job.exam.end_time|date:"M d, Y H:i" }}</small></dd>
+                        </span>
+                        <span class="text-slate-500">Start Time:</span>
+                        <span class="text-slate-900"><small>{{ job.exam.start_time|date:"M d, Y H:i" }}</small></span>
+                        <span class="text-slate-500">End Time:</span>
+                        <span class="text-slate-900"><small>{{ job.exam.end_time|date:"M d, Y H:i" }}</small></span>
                         {% endif %}
-                    </dl>
+                    </div>
                     {% if job.exam and job.status == 'completed' %}
-                    <div class="d-grid gap-2 mt-2">
-                        <a href="{% url 'dashboards:exam_detail' job.exam.id %}" class="btn btn-primary btn-sm">
+                    <div class="flex flex-col gap-2 mt-2">
+                        <a href="{% url 'dashboards:exam_detail' job.exam.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors">
                             <i class="bi bi-journal-text me-1"></i>View Exam Questions
                         </a>
                         {% if not job.exam.is_published %}
                         <form method="post" action="{% url 'dashboards:publish_exam' job.exam.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm w-100">
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors">
                                 <i class="bi bi-send me-1"></i>Publish Exam Now
                             </button>
                         </form>

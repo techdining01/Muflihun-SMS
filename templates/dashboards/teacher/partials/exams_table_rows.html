@@ -1,26 +1,26 @@
 {% if exams %}
     {% for exam in exams %}
-    <tr>
-        <td><strong>{{ exam.title }}</strong></td>
-        <td>{{ exam.school_class.name }}</td>
-        <td><span class="badge bg-info">{{ exam.questions.count }}</span></td>
-        <td>{{ exam.duration }} min</td>
-        <td><span class="badge bg-secondary">{{ exam.exam_attempts.count }}</span></td>
-        <td>
+    <tr class="border-b border-slate-100 hover:bg-slate-50">
+        <td class="px-4 py-3 font-semibold text-slate-900">{{ exam.title }}</td>
+        <td class="px-4 py-3 text-slate-700">{{ exam.school_class.name }}</td>
+        <td class="px-4 py-3"><span class="px-2 py-1 bg-cyan-100 text-cyan-800 rounded-full text-xs">{{ exam.questions.count }}</span></td>
+        <td class="px-4 py-3 text-slate-700">{{ exam.duration }} min</td>
+        <td class="px-4 py-3"><span class="px-2 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">{{ exam.exam_attempts.count }}</span></td>
+        <td class="px-4 py-3">
             {% if exam.is_published %}
-                <span class="badge bg-success">Published</span>
+                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Published</span>
             {% else %}
-                <span class="badge bg-warning">Draft</span>
+                <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Draft</span>
             {% endif %}
         </td>
-        <td>
-            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="btn btn-sm btn-outline-primary" title="View">
+        <td class="px-4 py-3">
+            <a href="{% url 'dashboards:exam_detail' exam.id %}" class="px-2 py-1 border-2 border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-colors" title="View">
                 <i class="bi bi-eye"></i>
             </a>
-            <a href="{% url 'dashboards:edit_exam' exam.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+            <a href="{% url 'dashboards:edit_exam' exam.id %}" class="px-2 py-1 border-2 border-slate-300 text-slate-700 rounded-lg text-sm hover:bg-slate-100 transition-colors" title="Edit">
                 <i class="bi bi-pencil"></i>
             </a>
-            <a href="{% url 'dashboards:delete_exam' exam.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+            <a href="{% url 'dashboards:delete_exam' exam.id %}" class="px-2 py-1 border-2 border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors" title="Delete">
                 <i class="bi bi-trash"></i>
             </a>
         </td>
@@ -28,8 +28,8 @@
     {% endfor %}
 {% else %}
 <tr>
-    <td colspan="7" class="text-center text-muted py-4">
-        No exams found. <a href="{% url 'dashboards:create_exam' %}">Create a new exam</a>
+    <td colspan="7" class="text-center text-slate-500 py-4">
+        No exams found. <a href="{% url 'dashboards:create_exam' %}" class="text-blue-600 hover:underline">Create a new exam</a>
     </td>
 </tr>
 {% endif %}

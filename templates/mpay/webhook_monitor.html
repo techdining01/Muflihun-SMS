@@ -1,37 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-4">
-  <h4>🔔 Paystack Webhook Monitor</h4>
+<div class="py-4">
+  <h4 class="text-xl font-bold text-slate-900">🔔 Paystack Webhook Monitor</h4>
 
-  <div class="table-responsive">
-    <table class="table table-bordered table-sm table-responsive-stack">
-      <thead>
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse text-sm">
+      <thead class="bg-slate-50 border-b border-slate-200">
         <tr>
-          <th>Order Reference</th>
-          <th>Gateway Reference</th>
-          <th>Status</th>
-          <th>Verified</th>
-          <th>Amount</th>
-          <th>Time</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Order Reference</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Gateway Reference</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Verified</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Amount</th>
+          <th class="px-4 py-3 text-left font-semibold text-slate-700">Time</th>
         </tr>
       </thead>
       <tbody>
         {% for tx in transactions %}
-        <tr class="{% if tx.verified %}table-success{% else %}table-warning{% endif %}">
-          <td data-label="Order Reference">{{ tx.order.reference }}</td>
-          <td data-label="Gateway Reference">{{ tx.gateway_reference }}</td>
-          <td data-label="Status">{{ tx.status }}</td>
-          <td data-label="Verified">{{ tx.verified }}</td>
-          <td data-label="Amount">₦{{ tx.amount }}</td>
-          <td data-label="Time">{{ tx.created_at }}</td>
+        <tr class="border-b border-slate-100 hover:bg-slate-50 {% if tx.verified %}bg-green-50{% else %}bg-amber-50{% endif %}">
+          <td class="px-4 py-3 text-slate-900">{{ tx.order.reference }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ tx.gateway_reference }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ tx.status }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ tx.verified }}</td>
+          <td class="px-4 py-3 text-slate-700">₦{{ tx.amount }}</td>
+          <td class="px-4 py-3 text-slate-700">{{ tx.created_at }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="6" class="text-center">No webhook events yet</td></tr>
+        <tr><td colspan="6" class="text-center text-slate-500 py-4">No webhook events yet</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-  {% include "includes/pagination.html" %}
+  {% include "/includes/pagination.html" %}
 </div>
 {% endblock %}
